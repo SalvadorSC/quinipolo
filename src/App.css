@@ -1,5 +1,16 @@
-.App {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
   text-align: center;
+  background: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url("./assets/dark_bg.svg");
+  box-sizing: border-box;
 }
 
 .App-logo {

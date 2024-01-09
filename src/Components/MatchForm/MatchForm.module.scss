@@ -1,0 +1,32 @@
+.matchForm {
+  border-radius: 5px;
+  background-color: rgb(251, 251, 251);
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  transition: 0.3s;
+}
+
+.matchForm:hover {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.matchForm__gameType {
+  background-color: white;
+  color: white;
+}
+
+.matchFormTitle {
+  font-size: 20px !important;
+  font-weight: bold !important;
+  margin-top: 20px !important;
+  color: white;
+}
+
+.matchFormDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
