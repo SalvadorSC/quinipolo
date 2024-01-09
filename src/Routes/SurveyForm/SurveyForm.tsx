@@ -6,7 +6,6 @@ import styles from "./SurveyForm.module.scss";
 import { SurveyData } from "./SurveyForm.types";
 import MatchForm from "../../Components/MatchForm/MatchForm";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
-import VerticalLinearStepper from "../../Components/VerticalLinearStepper/VerticalLinearStepper";
 
 const SurveyForm: React.FC = () => {
   const [quinipolo, setQuinipolo] = useState<SurveyData[]>([]);

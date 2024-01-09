@@ -20,7 +20,6 @@ import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Link, Outlet } from "react-router-dom";
-import { Paper } from "@mui/material";
 
 const drawerWidth = 240;
 
