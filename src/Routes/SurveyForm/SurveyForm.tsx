@@ -36,10 +36,13 @@ const SurveyForm: React.FC = () => {
     });
     // Handle survey submission logic here
     try {
-      const response = await axios.post("/api/quinipolos", {
-        league: "testLeague",
-        quinipolo,
-      });
+      const response = await axios.post(
+        "https://quinipolo.onrender.com/api/quinipolos",
+        {
+          league: "testLeague",
+          quinipolo,
+        }
+      );
       console.log("Quinipolo created successfully:", response.data);
     } catch (error) {
       console.error("Error creating Quinipolo:", error);

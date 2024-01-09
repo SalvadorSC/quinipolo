@@ -30,7 +30,7 @@ const SignUpForm = () => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     axios
-      .post("/api/auth/signup", {
+      .post("https://quinipolo.onrender.com/api/auth/signup", {
         ...newUser,
         username: data.get("username") as string,
         email: data.get("email") as string,

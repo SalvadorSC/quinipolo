@@ -24,7 +24,7 @@ const LoginForm = () => {
       password: data.get("password"),
     });
     axios
-      .post("/api/auth/login", {
+      .post("https://quinipolo.onrender.com/api/auth/login", {
         email: data.get("email"),
         password: data.get("password"),
       })
