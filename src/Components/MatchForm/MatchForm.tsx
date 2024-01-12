@@ -38,6 +38,7 @@ const MatchForm = ({
     homeTeam: "",
     awayTeam: "",
     isGame15: index === 14,
+    date: new Date(),
   };
   const [matchData, setMatchData] = useState<SurveyData>(initialSurveyData);
 
@@ -82,16 +83,16 @@ const MatchForm = ({
 
   if (matchData.gameType) {
     if (matchData.gameType === "waterpolo") {
-      goalsText = "Less than 9, 9 or 10, more than 10.";
+      goalsText = "Menos de 9, 9 o 10, más de 10.";
     } else {
-      goalsText = "0, 1 or 2, more than 2";
+      goalsText = "0, 1 o 2, más de 2";
     }
   }
 
   return (
     <>
       <Typography className={styles.matchFormTitle}>
-        Partit {index + 1}: <br />
+        Partido {index + 1}: <br />
       </Typography>
       <br />
       <div className={styles.matchForm} key={`matchForm-${index}`}>
@@ -102,9 +103,9 @@ const MatchForm = ({
             variant="outlined"
             margin="normal"
           >
-            <InputLabel>Esport</InputLabel>
+            <InputLabel>Deporte</InputLabel>
             <Select
-              label="Game Type"
+              label="Deporte"
               name="gameType"
               value={matchData.gameType}
               onChange={(event) => {
@@ -142,7 +143,7 @@ const MatchForm = ({
                   <TextField
                     required
                     {...params}
-                    label="Home Team"
+                    label="Local"
                     variant="outlined"
                     name="homeTeam"
                     value={matchData.homeTeam}
@@ -164,7 +165,7 @@ const MatchForm = ({
                   <TextField
                     {...params}
                     required
-                    label="Away Team"
+                    label="Visitante"
                     variant="outlined"
                     name="awayTeam"
                     value={matchData.awayTeam}

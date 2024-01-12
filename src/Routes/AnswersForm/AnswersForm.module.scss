@@ -1,0 +1,30 @@
+.teamAnswerButton {
+  flex: 1;
+}
+
+.teamAnswerButtonContainer {
+  width: 100%;
+  display: flex;
+}
+.goalsContainer {
+  display: flex;
+  flex-direction: row;
+  margin-top: 16px;
+  justify-content: space-evenly;
+}
+
+.matchName {
+  // fancy border for a title
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 2px solid #ca4c4c;
+  margin-bottom: 6px;
+}
+
+.nameInput {
+  width: calc(100% - 32px);
+  margin: 16px;
+}
+.submitButton {
+  margin-bottom: 16px !important;
+}

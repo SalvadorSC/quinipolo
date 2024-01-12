@@ -1,0 +1,13 @@
+.quinipoloSuccessContainer {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 64px - 48px);
+
+  margin-top: 64px;
+  justify-content: space-evenly;
+}
+
+.qrCode {
+  margin: 16px;
+  height: 200px;
+}

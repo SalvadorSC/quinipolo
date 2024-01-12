@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const SignUpForm = () => {
@@ -25,12 +25,12 @@ const SignUpForm = () => {
     role: "user",
     leagues: [],
   };
-
+  const navigate = useNavigate();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     axios
-      .post("https://quinipolo.onrender.com/api/auth/signup", {
+      .post(`process.env.REACT_APP_API_BASE_URL/api/auth/signup`, {
         ...newUser,
         username: data.get("username") as string,
         email: data.get("email") as string,
@@ -38,7 +38,9 @@ const SignUpForm = () => {
         fullName: `${data.get("firstName")} ${data.get("lastName")}`,
         leagues: participateGlobalQuinipolo ? ["global"] : [],
       })
-      .then((response) => console.log(response.data))
+      .then(() => {
+        navigate("/sign-in");
+      })
       .catch((error) => console.error("Error:", error));
   };
 
@@ -54,7 +56,7 @@ const SignUpForm = () => {
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Formulario de registro
           </Typography>
           <Box
             component="form"
@@ -70,7 +72,7 @@ const SignUpForm = () => {
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label="Nombre"
                   autoFocus
                 />
               </Grid>
@@ -79,7 +81,7 @@ const SignUpForm = () => {
                   required
                   fullWidth
                   id="lastName"
-                  label="Last Name"
+                  label="Apellidos"
                   name="lastName"
                   autoComplete="family-name"
                 />
@@ -89,7 +91,7 @@ const SignUpForm = () => {
                   required
                   fullWidth
                   id="username"
-                  label="Username"
+                  label="Usuario"
                   name="username"
                   autoComplete="username"
                 />
@@ -99,7 +101,7 @@ const SignUpForm = () => {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Correo"
                   name="email"
                   autoComplete="email"
                 />
@@ -109,7 +111,7 @@ const SignUpForm = () => {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="Contraseña"
                   type="password"
                   id="password"
                   autoComplete="new-password"
@@ -122,7 +124,7 @@ const SignUpForm = () => {
                   onChange={() =>
                     setParticipateGlobalQuinipolo(!participateGlobalQuinipolo)
                   }
-                  label="I want to participate in the global quinipolo."
+                  label="Quiero participar en la quinipolo global. (Cuando esté disponible)."
                 />
               </Grid>
               <Grid item xs={12}>
@@ -135,7 +137,7 @@ const SignUpForm = () => {
                       required
                     />
                   }
-                  label="I acknowledge I might receive emails regarding quinipolo."
+                  label="Acepto recibir posibles correos electrónicos de Quinipolo. (Si los enviamos, que no se sabe si ocurrirá)."
                 />
               </Grid>
             </Grid>
@@ -146,11 +148,11 @@ const SignUpForm = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Registrarse
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link to="/sign-in">Already have an account? Sign in</Link>
+                <Link to="/sign-in">Ya tienes una cuenta? Inicia sesión</Link>
               </Grid>
             </Grid>
           </Box>

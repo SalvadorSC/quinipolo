@@ -1,15 +1,19 @@
 // SurveyForm.tsx
 import React, { useState, FormEvent, useEffect } from "react";
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import axios from "axios";
 import styles from "./SurveyForm.module.scss";
 import { SurveyData } from "./SurveyForm.types";
 import MatchForm from "../../Components/MatchForm/MatchForm";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
+/* import { DatePicker } from "antd"; */
+import { Dayjs } from "dayjs";
 
 const SurveyForm: React.FC = () => {
   const [quinipolo, setQuinipolo] = useState<SurveyData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [selectedTime, setSelectedTime] = useState<Date | null>(new Date());
   const [teamOptions, setTeamOptions] = useState<{
     waterpolo: string[];
     football: string[];
@@ -18,25 +22,19 @@ const SurveyForm: React.FC = () => {
     .map((match) => match.awayTeam)
     .concat(quinipolo.map((match) => match.homeTeam));
 
-  /* const getQuinipolos = async () => {
-    fetch("http://localhost:3000/api/quinipolos/testLeague")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      });
-  }; */
-
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
+  const handleTimeChange = (time: Date | null) => {
+    setSelectedTime(time);
+  };
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log({
-      league: "testLeague",
-      quinipolo,
-    });
     // Handle survey submission logic here
     try {
       const response = await axios.post(
-        "https://quinipolo.onrender.com/api/quinipolos",
+        `process.env.REACT_APP_API_BASE_URL/api/quinipolos`,
         {
           league: "testLeague",
           quinipolo,
@@ -50,7 +48,7 @@ const SurveyForm: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:3000/api/teamOptions")
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/teamOptions`)
       .then((res) => res.json())
       .then((data) => {
         setTeamOptions(data[0]);
@@ -73,12 +71,21 @@ const SurveyForm: React.FC = () => {
           padding: 26,
         }}
       >
-        <h1>Formulari creació Quinipolo</h1>
-        <HelpOutlineRoundedIcon />
+        <h1>Formulario creación Quinipolo</h1>
+        <Tooltip title="Si no sabes como hacerlo, escribe al desarrollador. Cuando pueda escribira una guia.">
+          <HelpOutlineRoundedIcon />
+        </Tooltip>
       </div>
-
+      {/* <DatePicker
+        format="DD/MM/YYYY hh:mm A"
+        onChange={(date: Dayjs | null, dateString: string) =>
+          console.log(date, dateString)
+        }
+        //showTime={{ use12Hours: true }}
+      /> */}
       {matchArray.map((_, index) => (
         <MatchForm
+          key={index}
           teamOptions={teamOptions}
           selectedTeams={selectedTeams}
           index={index}
@@ -86,17 +93,10 @@ const SurveyForm: React.FC = () => {
           loading={loading}
         />
       ))}
-      {/* <VerticalLinearStepper
-        teamOptions={teamOptions}
-        selectedTeams={selectedTeams}
-        matchArray={matchArray}
-        setQuinipolo={setQuinipolo}
-        quinipolo={quinipolo}
-      /> */}
 
       <div className={styles.submitButton}>
         <Button type="submit" variant="contained" color="primary">
-          Submit Survey
+          Crear Quinipolo
         </Button>
       </div>
     </form>
