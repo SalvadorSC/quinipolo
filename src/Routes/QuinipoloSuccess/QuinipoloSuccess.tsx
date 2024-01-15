@@ -1,32 +1,35 @@
 import React from "react";
 import { Button, Paper } from "@mui/material";
 import style from "./QuinipoloSuccess.module.scss";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import QRCode from "react-qr-code";
-import queryString from "query-string";
+import dayjs from "dayjs";
+import { ISurveyForm } from "../SurveyForm/SurveyForm";
 
-const QuinipoloSuccess = () => {
+const QuinipoloSuccess = ({ handleOpenFeedback }: ISurveyForm) => {
+  const location = useLocation();
   const navigate = useNavigate();
-
+  const deepLink = `https://quinipolo.com/quinipolo?${location.state.quinipolo._id}`;
   // Function to construct the deep link
-  const getDeepLink = () => {
-    const quinipoloId = "123"; // Replace with the actual Quinipolo ID
-    const queryParams = { quinipoloId }; // Add more parameters as needed
-    const deepLink = `https://quinipolo.com/quinipolo?${queryString.stringify(
-      queryParams
-    )}`;
-    return deepLink;
-  };
-  const messageToShare = `¡Hola! Te invito a participar en la Quinipolo de esta semana. Ingresa tus predicciones para los partidos y compite con otros participantes. ¡Buena suerte! 🏆 ${getDeepLink()}`;
+
+  const messageToShare = `¡Hola! Te invito a participar en la Quinipolo de esta semana. Ingresa tus predicciones para los partidos y compite con otros participantes. ¡Buena suerte! 🏆 ${deepLink}`;
 
   const copyMessageToClipboard = () => {
     navigator.clipboard
       .writeText(messageToShare)
       .then(() => {
-        console.log("Message copied to clipboard");
+        handleOpenFeedback(
+          "Mensaje copiado al portapapeles!",
+          "success",
+          "green"
+        );
       })
       .catch((err) => {
-        console.error("Error copying message to clipboard:", err);
+        handleOpenFeedback(
+          "Error copiando el mensaje al portapapeles!",
+          "error",
+          "red"
+        );
       });
   };
 
@@ -37,38 +40,34 @@ const QuinipoloSuccess = () => {
         sx={{
           width: "100%",
           p: 4,
-          height: "80%",
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
           justifyContent: "space-evenly",
         }}
       >
-        <h1>Quinipolo creada con éxito</h1>
-
+        <h2>¡Quinipolo creada con éxito!</h2>
+        <p>La fecha limite para responder esta Quinipolo es:</p>
         <p>
-          Para compartir tu Quinipolo con tus amigos, copia el siguiente mensaje
-          y envíaselo por WhatsApp:
+          {dayjs(location.state.quinipolo.endDate).format("DD-MM-YYYY HH:mm")}h
+        </p>
+        <br />
+        <p>
+          Para compartir tu Quinipolo con tus amigos, usa alguno de los
+          siguientes métodos:
         </p>
         {/* Mensaje de compartir */}
         <QRCode
           className={style.qrCode}
           value={`https://wa.me/?text=${encodeURIComponent(messageToShare)}`}
         />
-        <Button
-          variant="contained"
-          onClick={copyMessageToClipboard}
-          className={style.submitButton}
-          type="submit"
-        >
+        <Button variant="contained" onClick={copyMessageToClipboard}>
           Copiar mensaje
         </Button>
         <Button
           variant="contained"
           onClick={copyMessageToClipboard}
-          className={style.submitButton}
           style={{ marginTop: 16 }}
-          type="submit"
         >
           <a
             href={`https://wa.me/?text=${encodeURIComponent(messageToShare)}`}
@@ -80,13 +79,12 @@ const QuinipoloSuccess = () => {
           </a>
         </Button>
         <Button
-          variant="contained"
+          variant="outlined"
           onClick={() => {
             navigate("/dashboard");
           }}
-          className={style.submitButton}
+          className={style.returnButton}
           style={{ marginTop: 16 }}
-          type="submit"
         >
           Volver al menú principal
         </Button>

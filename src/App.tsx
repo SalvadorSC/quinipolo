@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import SurveyForm from "./Routes/SurveyForm/SurveyForm";
 import { Container } from "@mui/material";
@@ -9,41 +9,62 @@ import SignUpForm from "./Routes/SignUpForm/SignUpForm";
 import MenuBar from "./Components/MenuBar/MenuBar";
 import Dashboard from "./Routes/Dashboard/Dashboard";
 import QuinipoloSuccess from "./Routes/QuinipoloSuccess/QuinipoloSuccess";
+import Feedback from "./Components/Feedback/Feedback";
 
 function App() {
-  // const [data, setData] = useState(null);
+  const [feedback, setFeedback] = useState<{
+    message: string;
+    severity: "success" | "info" | "warning" | "error";
+    color: string;
+    open: boolean;
+  }>({ message: "", severity: "info", color: "", open: false });
 
-  /* useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users`)
-      .then((res) => res.json())
-      .then((data) => setData(data[0].username));
-  }, []); */
+  const handleOpenFeedback = (
+    message: string,
+    severity: "success" | "info" | "warning" | "error",
+    color: string
+  ) => {
+    setFeedback({ message, severity, color, open: true });
+  };
+
+  const handleCloseFeedback = () => {
+    setFeedback({ message: "", severity: "info", color: "", open: false });
+  };
 
   return (
     <React.StrictMode>
       <BrowserRouter>
-        <div className="App">
-          <Container maxWidth="sm">
-            <Routes>
-              <Route path="sign-in" element={<LoginForm />} />
-              <Route path="sign-up" element={<SignUpForm />} />
+        <Container maxWidth="sm">
+          <Routes>
+            <Route path="sign-in" element={<LoginForm />} />
+            <Route path="sign-up" element={<SignUpForm />} />
 
-              <Route path="/" element={<MenuBar />}>
-                <Route path="/" element={<LoginForm />} />
-                <Route path="*" element={<LoginForm />} />
-                <Route path="crear-quinipolo" element={<SurveyForm />} />
-                <Route
-                  path="quinipolo-success"
-                  element={<QuinipoloSuccess />}
-                />
-                <Route path="quinipolo" element={<AnswersForm />} />
-                <Route path="dashboard" element={<Dashboard />} />
-              </Route>
-              {/* <Route path="*" element={<NoMatch />} /> */}
-            </Routes>
-          </Container>
-          {/* <BottomNav /> */}
-        </div>
+            <Route path="/" element={<MenuBar />}>
+              <Route path="/" element={<LoginForm />} />
+              <Route path="*" element={<LoginForm />} />
+              <Route
+                path="crear-quinipolo"
+                element={<SurveyForm handleOpenFeedback={handleOpenFeedback} />}
+              />
+              <Route
+                path="quinipolo-success"
+                element={
+                  <QuinipoloSuccess handleOpenFeedback={handleOpenFeedback} />
+                }
+              />
+              <Route path="quinipolo" element={<AnswersForm />} />
+              <Route path="dashboard" element={<Dashboard />} />
+            </Route>
+            {/* <Route path="*" element={<NoMatch />} /> */}
+          </Routes>
+          <Feedback
+            isOpen={feedback.open}
+            onClose={handleCloseFeedback}
+            severity={feedback.severity}
+            message={feedback.message}
+            color={feedback.color}
+          />
+        </Container>
       </BrowserRouter>
     </React.StrictMode>
   );

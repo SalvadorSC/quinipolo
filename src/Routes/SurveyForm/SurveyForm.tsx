@@ -2,18 +2,29 @@
 import React, { useState, FormEvent, useEffect } from "react";
 import { Button, Tooltip } from "@mui/material";
 import axios from "axios";
-import styles from "./SurveyForm.module.scss";
 import { SurveyData } from "./SurveyForm.types";
 import MatchForm from "../../Components/MatchForm/MatchForm";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
-/* import { DatePicker } from "antd"; */
-import { Dayjs } from "dayjs";
+import locale from "antd/es/date-picker/locale/es_ES";
+import { DatePicker } from "antd";
+import dayjs, { Dayjs } from "dayjs";
+import "dayjs/locale/es";
+import styles from "./SurveyForm.module.scss";
+import { useNavigate } from "react-router-dom";
 
-const SurveyForm: React.FC = () => {
+export interface ISurveyForm {
+  handleOpenFeedback: (
+    message: string,
+    severity: "success" | "info" | "warning" | "error",
+    color: string
+  ) => void;
+}
+
+const SurveyForm = ({ handleOpenFeedback }: ISurveyForm) => {
+  const navigate = useNavigate();
   const [quinipolo, setQuinipolo] = useState<SurveyData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [selectedTime, setSelectedTime] = useState<Date | null>(new Date());
   const [teamOptions, setTeamOptions] = useState<{
     waterpolo: string[];
     football: string[];
@@ -22,27 +33,34 @@ const SurveyForm: React.FC = () => {
     .map((match) => match.awayTeam)
     .concat(quinipolo.map((match) => match.homeTeam));
 
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
+  const handleDateChange = (date: Dayjs | null, dateString: string) => {
+    setSelectedDate(dayjs(dateString, "DD/MM/YYYY hh:mm").toDate());
   };
-  const handleTimeChange = (time: Date | null) => {
-    setSelectedTime(time);
-  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Handle survey submission logic here
     try {
       const response = await axios.post(
-        `process.env.REACT_APP_API_BASE_URL/api/quinipolos`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/quinipolos`,
         {
           league: "testLeague",
           quinipolo,
+          endDate: selectedDate,
+          hasBeenCorrected: false,
+          creationDate: new Date(),
         }
       );
-      console.log("Quinipolo created successfully:", response.data);
+      handleOpenFeedback("Quinipolo creada correctamente!", "success", "green");
+      // console.log("Quinipolo created successfully:", response.data);]
+      navigate("/quinipolo-success", { state: { quinipolo: response.data } });
     } catch (error) {
-      console.error("Error creating Quinipolo:", error);
+      handleOpenFeedback(
+        "Error creando la Quinipolo! Revisa todos los campos y prueba otra vez.",
+        "error",
+        "orange"
+      );
+      // console.error("Error creating Quinipolo:", error);
     }
   };
 
@@ -76,13 +94,22 @@ const SurveyForm: React.FC = () => {
           <HelpOutlineRoundedIcon />
         </Tooltip>
       </div>
-      {/* <DatePicker
-        format="DD/MM/YYYY hh:mm A"
-        onChange={(date: Dayjs | null, dateString: string) =>
-          console.log(date, dateString)
-        }
-        //showTime={{ use12Hours: true }}
-      /> */}
+      <p className={styles.dateTimeDisclaimer}>
+        Escoge la fecha y hora cuando ya no se podrá responder la quinipolo
+      </p>
+      <div className={styles.datePickerContainer}>
+        <DatePicker
+          format="DD/MM/YYYY hh:mm"
+          onChange={handleDateChange}
+          locale={locale}
+          placeholder="Fecha"
+          className={styles.datePicker}
+          showNow={false}
+          popupClassName={styles.datePickerPopup}
+          showTime={{ format: "hh:mm" }}
+        />
+      </div>
+
       {matchArray.map((_, index) => (
         <MatchForm
           key={index}

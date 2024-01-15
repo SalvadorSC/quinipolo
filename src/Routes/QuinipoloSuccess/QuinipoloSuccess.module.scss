@@ -1,13 +1,17 @@
 .quinipoloSuccessContainer {
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 64px - 48px);
-
-  margin-top: 64px;
+  height: calc(100vh - 132px);
+  margin-top: 100px;
   justify-content: space-evenly;
+  width: calc(100% - 28px);
 }
 
 .qrCode {
-  margin: 16px;
-  height: 200px;
+  margin: 32px;
+  height: 232px;
+}
+
+.returnButton {
+  color: rgb(60, 60, 60);
 }
