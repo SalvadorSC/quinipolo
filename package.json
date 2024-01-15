@@ -20,10 +20,7 @@
     "axios": "^1.6.2",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
-    "query-string": "^8.1.0",
     "react": "^18.2.0",
-    "react-datepicker": "^4.25.0",
-    "react-datetime-picker": "^5.6.0",
     "react-dom": "^18.2.0",
     "react-qr-code": "^2.0.12",
     "react-router-dom": "^6.20.1",
@@ -41,7 +38,11 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-unused-vars": 0,
+      "@typescript-eslint/no-unused-vars": 0
+    }
   },
   "browserslist": {
     "production": [
