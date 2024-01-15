@@ -6,7 +6,6 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import CssBaseline from "@mui/material/CssBaseline";
 import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -20,7 +19,7 @@ import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Link, Outlet } from "react-router-dom";
-
+import logoRed from "../../assets/LOGOS/QUINIPOLO-RED.svg";
 const drawerWidth = 240;
 
 interface AppBarProps extends MuiAppBarProps {
@@ -96,21 +95,29 @@ export default function MenuBar() {
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
-          <Typography variant="h6" noWrap sx={{ flexGrow: 1 }} component="div">
-            Quinipolo
-          </Typography>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="end"
-            onClick={handleDrawerOpen}
-            sx={{ ...(open && { display: "none" }) }}
-          >
-            <MenuIcon />
-          </IconButton>
+          <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+            <img
+              src={logoRed}
+              style={{ height: 40, flex: 1, marginLeft: 48, paddingTop: 4 }}
+              alt="Quinipolo Logo"
+            />
+          </div>
+          <div style={{ marginRight: 24 }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="end"
+              onClick={handleDrawerOpen}
+              sx={{
+                ...(open && { display: "none" }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+          </div>
         </Toolbar>
       </AppBar>
-      <Main open={open}>
+      <Main open={open} style={{ display: "flex", padding: 0 }}>
         <Outlet />
       </Main>
       <Drawer
