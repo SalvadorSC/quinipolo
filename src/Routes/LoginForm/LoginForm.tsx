@@ -12,9 +12,12 @@ import React, { useEffect } from "react";
 import styles from "./LoginForm.module.scss";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
+import { SignIn } from "@clerk/clerk-react";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const { setFeedback } = useFeedback();
   const [loading, setLoading] = React.useState(false);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     setLoading(true);
@@ -22,17 +25,24 @@ const LoginForm = () => {
     const data = new FormData(event.currentTarget);
     axios
       .post(`${process.env.REACT_APP_API_BASE_URL}/api/auth/login`, {
-        email: data.get("email"),
-        password: data.get("password"),
+        email: "aaaa@gmail.com", // data.get("email"),
+        password: "aaaa", // data.get("password"),
       })
       .then((response) => {
         localStorage.setItem("authenticated", "true");
-        localStorage.setItem("username", response.data.user.username);
-
+        localStorage.setItem("userId", response.data.user.userId);
+        localStorage.setItem("userId", response.data.user.userId);
+        console.log("Logging in", response.data.user.userId);
         navigate("/dashboard");
       })
       .catch((error) => {
         setLoading(false);
+        setFeedback({
+          message:
+            "Error iniciando sesión. Puede que el servidor este inactivo.",
+          severity: "error",
+          open: true,
+        });
         console.error("Error:", error);
       });
     // Assuming your backend returns a token upon successful login
@@ -45,19 +55,10 @@ const LoginForm = () => {
     // history.push("/dashboard");
   };
 
-  useEffect(() => {
-    if (
-      localStorage.getItem("authenticated") === "true" &&
-      localStorage.getItem("username") !== null
-    ) {
-      // TODO: check if token is valid
-      navigate("/dashboard");
-    }
-  }, [navigate]);
-
   return (
     <div className={styles.loginContainer}>
-      <Paper elevation={3} sx={{ width: "100%", p: 4 }}>
+      <SignIn />
+      {/* <Paper elevation={3} sx={{ width: "100%", p: 4 }}>
         <Box
           sx={{
             display: "flex",
@@ -105,10 +106,7 @@ const LoginForm = () => {
                   id="password"
                   autoComplete="current-password"
                 />
-                {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
+
                 <Button
                   type="submit"
                   fullWidth
@@ -129,7 +127,7 @@ const LoginForm = () => {
             </>
           )}
         </Box>
-      </Paper>
+      </Paper> */}
     </div>
   );
 };

@@ -1,0 +1,71 @@
+.quinipoloContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  /* From https://css.glass */
+  background: rgba(25, 118, 210, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.sectionTitle {
+  text-align: left;
+}
+
+.quinipoloInfo {
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.quinipoloInfo h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.countdown {
+  font-size: 14px;
+  color: #6e6e6e;
+}
+
+.quinipoloActions {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.actionButton {
+  display: flex !important;
+  flex-direction: row;
+  justify-content: space-between !important;
+  align-items: center;
+  width: 100%;
+  border-radius: 5px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 10px !important;
+}
+
+.actionButtonCorrect {
+  background: #00b894;
+}
+
+.noActionsMessage {
+  font-size: 14px;
+  color: #6e6e6e;
+  margin: 10px;
+}

@@ -11,17 +11,11 @@ import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/es";
 import styles from "./SurveyForm.module.scss";
 import { useNavigate } from "react-router-dom";
+import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 
-export interface ISurveyForm {
-  handleOpenFeedback: (
-    message: string,
-    severity: "success" | "info" | "warning" | "error",
-    color: string
-  ) => void;
-}
-
-const SurveyForm = ({ handleOpenFeedback }: ISurveyForm) => {
+const SurveyForm = () => {
   const navigate = useNavigate();
+  const { setFeedback } = useFeedback();
   const [quinipolo, setQuinipolo] = useState<SurveyData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -51,16 +45,21 @@ const SurveyForm = ({ handleOpenFeedback }: ISurveyForm) => {
           creationDate: new Date(),
         }
       );
-      handleOpenFeedback("Quinipolo creada correctamente!", "success", "green");
+      setFeedback({
+        message: "Quinipolo creada correctamente!",
+        severity: "success",
+        open: true,
+      });
       // console.log("Quinipolo created successfully:", response.data);]
       navigate("/quinipolo-success", { state: { quinipolo: response.data } });
     } catch (error) {
-      handleOpenFeedback(
-        "Error creando la Quinipolo! Revisa todos los campos y prueba otra vez.",
-        "error",
-        "orange"
-      );
-      // console.error("Error creating Quinipolo:", error);
+      setFeedback({
+        message:
+          "Error creando la Quinipolo! Revisa todos los campos y prueba otra vez.",
+        severity: "error",
+        open: true,
+      });
+      console.error("Error creating Quinipolo:", error);
     }
   };
 
@@ -90,7 +89,7 @@ const SurveyForm = ({ handleOpenFeedback }: ISurveyForm) => {
         }}
       >
         <h1>Formulario creación Quinipolo</h1>
-        <Tooltip title="Si no sabes como hacerlo, escribe al desarrollador. Cuando pueda escribira una guia.">
+        <Tooltip title="Si no sabes como hacerlo, escribe al desarrollador. Cuando pueda escribirá una guía.">
           <HelpOutlineRoundedIcon />
         </Tooltip>
       </div>
@@ -99,20 +98,20 @@ const SurveyForm = ({ handleOpenFeedback }: ISurveyForm) => {
       </p>
       <div className={styles.datePickerContainer}>
         <DatePicker
-          format="DD/MM/YYYY hh:mm"
-          onChange={handleDateChange}
+          format="DD/MM/YYYY HH:mm"
+          onChange={handleDateChange as any}
           locale={locale}
           placeholder="Fecha"
           className={styles.datePicker}
           showNow={false}
           popupClassName={styles.datePickerPopup}
-          showTime={{ format: "hh:mm" }}
+          showTime={{ format: "HH:mm" }}
         />
       </div>
 
       {matchArray.map((_, index) => (
         <MatchForm
-          key={index}
+          key={`${teamOptions.waterpolo[index]}-index`}
           teamOptions={teamOptions}
           selectedTeams={selectedTeams}
           index={index}
