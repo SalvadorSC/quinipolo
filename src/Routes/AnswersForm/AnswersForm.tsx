@@ -10,7 +10,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
@@ -18,16 +17,17 @@ import axios from "axios";
 import style from "./AnswersForm.module.scss";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader/Loader";
+import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 
 const AnswersForm = () => {
   const navigate = useNavigate();
+  const { setFeedback } = useFeedback();
   const [loading, setLoading] = useState<boolean>(false);
   const [quinipolo, setQuinipolo] = useState<{
     league: string;
     _id: string;
     quinipolo: SurveyData[];
   }>({ league: "", _id: "", quinipolo: [] });
-  const [name, setName] = useState<string>("");
   const [respostes, setRespostes] = useState<
     {
       matchNumber: number;
@@ -52,14 +52,25 @@ const AnswersForm = () => {
       })
   );
 
+  // get via params if correcting or not
+  const queryParams = new URLSearchParams(window.location.search);
+  const correctingModeOn = queryParams.get("correct");
+
   const fetchData = async () => {
     try {
+      const queryParams = new URLSearchParams(window.location.search);
+      const id = queryParams.get("id");
+
+      if (!id) {
+        console.error("ID is missing in the query string");
+        return;
+      }
+
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}/api/quinipolos/testLeague`
+        `${process.env.REACT_APP_API_BASE_URL}/api/quinipolo?id=${id}`
       );
       setLoading(false);
-      console.log(response.data);
-      setQuinipolo(response.data[0]);
+      setQuinipolo(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
       // Handle the error as needed
@@ -68,28 +79,70 @@ const AnswersForm = () => {
 
   useEffect(() => {
     setLoading(true);
-    if (localStorage.getItem("authenticated") !== "true") {
-      navigate("/sign-in");
-    } else {
-      fetchData();
-    }
+    fetchData();
   }, [navigate]);
 
   const submitQuinipolo = async () => {
-    const data = { name, respostes, quinipolo };
-    console.log(data);
-    /* try {
+    const answerToSubmit = {
+      userId: localStorage.getItem("userId"), // Assuming you store userId in localStorage
+      quinipoloId: quinipolo._id,
+      answers: respostes.map((resposta, index) => ({
+        matchNumber: index + 1,
+        chosenWinner: resposta.chosenWinner,
+        goalsHomeTeam: resposta.goalsHomeTeam,
+        goalsAwayTeam: resposta.goalsAwayTeam,
+      })),
+    };
+    if (correctingModeOn) {
+      console.log("correcting mode on");
       const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/api/quinipolos/answers`,
-        {
-          league: "testLeague",
-          
-        }
+        `${process.env.REACT_APP_API_BASE_URL}/api/quinipolo/${quinipolo._id}/corrections`,
+        answerToSubmit
       );
-      console.log("Quinipolo submitted successfully:", response.data);
-    } catch (error) {
-      console.error("Error submitting Quinipolo:", error);
-    } */
+      navigate("/correction-success", {
+        state: { results: response.data.results },
+      });
+      setFeedback({
+        message: response.data.message,
+        severity: "success",
+        open: true,
+      });
+    } else {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_BASE_URL}/api/quinipolo/answers`,
+          answerToSubmit
+        );
+        setFeedback({
+          message: response.data.message,
+          severity: "success",
+          open: true,
+        });
+        navigate("/dashboard");
+      } catch (error: unknown) {
+        console.error("Error submitting Quinipolo:", error);
+
+        // Check if error is of type AxiosError
+        if (axios.isAxiosError(error)) {
+          // Now TypeScript knows this is an AxiosError, you can access error.response etc.
+          if (error.response && error.response.status === 409) {
+            console.log(error.response);
+            setFeedback({
+              message: error.response.data,
+              severity: "error",
+              open: true,
+            });
+          }
+        } else {
+          // Handle non-Axios errors
+          setFeedback({
+            message: "An unexpected error occurred",
+            severity: "error",
+            open: true,
+          });
+        }
+      }
+    }
   };
 
   const handleChange = (
@@ -134,23 +187,18 @@ const AnswersForm = () => {
     return (
       <div>
         <FormControl>
-          <TableContainer sx={{ mt: 16 }} component={Paper}>
+          <TableContainer sx={{ mt: 16, mb: 8 }} component={Paper}>
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
                   <TableCell align="center" sx={{ marginBottom: 16 }}>
-                    Respostes Quinipolo {quinipolo.league}
+                    {correctingModeOn
+                      ? "Corrección"
+                      : `Respostes Quinipolo ${quinipolo.league}`}
                   </TableCell>
                 </TableRow>
               </TableHead>
-              {/* Nom de la persona */}
-              <TextField
-                onChange={(e) => setName(e.target.value)}
-                id="outlined-basic"
-                label="Nombre"
-                variant="outlined"
-                className={style.nameInput}
-              />
+
               {/* Partits */}
               <TableBody>
                 {quinipolo.quinipolo.map((match, index) => (

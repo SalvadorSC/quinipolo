@@ -9,7 +9,7 @@ body {
   background: fixed;
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url("./assets/dark_bg.svg");
+  background-image: url("./assets/dark_bg_original.svg");
   box-sizing: border-box;
 }
 

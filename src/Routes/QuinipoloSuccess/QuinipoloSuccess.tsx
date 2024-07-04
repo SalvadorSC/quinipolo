@@ -4,11 +4,12 @@ import style from "./QuinipoloSuccess.module.scss";
 import { useLocation, useNavigate } from "react-router-dom";
 import QRCode from "react-qr-code";
 import dayjs from "dayjs";
-import { ISurveyForm } from "../SurveyForm/SurveyForm";
+import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 
-const QuinipoloSuccess = ({ handleOpenFeedback }: ISurveyForm) => {
+const QuinipoloSuccess = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { setFeedback } = useFeedback();
   const deepLink = `https://quinipolo.com/quinipolo?${location.state.quinipolo._id}`;
   // Function to construct the deep link
 
@@ -18,18 +19,18 @@ const QuinipoloSuccess = ({ handleOpenFeedback }: ISurveyForm) => {
     navigator.clipboard
       .writeText(messageToShare)
       .then(() => {
-        handleOpenFeedback(
-          "Mensaje copiado al portapapeles!",
-          "success",
-          "green"
-        );
+        setFeedback({
+          message: "Mensaje copiado al portapapeles!",
+          severity: "success",
+          open: true,
+        });
       })
       .catch((err) => {
-        handleOpenFeedback(
-          "Error copiando el mensaje al portapapeles!",
-          "error",
-          "red"
-        );
+        setFeedback({
+          message: "Error copiando el mensaje al portapapeles!",
+          severity: "error",
+          open: true,
+        });
       });
   };
 
@@ -57,10 +58,7 @@ const QuinipoloSuccess = ({ handleOpenFeedback }: ISurveyForm) => {
           siguientes métodos:
         </p>
         {/* Mensaje de compartir */}
-        <QRCode
-          className={style.qrCode}
-          value={`https://wa.me/?text=${encodeURIComponent(messageToShare)}`}
-        />
+        <QRCode className={style.qrCode} value={deepLink} />
         <Button variant="contained" onClick={copyMessageToClipboard}>
           Copiar mensaje
         </Button>

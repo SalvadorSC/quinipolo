@@ -7,10 +7,29 @@ interface IFeedback {
   onClose: () => void;
   severity: "success" | "info" | "warning" | "error";
   message: string;
-  color: string;
 }
 
-const Feedback = ({ isOpen, onClose, severity, message, color }: IFeedback) => {
+const Feedback = ({ isOpen, onClose, message, severity }: IFeedback) => {
+  let color;
+
+  switch (severity) {
+    case "success":
+      color = "#7cb305";
+      break;
+    case "info":
+      color = "#1890ff";
+      break;
+    case "warning":
+      color = "#faad14";
+      break;
+    case "error":
+      color = "#a8071a";
+      break;
+    default:
+      color = "#1890ff";
+      break;
+  }
+
   return (
     <Snackbar
       anchorOrigin={{
