@@ -12,7 +12,7 @@ import { Tooltip } from "antd";
 
 const QuinipolosToAnswer = ({ leagueId }: { leagueId?: string }) => {
   const {
-    userData: { role, moderatedLeagues, username, emailAddress, isRegistered },
+    userData: { moderatedLeagues, username, emailAddress, userId },
   } = useUser();
   const { setFeedback } = useFeedback();
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const QuinipolosToAnswer = ({ leagueId }: { leagueId?: string }) => {
   const memoizedQuinipolosToAnswer = useMemo(() => {
     return () => {
       setLoading(true);
-      if (isRegistered) {
+      if (userId && emailAddress && !loading) {
         axios
           .get(
             `${process.env.REACT_APP_API_BASE_URL}/api/user/quinipolos?email=${emailAddress}`

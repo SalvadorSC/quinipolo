@@ -9,6 +9,11 @@ import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosTo
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { useUser as useUserData } from "../../Context/UserContext/UserContext";
 import { useUser } from "@clerk/clerk-react";
+import SportsVolleyballIcon from "@mui/icons-material/SportsVolleyball";
+import WavesIcon from "@mui/icons-material/Waves";
+import SportsBarIcon from "@mui/icons-material/SportsBar";
+import PoolIcon from "@mui/icons-material/Pool";
+import PublicIcon from "@mui/icons-material/Public";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -21,16 +26,16 @@ const Dashboard = () => {
     const fetchData = async () => {
       if (userData.isRegistered) {
         try {
-          const response = await axios.get(
+          const { data } = await axios.get(
             `${process.env.REACT_APP_API_BASE_URL}/api/user/data/${
               user!.username
             }`
           );
           updateUserData({
-            role: response.data.role,
-            leagues: response.data.leagues,
-            quinipolosToAnswer: response.data.quinipolosToAnswer,
-            moderatedLeagues: response.data.moderatedLeagues,
+            role: data.role,
+            leagues: data.leagues,
+            quinipolosToAnswer: data.quinipolosToAnswer,
+            moderatedLeagues: data.moderatedLeagues,
             username: user?.username as string,
             emailAddress: user!.primaryEmailAddress?.emailAddress as string,
           });
@@ -46,7 +51,36 @@ const Dashboard = () => {
     };
 
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData.isRegistered]);
+
+  const returnRandomIcon = () => {
+    const iconStyle = {
+      color: "#3f51b5",
+    };
+    const icons = [
+      <SportsVolleyballIcon style={iconStyle} />,
+      <WavesIcon style={iconStyle} />,
+      <SportsBarIcon style={iconStyle} />,
+      <PoolIcon style={iconStyle} />,
+    ];
+    return (
+      <div
+        style={{
+          marginLeft: "10px",
+          width: "40px",
+          background: "#ddd",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "40px",
+          borderRadius: "50%",
+        }}
+      >
+        {icons[Math.floor(Math.random() * icons.length)]}
+      </div>
+    );
+  };
 
   return (
     <div className={styles.dashboardContainer}>
@@ -69,30 +103,54 @@ const Dashboard = () => {
                     <Button
                       sx={{
                         display: "flex",
-                        flexDirection: "column",
                         width: "100%",
                         marginTop: "20px",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                        padding: "10px",
+                        minHeight: "60px",
                       }}
-                      key={league}
+                      key={league.leagueId}
                       onClick={() => {
-                        alert(`/league-dashboard?id=${league}`);
                         navigate(`/league-dashboard?id=${league}`);
                       }}
                       variant={"contained"}
                     >
-                      <p>{league}</p>
+                      {league.leagueImage ? (
+                        <img
+                          style={{
+                            maxHeight: "40px",
+                            maxWidth: "40px",
+                            margin: "0 10px",
+                          }}
+                          src={league.leagueImage}
+                          alt={`Logo Liga ${league.leagueName}`}
+                        />
+                      ) : (
+                        returnRandomIcon()
+                      )}
+
+                      <p
+                        style={{
+                          marginLeft: "20px",
+                        }}
+                      >
+                        <b>{league.leagueName}</b>
+                      </p>
                     </Button>
                   );
                 })}
               </>
             )}
+            <h2 className={styles.leaguesTitle}>Acciones</h2>
+            <hr />
+
             <Button
               variant="contained"
               color="primary"
               size="large"
-              disabled
               onClick={() => {
-                navigate("/quinipolo");
+                navigate("/join-league");
               }}
               style={{ margin: "20px  0", width: "100%" }}
             >

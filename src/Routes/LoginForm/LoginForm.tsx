@@ -31,7 +31,7 @@ const LoginForm = () => {
       .then((response) => {
         localStorage.setItem("authenticated", "true");
         localStorage.setItem("userId", response.data.user.userId);
-        localStorage.setItem("userId", response.data.user.userId);
+        localStorage.setItem("username", response.data.user.username);
         console.log("Logging in", response.data.user.userId);
         navigate("/dashboard");
       })

@@ -34,7 +34,7 @@ export const checkUser = async ({
         username: username,
         email: email,
         fullName: fullName,
-        leagues: ["global"], // participateGlobalQuinipolo ? ["global"] : [],
+        leagues: ["global"],
       })
       .catch((error) => console.error("Error:", error));
 
