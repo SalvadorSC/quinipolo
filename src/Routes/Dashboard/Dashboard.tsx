@@ -51,7 +51,7 @@ const Dashboard = () => {
     };
 
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData.isRegistered]);
 
   const returnRandomIcon = () => {
@@ -112,7 +112,7 @@ const Dashboard = () => {
                       }}
                       key={league.leagueId}
                       onClick={() => {
-                        navigate(`/league-dashboard?id=${league}`);
+                        navigate(`/league-dashboard?id=${league.leagueId}`);
                       }}
                       variant={"contained"}
                     >

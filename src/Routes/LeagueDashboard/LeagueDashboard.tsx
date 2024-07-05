@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Paper, Tooltip } from "@mui/material";
+import { CircularProgress, Paper, Tooltip } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import styles from "./LeagueDashboard.module.scss";
 import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
@@ -17,6 +17,7 @@ type LeaguesTypes = {
 
 const LeagueDashboard = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(false);
   const [leagueData, setLeagueData] = useState<LeaguesTypes>({
     quinipolosToAnswer: [],
     leaguesToCorrect: [],
@@ -30,26 +31,28 @@ const LeagueDashboard = () => {
   const { userData } = useUser();
 
   useEffect(() => {
+    const fetchLeagueData = async () => {
+      setLoading(true);
+      // Fetch data logic
+      // Update leagueData state based on the fetched data
+      axios.get(`/api/leagues/${leagueId}`).then(({ data }) => {
+        setLeagueData({
+          quinipolosToAnswer: data.quinipolosToAnswer,
+          leaguesToCorrect: data.leaguesToCorrect,
+          moderatorArray: data.moderatorArray,
+          leagueName: data.leagueName,
+        });
+      });
+      setLoading(false);
+    };
+
     // Redirect to sign-in if not authenticated
     if (clerkUserData.isSignedIn === false) {
       navigate("/sign-in");
     } else {
       fetchLeagueData();
     }
-  }, [navigate]);
-
-  const fetchLeagueData = async () => {
-    // Fetch data logic
-    // Update leagueData state based on the fetched data
-    axios.get(`/api/leagues/${leagueId}`).then(({ data }) => {
-      setLeagueData({
-        quinipolosToAnswer: data.quinipolosToAnswer,
-        leaguesToCorrect: data.leaguesToCorrect,
-        moderatorArray: data.moderatorArray,
-        leagueName: data.leagueName,
-      });
-    });
-  };
+  }, [clerkUserData.isSignedIn, navigate, leagueId]);
 
   const handleCreateQuinipolo = () => {
     // Logic to handle creation of new Quinipolo
@@ -66,30 +69,45 @@ const LeagueDashboard = () => {
   return (
     <div className={styles.leagueDashboardContainer}>
       <Paper elevation={3} sx={{ width: "100%", p: 4 }}>
-        <h1 style={{ marginBottom: 20 }}>Liga {leagueData.leagueName}</h1>
-        <QuinipolosToAnswer leagueId={leagueId ?? undefined} />
-        <Tooltip
-          title={
-            leagueData.moderatorArray.find((user) => user === userData.username)
-              ? ""
-              : "Aún no puedes crear una quinipolo"
-          }
-        >
-          <span>
-            {`userData.username ${userData.username}`}
-            {`leagueData.moderatorArray[0] ${leagueData.moderatorArray[0]}`}
-            <LoadingButton
-              variant="contained"
-              style={{ margin: "20px 0" }}
-              onClick={handleCreateQuinipolo}
-              loading={!leagueData}
-              disabled={!leagueData.moderatorArray.includes(userData.username)}
+        {!loading ? (
+          <>
+            <h1 style={{ marginBottom: 20 }}>Liga {leagueData.leagueName}</h1>
+            <QuinipolosToAnswer
+              wrapperLoading={loading}
+              leagueId={leagueId ?? undefined}
+            />
+
+            <Tooltip
+              title={
+                leagueData.moderatorArray.find(
+                  (user) => user === userData.username
+                )
+                  ? ""
+                  : "Aún no puedes crear una quinipolo"
+              }
             >
-              Crear una quinipolo{" "}
-              {leagueData.moderatorArray.includes(userData.username).toString()}
-            </LoadingButton>
-          </span>
-        </Tooltip>
+              <span>
+                {/* {`userData.username ${userData.username}`}
+            {`leagueData.moderatorArray[0] ${leagueData.moderatorArray[0]}`} */}
+                <LoadingButton
+                  variant="contained"
+                  style={{ margin: "20px 0" }}
+                  onClick={handleCreateQuinipolo}
+                  loading={!leagueData || loading}
+                  disabled={
+                    !leagueData.moderatorArray.includes(userData.username)
+                  }
+                >
+                  Crear una quinipolo
+                  {/* {" "}
+              {leagueData.moderatorArray.includes(userData.username).toString()} */}
+                </LoadingButton>
+              </span>
+            </Tooltip>
+          </>
+        ) : (
+          <CircularProgress />
+        )}
         {/* Additional UI elements */}
       </Paper>
     </div>
