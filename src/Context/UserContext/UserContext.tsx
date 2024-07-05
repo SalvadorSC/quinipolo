@@ -1,9 +1,22 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
+// Define a type for Leagues
+
+/* 
+{"_id":{"$oid":"6687e4a78d344eb01bbcd067"},"leagueId":"global","moderatorArray":["salvadorsc"],"leagueName":"Global","participants":["salvadorsc"], leagueImg: "IMG"*/
+
+type Leagues = {
+  leagueId: string;
+  moderatorArray: string[];
+  leagueName: string;
+  participants: string[];
+  leagueImage: string;
+};
+
 // Define a type for your context state
 type UserDataType = {
   role: string;
-  leagues: string[];
+  leagues: Leagues[];
   quinipolosToAnswer: any[];
   userId: string;
   moderatedLeagues: string[];

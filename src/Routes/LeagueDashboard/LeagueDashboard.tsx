@@ -6,13 +6,22 @@ import styles from "./LeagueDashboard.module.scss";
 import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
 import { useUser as useClerkUserData } from "@clerk/clerk-react";
 import { useUser } from "../../Context/UserContext/UserContext";
+import axios from "axios";
+
+type LeaguesTypes = {
+  quinipolosToAnswer: any[];
+  leaguesToCorrect: any[];
+  moderatorArray: string[];
+  leagueName: string;
+};
 
 const LeagueDashboard = () => {
   const navigate = useNavigate();
-  const [leagueData, setLeagueData] = useState({
+  const [leagueData, setLeagueData] = useState<LeaguesTypes>({
     quinipolosToAnswer: [],
     leaguesToCorrect: [],
-    usersWhoCanCreateQuinipolo: [],
+    moderatorArray: [],
+    leagueName: "",
   });
   const queryParams = new URLSearchParams(window.location.search);
   const leagueId = queryParams.get("id");
@@ -32,6 +41,14 @@ const LeagueDashboard = () => {
   const fetchLeagueData = async () => {
     // Fetch data logic
     // Update leagueData state based on the fetched data
+    axios.get(`/api/leagues/${leagueId}`).then(({ data }) => {
+      setLeagueData({
+        quinipolosToAnswer: data.quinipolosToAnswer,
+        leaguesToCorrect: data.leaguesToCorrect,
+        moderatorArray: data.moderatorArray,
+        leagueName: data.leagueName,
+      });
+    });
   };
 
   const handleCreateQuinipolo = () => {
@@ -41,7 +58,7 @@ const LeagueDashboard = () => {
 
   const handleJoinLeague = () => {
     // Logic to handle joining a league
-    navigate("/unirme-a-una-liga");
+    navigate("/join-league");
   };
 
   // Additional helper functions as needed
@@ -49,28 +66,27 @@ const LeagueDashboard = () => {
   return (
     <div className={styles.leagueDashboardContainer}>
       <Paper elevation={3} sx={{ width: "100%", p: 4 }}>
+        <h1 style={{ marginBottom: 20 }}>Liga {leagueData.leagueName}</h1>
         <QuinipolosToAnswer leagueId={leagueId ?? undefined} />
         <Tooltip
           title={
-            leagueData.usersWhoCanCreateQuinipolo.find(
-              (user) => user === userData.username
-            )
+            leagueData.moderatorArray.find((user) => user === userData.username)
               ? ""
               : "Aún no puedes crear una quinipolo"
           }
         >
           <span>
+            {`userData.username ${userData.username}`}
+            {`leagueData.moderatorArray[0] ${leagueData.moderatorArray[0]}`}
             <LoadingButton
               variant="contained"
               style={{ margin: "20px 0" }}
               onClick={handleCreateQuinipolo}
-              disabled={
-                !leagueData.usersWhoCanCreateQuinipolo.find(
-                  (user) => user === userData.username
-                )
-              }
+              loading={!leagueData}
+              disabled={!leagueData.moderatorArray.includes(userData.username)}
             >
-              Crear una quinipolo
+              Crear una quinipolo{" "}
+              {leagueData.moderatorArray.includes(userData.username).toString()}
             </LoadingButton>
           </span>
         </Tooltip>

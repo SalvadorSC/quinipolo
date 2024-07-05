@@ -57,6 +57,7 @@ export const MenuBar = () => {
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -70,12 +71,12 @@ export const MenuBar = () => {
             justifyContent: "center",
             flexDirection: "row",
           }}
-          /* onClick={() => navigate("/")} */
         >
           <img
             src={logoBlack}
             style={{ height: 40, margin: "0px 48px", paddingTop: 4 }}
             alt="Quinipolo Logo"
+            onClick={() => navigate("/")}
           />
         </div>
         <div

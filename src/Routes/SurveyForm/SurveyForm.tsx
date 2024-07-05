@@ -111,7 +111,7 @@ const SurveyForm = () => {
 
       {matchArray.map((_, index) => (
         <MatchForm
-          key={`${teamOptions.waterpolo[index]}-index`}
+          key={index}
           teamOptions={teamOptions}
           selectedTeams={selectedTeams}
           index={index}

@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import SurveyForm from "./Routes/SurveyForm/SurveyForm";
 import { Container } from "@mui/material";
@@ -13,9 +13,20 @@ import { FeedbackProvider } from "./Context/FeedbackContext/FeedbackContext";
 import CorrectionSuccess from "./Routes/CorrectionSuccess/CorrectionSuccess";
 import { useUser } from "@clerk/clerk-react";
 import MenuBar from "./Components/MenuBar/MenuBar";
+import LeagueList from "./Routes/LeagueList/LeagueList";
 
 function App() {
   const user = useUser();
+
+  useEffect(() => {
+    localStorage.setItem("authenticated", "true");
+    if (user.user) {
+      localStorage.setItem("userId", user.user?.id);
+      localStorage.setItem("username", user.user?.username as string);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <React.StrictMode>
       <BrowserRouter>
@@ -48,6 +59,8 @@ function App() {
                     path="league-dashboard"
                     element={<LeagueDashboard />}
                   />
+                  <Route path="join-league" element={<LeagueList />} />
+                  <Route path="*" element={<Navigate to="/dashboard" />} />
                 </Route>
 
                 {/* <Route path="*" element={<NoMatch />} /> */}
