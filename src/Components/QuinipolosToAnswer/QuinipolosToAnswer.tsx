@@ -10,7 +10,13 @@ import { useUser } from "../../Context/UserContext/UserContext";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { Tooltip } from "antd";
 
-const QuinipolosToAnswer = ({ leagueId }: { leagueId?: string }) => {
+const QuinipolosToAnswer = ({
+  leagueId,
+  wrapperLoading = false,
+}: {
+  leagueId?: string;
+  wrapperLoading?: boolean;
+}) => {
   const {
     userData: { moderatedLeagues, username, emailAddress, userId },
   } = useUser();
@@ -40,6 +46,7 @@ const QuinipolosToAnswer = ({ leagueId }: { leagueId?: string }) => {
       }
       setLoading(false);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setFeedback, username]);
 
   useEffect(() => {
@@ -59,7 +66,7 @@ const QuinipolosToAnswer = ({ leagueId }: { leagueId?: string }) => {
     <div>
       <h2 className={styles.sectionTitle}>Quinipolos</h2>
       <hr />
-      {loading ? (
+      {loading || wrapperLoading ? (
         <CircularProgress />
       ) : quinipolosToAnswer.filter((quinipolo) => {
           return quinipolo.answered && !quinipolo.hasBeenCorrected;

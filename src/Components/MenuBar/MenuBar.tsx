@@ -29,15 +29,6 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-}));
-
 export const MenuBar = () => {
   const navigate = useNavigate();
   const { user } = useUser();
@@ -74,7 +65,12 @@ export const MenuBar = () => {
         >
           <img
             src={logoBlack}
-            style={{ height: 40, margin: "0px 48px", paddingTop: 4 }}
+            style={{
+              height: 40,
+              margin: "0px 48px",
+              paddingTop: 4,
+              cursor: "pointer",
+            }}
             alt="Quinipolo Logo"
             onClick={() => navigate("/")}
           />
