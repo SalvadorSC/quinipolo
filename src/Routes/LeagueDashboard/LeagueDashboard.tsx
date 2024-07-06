@@ -79,7 +79,7 @@ const LeagueDashboard = () => {
 
             <Tooltip
               title={
-                leagueData.moderatorArray.find(
+                leagueData.moderatorArray?.find(
                   (user) => user === userData.username
                 )
                   ? ""
