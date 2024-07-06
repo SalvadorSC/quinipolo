@@ -62,7 +62,7 @@ const LeagueList = () => {
 
   const handleJoinLeague = (index: number) => {
     // Logic to handle joining a league
-    if (leagueList[index].participants.includes(userData.username)) {
+    if (leagueList?.[index]?.participants.includes(userData.username)) {
       navigate("/league-dashboard");
     } else {
       axios
@@ -97,7 +97,7 @@ const LeagueList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {leagueList.map((league) => (
+              {leagueList?.map((league) => (
                 <TableRow
                   key={league.leagueName}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -113,9 +113,9 @@ const LeagueList = () => {
                       <LoadingButton
                         variant="contained"
                         onClick={() =>
-                          handleJoinLeague(leagueList.indexOf(league))
+                          handleJoinLeague(leagueList?.indexOf(league))
                         }
-                        loading={!leagueList[0]}
+                        loading={!leagueList}
                         disabled={false}
                       >
                         {league.participants.includes(userData.username)
