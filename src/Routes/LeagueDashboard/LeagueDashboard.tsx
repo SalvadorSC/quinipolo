@@ -95,7 +95,7 @@ const LeagueDashboard = () => {
                   onClick={handleCreateQuinipolo}
                   loading={!leagueData || loading}
                   disabled={
-                    !leagueData.moderatorArray.includes(userData.username)
+                    !leagueData.moderatorArray?.includes(userData.username)
                   }
                 >
                   Crear una quinipolo
