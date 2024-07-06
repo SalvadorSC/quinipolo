@@ -97,35 +97,37 @@ const LeagueList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {leagueList?.map((league) => (
-                <TableRow
-                  key={league.leagueName}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {league.leagueName}
-                  </TableCell>
-                  <TableCell align="right">
-                    {league.participants.length}
-                  </TableCell>
-                  <TableCell align="right">
-                    <Tooltip title="Unirse a la liga">
-                      <LoadingButton
-                        variant="contained"
-                        onClick={() =>
-                          handleJoinLeague(leagueList?.indexOf(league))
-                        }
-                        loading={!leagueList}
-                        disabled={false}
-                      >
-                        {league.participants.includes(userData.username)
-                          ? "Ver "
-                          : "Unirse"}
-                      </LoadingButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {leagueList
+                ? leagueList.map((league) => (
+                    <TableRow
+                      key={league.leagueName}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {league.leagueName}
+                      </TableCell>
+                      <TableCell align="right">
+                        {league.participants.length}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Tooltip title="Unirse a la liga">
+                          <LoadingButton
+                            variant="contained"
+                            onClick={() =>
+                              handleJoinLeague(leagueList?.indexOf(league))
+                            }
+                            loading={!leagueList}
+                            disabled={false}
+                          >
+                            {league.participants.includes(userData.username)
+                              ? "Ver "
+                              : "Unirse"}
+                          </LoadingButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : null}
             </TableBody>
           </Table>
         </TableContainer>
