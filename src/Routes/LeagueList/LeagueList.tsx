@@ -43,6 +43,7 @@ const LeagueList = () => {
 
   const clerkUserData = useClerkUserData();
   const { userData } = useUser();
+
   const fetchLeagueListData = async () => {
     // Fetch data logic
     axios.get(`/api/leagues`).then(({ data }) => {
@@ -50,7 +51,7 @@ const LeagueList = () => {
     });
   };
 
-  const handleJoinLeague = (index: number) => {
+  /*  const handleJoinLeague = (index: number) => {
     // Logic to handle joining a league
     if (leagueListData?.[index]?.participants.includes(userData.username)) {
       navigate("/league-dashboard");
@@ -65,14 +66,10 @@ const LeagueList = () => {
         });
     }
   };
-
+ */
   useEffect(() => {
-    if (clerkUserData.isSignedIn === false) {
-      navigate("/sign-in");
-    } else {
-      fetchLeagueListData();
-    }
-  }, [clerkUserData.isSignedIn, navigate]);
+    fetchLeagueListData();
+  }, []);
 
   console.log(leagueListData);
 
@@ -111,9 +108,9 @@ const LeagueList = () => {
                         <Tooltip title="Unirse a la liga">
                           <LoadingButton
                             variant="contained"
-                            onClick={() =>
+                            /* onClick={() =>
                               handleJoinLeague(leagueListData?.indexOf(league))
-                            }
+                            } */
                             loading={!leagueListData}
                             disabled={false}
                           >
