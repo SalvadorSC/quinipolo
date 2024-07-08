@@ -12,6 +12,16 @@ import "dayjs/locale/es";
 import styles from "./SurveyForm.module.scss";
 import { useNavigate } from "react-router-dom";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
+import { apiPost } from "../../utils/apiUtils";
+
+type QuinipoloCreateResponseType = {
+  _id: string;
+  league: string;
+  quinipolo: SurveyData[];
+  endDate: Date;
+  hasBeenCorrected: boolean;
+  creationDate: Date;
+};
 
 const SurveyForm = () => {
   const navigate = useNavigate();
@@ -35,8 +45,8 @@ const SurveyForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/api/quinipolos`,
+      const response = await apiPost<QuinipoloCreateResponseType>(
+        `/api/quinipolos`,
         {
           league: "testLeague",
           quinipolo,
@@ -50,8 +60,7 @@ const SurveyForm = () => {
         severity: "success",
         open: true,
       });
-      // console.log("Quinipolo created successfully:", response.data);]
-      navigate("/quinipolo-success", { state: { quinipolo: response.data } });
+      navigate("/quinipolo-success", { state: { quinipolo: response } });
     } catch (error) {
       setFeedback({
         message:

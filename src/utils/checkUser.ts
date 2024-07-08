@@ -1,8 +1,7 @@
-import { useUser } from "@clerk/clerk-react";
-import axios, { AxiosResponse } from "axios";
+import { apiGet, apiPost } from "./apiUtils";
 
 interface CheckUserResponse {
-  messageCode: string;
+  messageCode: "USER_FOUND" | "USER_NOT_FOUND";
   // Include other properties you expect in the response
 }
 
@@ -20,23 +19,25 @@ export const checkUser = async ({
   participateGlobalQuinipolo,
 }: CheckUserProps) => {
   // Check if the user is already in the database
-  const loggedInUser: AxiosResponse<CheckUserResponse> = await axios.post(
-    `${process.env.REACT_APP_API_BASE_URL}/api/auth/checkUser?username=${username}`
+  const loggedInUser = await apiGet<CheckUserResponse>(
+    `/api/auth/checkUser?username=${username}`
   );
 
   // If user is in database, return user
-  if (loggedInUser.data.messageCode === "USER_FOUND") {
+  if (loggedInUser.messageCode === "USER_FOUND") {
     return true;
   } else {
     // If not in database, create new user
-    await axios
-      .post(`${process.env.REACT_APP_API_BASE_URL}/api/auth/signup`, {
-        username: username,
-        email: email,
-        fullName: fullName,
+    try {
+      await apiPost(`/api/auth/signup`, {
+        username,
+        email,
+        fullName,
         leagues: ["global"],
-      })
-      .catch((error) => console.error("Error:", error));
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
 
     return false;
   }

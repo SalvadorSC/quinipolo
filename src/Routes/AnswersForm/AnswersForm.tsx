@@ -18,39 +18,60 @@ import style from "./AnswersForm.module.scss";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader/Loader";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
+import { apiGet, apiPost } from "../../utils/apiUtils";
+
+type RespostesType = {
+  matchNumber: number;
+  chosenWinner: string;
+  isGame15: boolean;
+  goalsHomeTeam: string;
+  goalsAwayTeam: string;
+};
+
+type QuinipoloType = {
+  league: string;
+  _id: string;
+  quinipolo: SurveyData[];
+};
+
+type CorrectionResponseType = {
+  message: string;
+  results: {
+    correctAnswers: string[];
+    userAnswers: string[];
+    points: number;
+  };
+};
+
+type AnswerResponseType = {
+  message: string;
+};
 
 const AnswersForm = () => {
   const navigate = useNavigate();
   const { setFeedback } = useFeedback();
   const [loading, setLoading] = useState<boolean>(false);
-  const [quinipolo, setQuinipolo] = useState<{
-    league: string;
-    _id: string;
-    quinipolo: SurveyData[];
-  }>({ league: "", _id: "", quinipolo: [] });
-  const [respostes, setRespostes] = useState<
-    {
-      matchNumber: number;
-      chosenWinner: string;
-      isGame15: boolean;
-      goalsHomeTeam: string;
-      goalsAwayTeam: string;
-    }[]
-  >(
-    new Array(14)
-      .fill({
-        matchNumber: undefined,
-        chosenWinner: "",
-        isGame15: false,
-      })
-      .concat({
-        matchNumber: 15,
-        chosenWinner: "",
-        isGame15: true,
-        goalsHomeTeam: "",
-        goalsAwayTeam: "",
-      })
-  );
+  const [quinipolo, setQuinipolo] = useState<QuinipoloType>({
+    league: "",
+    _id: "",
+    quinipolo: [],
+  });
+
+  const initialRespostes: RespostesType[] = new Array(14)
+    .fill({
+      matchNumber: undefined,
+      chosenWinner: "",
+      isGame15: false,
+    })
+    .concat({
+      matchNumber: 15,
+      chosenWinner: "",
+      isGame15: true,
+      goalsHomeTeam: "",
+      goalsAwayTeam: "",
+    });
+
+  const [respostes, setRespostes] = useState<RespostesType[]>(initialRespostes);
 
   // get via params if correcting or not
   const queryParams = new URLSearchParams(window.location.search);
@@ -66,11 +87,9 @@ const AnswersForm = () => {
         return;
       }
 
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}/api/quinipolo?id=${id}`
-      );
+      const response = await apiGet<QuinipoloType>(`/api/quinipolo?id=${id}`);
       setLoading(false);
-      setQuinipolo(response.data);
+      setQuinipolo(response);
     } catch (error) {
       console.error("Error fetching data:", error);
       // Handle the error as needed
@@ -95,26 +114,26 @@ const AnswersForm = () => {
     };
     if (correctingModeOn) {
       console.log("correcting mode on");
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/api/quinipolo/${quinipolo._id}/corrections`,
+      const response = await apiPost<CorrectionResponseType>(
+        `/api/quinipolo/${quinipolo._id}/corrections`,
         answerToSubmit
       );
       navigate("/correction-success", {
-        state: { results: response.data.results },
+        state: { results: response.results },
       });
       setFeedback({
-        message: response.data.message,
+        message: response.message,
         severity: "success",
         open: true,
       });
     } else {
       try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_BASE_URL}/api/quinipolo/answers`,
+        const response = await apiPost<AnswerResponseType>(
+          `/api/quinipolo/answers`,
           answerToSubmit
         );
         setFeedback({
-          message: response.data.message,
+          message: response.message,
           severity: "success",
           open: true,
         });

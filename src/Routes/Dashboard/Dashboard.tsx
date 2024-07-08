@@ -7,13 +7,16 @@ import axios from "axios";
 import { LoadingButton } from "@mui/lab";
 import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
-import { useUser as useUserData } from "../../Context/UserContext/UserContext";
+import {
+  UserDataType,
+  useUser as useUserData,
+} from "../../Context/UserContext/UserContext";
 import { useUser } from "@clerk/clerk-react";
 import SportsVolleyballIcon from "@mui/icons-material/SportsVolleyball";
 import WavesIcon from "@mui/icons-material/Waves";
 import SportsBarIcon from "@mui/icons-material/SportsBar";
 import PoolIcon from "@mui/icons-material/Pool";
-import PublicIcon from "@mui/icons-material/Public";
+import { apiGet } from "../../utils/apiUtils";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -26,10 +29,8 @@ const Dashboard = () => {
     const fetchData = async () => {
       if (userData.isRegistered) {
         try {
-          const { data } = await axios.get(
-            `${process.env.REACT_APP_API_BASE_URL}/api/user/data/${
-              user!.username
-            }`
+          const data = await apiGet<UserDataType>(
+            `/api/user/data/${user!.username}`
           );
           updateUserData({
             role: data.role,
