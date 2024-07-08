@@ -14,7 +14,7 @@ type Leagues = {
 };
 
 // Define a type for your context state
-type UserDataType = {
+export type UserDataType = {
   role: string;
   leagues: Leagues[];
   quinipolosToAnswer: any[];

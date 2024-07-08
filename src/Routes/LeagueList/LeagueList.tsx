@@ -17,6 +17,7 @@ import { useUser } from "../../Context/UserContext/UserContext";
 import axios from "axios";
 import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { apiGet } from "../../utils/apiUtils";
 type LeaguesTypes = {
   quinipolosToAnswer: any[];
   leaguesToCorrect: any[];
@@ -46,27 +47,31 @@ const LeagueList = () => {
 
   const fetchLeagueListData = async () => {
     // Fetch data logic
-    axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/leagues`).then(({ data }) => {
+
+    apiGet<LeaguesTypes[]>(`/api/leagues`).then((data) => {
       setLeagueListData(data);
     });
   };
 
-  /*  const handleJoinLeague = (index: number) => {
+  const handleJoinLeague = (index: number) => {
     // Logic to handle joining a league
     if (leagueListData?.[index]?.participants.includes(userData.username)) {
       navigate("/league-dashboard");
     } else {
       axios
-        .post(`${process.env.REACT_APP_API_BASE_URL}/api/leagues/${leagueListData[index].leagueId}/join`, {
-          leagueId: leagueListData[index].leagueId,
-          username: userData.username,
-        })
+        .post(
+          `${process.env.REACT_APP_API_BASE_URL}/api/leagues/${leagueListData[index].leagueId}/join`,
+          {
+            leagueId: leagueListData[index].leagueId,
+            username: userData.username,
+          }
+        )
         .then(({ data }) => {
           setLeagueListData(data);
         });
     }
   };
- */
+
   useEffect(() => {
     fetchLeagueListData();
   }, []);
