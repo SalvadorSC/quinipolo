@@ -72,8 +72,9 @@ const LeagueList = () => {
     } else {
       fetchLeagueListData();
     }
-    console.log(leagueListData);
   }, [clerkUserData.isSignedIn, navigate]);
+
+  console.log(leagueListData);
 
   return (
     <div className={styles.leagueListContainer}>
