@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
-import Feedback from "../../Components/Feedback/Feedback";
+import Feedback from "../../components/Feedback/Feedback";
 
 // Feedback type definition
 type FeedbackType = {

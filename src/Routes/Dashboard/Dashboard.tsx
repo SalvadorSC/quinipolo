@@ -5,7 +5,7 @@ import { CircularProgress, Paper, Tooltip } from "@mui/material";
 import styles from "./Dashboard.module.scss";
 import axios from "axios";
 import { LoadingButton } from "@mui/lab";
-import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
+import QuinipolosToAnswer from "../../components/QuinipolosToAnswer/QuinipolosToAnswer";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import {
   UserDataType,
@@ -83,9 +83,17 @@ const Dashboard = () => {
     );
   };
 
+  console.log(window.innerWidth);
+
   return (
     <div className={styles.dashboardContainer}>
-      <Paper elevation={3} sx={{ width: "100%", p: 4 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          width: "100%",
+          p: window.innerWidth > 400 ? 4 : 1,
+        }}
+      >
         <div className={styles.container}>
           <QuinipolosToAnswer />
           <div className={styles.leaguesContainer}>

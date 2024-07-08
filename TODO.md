@@ -8,6 +8,7 @@
 - Fix pete al hacer clic en una opción seleccionada en la corrección
   - Comprobar comportamiento en el formulario de respuesta.
 - Add date to Quinipolo corrected message.
+- Stop using ANTd and use shadcn instead for date handling.
 
 WORK IN MALTA:
 

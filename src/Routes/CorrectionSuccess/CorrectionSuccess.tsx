@@ -8,6 +8,7 @@ import {
   TableContainer,
   TableRow,
   Button,
+  TableHead,
 } from "@mui/material";
 import style from "../QuinipoloSuccess/QuinipoloSuccess.module.scss";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
@@ -123,6 +124,8 @@ const CorrectionSuccess = () => {
         });
       });
   };
+
+  console.log(sortedResults);
   return (
     <div className={style.correctionSuccessContainer}>
       <div>
@@ -135,84 +138,98 @@ const CorrectionSuccess = () => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "space-evenly",
-            borderRadius: "10px 10px 0 0",
+            borderRadius: results.length > 0 ? "10px 10px 0 0" : null,
           }}
         >
           <h2>¡Quinipolo corregida con éxito!</h2>
 
-          <p className={style.copyCorrection}>
-            A continuación, se muestra la tabla con los resultados de los
-            usuarios.
-          </p>
-        </Paper>
-        <TableContainer
-          sx={{
-            borderRadius: "0 0 10px 10px ",
-          }}
-          component={Paper}
-        >
-          <Table
-            sx={{
-              maxHeight: "50vh",
-            }}
-            aria-label="simple table"
+          <p
+            className={style.copyCorrection}
+            style={results.length > 0 ? {} : { marginTop: 40 }}
           >
-            {/*  <TableHead>
-            <TableRow>
-              <TableCell>Usuario</TableCell>
-              <TableCell align="right">Puntos Totales</TableCell>
-            </TableRow>
-          </TableHead> */}
-            <TableBody>
-              {sortedResults.map((row: Result, i) => {
-                let position;
-                if (
-                  i === 0 ||
-                  sortedResults[i].totalPoints === sortedResults[0].totalPoints
-                ) {
-                  position = "🥇";
-                } else if (
-                  i === 1 ||
-                  sortedResults[i].totalPoints === sortedResults[1].totalPoints
-                ) {
-                  position = "🥈";
-                } else if (
-                  i === 2 ||
-                  sortedResults[i].totalPoints === sortedResults[2].totalPoints
-                ) {
-                  position = "🥉";
-                } else {
-                  position =
-                    sortedResults.findIndex(
-                      (element) => element.totalPoints === row.totalPoints
-                    ) + 1;
-                }
-                return (
-                  <TableRow
-                    key={`${row.username}-${row.totalPoints}`}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {position}. {row.username}
-                    </TableCell>
-                    <TableCell align="right" className={style.pointsCell}>
-                      {row.totalPoints}{" "}
-                      <span
-                        className={
-                          row.correct15thGame && row.pointsEarned === 15
-                            ? style.correct15
-                            : ""
-                        }
-                      >
-                        (+{row.pointsEarned})
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            {results.length > 0
+              ? "A continuación, se muestra la tabla con los resultados de los usuarios."
+              : "Aunque... Vaya! Parece que nadie ha respondido esta Quinipolo! "}
+          </p>
+          {results.length > 0 ? null : (
+            <p className={style.copyCorrection}>
+              Asegúrate de comunicar bien como se hace!
+            </p>
+          )}
+        </Paper>
+        {results.length > 0 ? (
+          <TableContainer
+            sx={{
+              borderRadius: "0 0 10px 10px ",
+            }}
+            component={Paper}
+          >
+            <Table
+              sx={{
+                maxHeight: "50vh",
+              }}
+              aria-label="simple table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell>Usuario</TableCell>
+                  <TableCell align="right">Puntos Totales</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {sortedResults.map((row: Result, i) => {
+                  let position;
+                  if (
+                    i === 0 ||
+                    sortedResults[i].totalPoints ===
+                      sortedResults[0].totalPoints
+                  ) {
+                    position = "🥇";
+                  } else if (
+                    i === 1 ||
+                    sortedResults[i].totalPoints ===
+                      sortedResults[1].totalPoints
+                  ) {
+                    position = "🥈";
+                  } else if (
+                    i === 2 ||
+                    sortedResults[i].totalPoints ===
+                      sortedResults[2].totalPoints
+                  ) {
+                    position = "🥉";
+                  } else {
+                    position =
+                      sortedResults.findIndex(
+                        (element) => element.totalPoints === row.totalPoints
+                      ) + 1;
+                  }
+                  return (
+                    <TableRow
+                      key={`${row.username}-${row.totalPoints}`}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {position}. {row.username}
+                      </TableCell>
+                      <TableCell align="right" className={style.pointsCell}>
+                        {row.totalPoints}{" "}
+                        <span
+                          className={
+                            row.correct15thGame && row.pointsEarned === 15
+                              ? style.correct15
+                              : ""
+                          }
+                        >
+                          (+{row.pointsEarned})
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : null}
       </div>
 
       <Paper
