@@ -16,7 +16,7 @@ import {
 import axios from "axios";
 import style from "./AnswersForm.module.scss";
 import { useNavigate } from "react-router-dom";
-import Loader from "../../Components/Loader/Loader";
+import Loader from "../../components/Loader/Loader";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { apiGet, apiPost } from "../../utils/apiUtils";
 

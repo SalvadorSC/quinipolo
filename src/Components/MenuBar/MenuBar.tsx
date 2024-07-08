@@ -6,6 +6,7 @@ import logoBlack from "../../assets/LOGOS/QUINIPOLO_BLACK.svg";
 import { UserButton, useUser } from "@clerk/clerk-react";
 import { checkUser } from "../../utils/checkUser";
 import { useUser as useUserData } from "../../Context/UserContext/UserContext";
+import { Container } from "@mui/material";
 const drawerWidth = 240;
 
 interface AppBarProps extends MuiAppBarProps {
@@ -31,20 +32,24 @@ const AppBar = styled(MuiAppBar, {
 
 export const MenuBar = () => {
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
   const { updateUser: updateUserData } = useUserData();
 
   useEffect(() => {
-    console.log("aaa");
     const fetchData = async () => {
-      const isaUserRegistered = await checkUser({
-        email: user?.primaryEmailAddress?.emailAddress ?? "",
-        username: user?.username ?? "",
-        fullName: user?.fullName ?? "",
-        participateGlobalQuinipolo: true,
-      });
-
-      updateUserData({ isRegistered: isaUserRegistered });
+      if (
+        user?.primaryEmailAddress?.emailAddress &&
+        user?.username &&
+        user?.fullName
+      ) {
+        const isaUserRegistered = await checkUser({
+          email: user.primaryEmailAddress?.emailAddress,
+          username: user.username,
+          fullName: user.fullName,
+          participateGlobalQuinipolo: true,
+        });
+        updateUserData({ isRegistered: isaUserRegistered });
+      }
     };
 
     fetchData();
@@ -75,20 +80,27 @@ export const MenuBar = () => {
             onClick={() => navigate("/")}
           />
         </div>
-        <div
-          style={{
-            position: "absolute",
-            right: 20,
-            height: 40,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <UserButton />
-        </div>
+        {isSignedIn ? (
+          <div
+            style={{
+              position: "absolute",
+              right: 20,
+              height: 40,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <UserButton />
+          </div>
+        ) : null}
       </AppBar>
-      <Outlet />
+
+      {isSignedIn ? (
+        <Container maxWidth="md">
+          <Outlet />
+        </Container>
+      ) : null}
     </>
   );
 };

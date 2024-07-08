@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import SurveyForm from "./Routes/SurveyForm/SurveyForm";
-import { Container } from "@mui/material";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AnswersForm from "./Routes/AnswersForm/AnswersForm";
 import LoginForm from "./Routes/LoginForm/LoginForm";
@@ -12,7 +11,7 @@ import { UserProvider } from "./Context/UserContext/UserContext";
 import { FeedbackProvider } from "./Context/FeedbackContext/FeedbackContext";
 import CorrectionSuccess from "./Routes/CorrectionSuccess/CorrectionSuccess";
 import { useUser } from "@clerk/clerk-react";
-import MenuBar from "./Components/MenuBar/MenuBar";
+import MenuBar from "./components/MenuBar/MenuBar";
 import LeagueList from "./Routes/LeagueList/LeagueList";
 
 function App() {
@@ -24,7 +23,7 @@ function App() {
       localStorage.setItem("userId", user.user?.id);
       localStorage.setItem("username", user.user?.username as string);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -32,40 +31,35 @@ function App() {
       <BrowserRouter>
         <FeedbackProvider>
           <UserProvider>
-            <Container maxWidth="sm">
-              <Routes>
+            <Routes>
+              <Route
+                path="sign-in"
+                element={user.isSignedIn ? <LoginForm /> : null}
+              />
+
+              <Route
+                path="/"
+                element={user.isSignedIn ? <MenuBar /> : <LoginForm />}
+              >
+                <Route path="/" element={<Navigate to="/dashboard" />} />
+                <Route path="crear-quinipolo" element={<SurveyForm />} />
                 <Route
-                  path="sign-in"
-                  element={user.isSignedIn ? <LoginForm /> : null}
+                  path="quinipolo-success"
+                  element={<QuinipoloSuccess />}
                 />
-
                 <Route
-                  path="/"
-                  element={user.isSignedIn ? <MenuBar /> : <LoginForm />}
-                >
-                  <Route path="/" element={<Navigate to="/dashboard" />} />
-                  <Route path="crear-quinipolo" element={<SurveyForm />} />
-                  <Route
-                    path="quinipolo-success"
-                    element={<QuinipoloSuccess />}
-                  />
-                  <Route
-                    path="correction-success"
-                    element={<CorrectionSuccess />}
-                  />
-                  <Route path="quinipolo" element={<AnswersForm />} />
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route
-                    path="league-dashboard"
-                    element={<LeagueDashboard />}
-                  />
-                  <Route path="join-league" element={<LeagueList />} />
-                  <Route path="*" element={<Navigate to="/dashboard" />} />
-                </Route>
+                  path="correction-success"
+                  element={<CorrectionSuccess />}
+                />
+                <Route path="quinipolo" element={<AnswersForm />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="league-dashboard" element={<LeagueDashboard />} />
+                <Route path="join-league" element={<LeagueList />} />
+                <Route path="*" element={<Navigate to="/dashboard" />} />
+              </Route>
 
-                {/* <Route path="*" element={<NoMatch />} /> */}
-              </Routes>
-            </Container>
+              {/* <Route path="*" element={<NoMatch />} /> */}
+            </Routes>
           </UserProvider>
         </FeedbackProvider>
       </BrowserRouter>

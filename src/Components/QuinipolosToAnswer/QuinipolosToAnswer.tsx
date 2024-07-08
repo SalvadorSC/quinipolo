@@ -1,4 +1,4 @@
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, Tooltip } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
 import Countdown from "react-countdown";
@@ -8,7 +8,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import styles from "./QuinipolosToAnswer.module.scss";
 import { useUser } from "../../Context/UserContext/UserContext";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
-import { Tooltip } from "antd";
+import { apiGet } from "../../utils/apiUtils";
 
 const QuinipolosToAnswer = ({
   leagueId,
@@ -28,12 +28,9 @@ const QuinipolosToAnswer = ({
     return () => {
       setLoading(true);
       if (userId && emailAddress && !loading) {
-        axios
-          .get(
-            `${process.env.REACT_APP_API_BASE_URL}/api/user/quinipolos?email=${emailAddress}`
-          )
-          .then((response) => {
-            setQuinipolosToAnswer(response.data);
+        apiGet(`/api/user/quinipolos?email=${emailAddress}`)
+          .then((data: any) => {
+            setQuinipolosToAnswer(data);
           })
           .catch((error) => {
             console.log(error);
@@ -70,7 +67,7 @@ const QuinipolosToAnswer = ({
         <CircularProgress />
       ) : quinipolosToAnswer.filter((quinipolo) => {
           return quinipolo.answered && !quinipolo.hasBeenCorrected;
-        }).length === 0 ? (
+        }).length > 0 ? (
         <p className={styles.noActionsMessage}>
           No tienes quinipolos pendientes
         </p>
@@ -123,7 +120,7 @@ const QuinipolosToAnswer = ({
                       <PlayCircleFilledIcon />
                     </Button>
                   }
-                  {isModeratorOfThisLeague && (
+                  {moderatedLeagues.includes(quinipolo.league!) && (
                     <Tooltip
                       arrow
                       title={

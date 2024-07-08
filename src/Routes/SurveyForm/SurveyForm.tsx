@@ -1,16 +1,15 @@
 // SurveyForm.tsx
 import React, { useState, FormEvent, useEffect } from "react";
 import { Button, Tooltip } from "@mui/material";
-import axios from "axios";
 import { SurveyData } from "./SurveyForm.types";
-import MatchForm from "../../Components/MatchForm/MatchForm";
+import MatchForm from "../../components/MatchForm/MatchForm";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import locale from "antd/es/date-picker/locale/es_ES";
 import { DatePicker } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/es";
 import styles from "./SurveyForm.module.scss";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { apiPost } from "../../utils/apiUtils";
 
@@ -25,6 +24,7 @@ type QuinipoloCreateResponseType = {
 
 const SurveyForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setFeedback } = useFeedback();
   const [quinipolo, setQuinipolo] = useState<SurveyData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -43,12 +43,13 @@ const SurveyForm = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    const queryParams = new URLSearchParams(window.location.search);
+    const leagueId = queryParams.get("leagueId");
     try {
       const response = await apiPost<QuinipoloCreateResponseType>(
         `/api/quinipolos`,
         {
-          league: "testLeague",
+          league: leagueId,
           quinipolo,
           endDate: selectedDate,
           hasBeenCorrected: false,
