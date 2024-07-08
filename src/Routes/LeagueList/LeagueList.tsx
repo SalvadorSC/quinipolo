@@ -28,7 +28,7 @@ type LeaguesTypes = {
 
 const LeagueList = () => {
   const navigate = useNavigate();
-  const [leagueList, setLeagueList] = useState<LeaguesTypes[]>([
+  const [leagueListData, setLeagueListData] = useState<LeaguesTypes[]>([
     {
       quinipolosToAnswer: [],
       leaguesToCorrect: [],
@@ -56,22 +56,22 @@ const LeagueList = () => {
   const fetchLeagueListData = async () => {
     // Fetch data logic
     axios.get(`/api/leagues`).then(({ data }) => {
-      setLeagueList(data);
+      setLeagueListData(data);
     });
   };
 
   const handleJoinLeague = (index: number) => {
     // Logic to handle joining a league
-    if (leagueList?.[index]?.participants.includes(userData.username)) {
+    if (leagueListData?.[index]?.participants.includes(userData.username)) {
       navigate("/league-dashboard");
     } else {
       axios
-        .post(`/api/leagues/${leagueList[index].leagueId}/join`, {
-          leagueId: leagueList[index].leagueId,
+        .post(`/api/leagues/${leagueListData[index].leagueId}/join`, {
+          leagueId: leagueListData[index].leagueId,
           username: userData.username,
         })
         .then(({ data }) => {
-          setLeagueList(data);
+          setLeagueListData(data);
         });
     }
   };
@@ -97,8 +97,8 @@ const LeagueList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {leagueList
-                ? leagueList.map((league) => (
+              {leagueListData
+                ? leagueListData.map((league) => (
                     <TableRow
                       key={league.leagueName}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -114,9 +114,9 @@ const LeagueList = () => {
                           <LoadingButton
                             variant="contained"
                             onClick={() =>
-                              handleJoinLeague(leagueList?.indexOf(league))
+                              handleJoinLeague(leagueListData?.indexOf(league))
                             }
-                            loading={!leagueList}
+                            loading={!leagueListData}
                             disabled={false}
                           >
                             {league.participants.includes(userData.username)
