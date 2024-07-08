@@ -43,16 +43,6 @@ const LeagueList = () => {
 
   const clerkUserData = useClerkUserData();
   const { userData } = useUser();
-
-  useEffect(() => {
-    // Redirect to sign-in if not authenticated
-    if (clerkUserData.isSignedIn === false) {
-      navigate("/sign-in");
-    } else {
-      fetchLeagueListData();
-    }
-  }, [clerkUserData.isSignedIn, navigate]);
-
   const fetchLeagueListData = async () => {
     // Fetch data logic
     axios.get(`/api/leagues`).then(({ data }) => {
@@ -76,7 +66,14 @@ const LeagueList = () => {
     }
   };
 
-  // Additional helper functions as needed
+  useEffect(() => {
+    if (clerkUserData.isSignedIn === false) {
+      navigate("/sign-in");
+    } else {
+      fetchLeagueListData();
+    }
+    console.log(leagueListData);
+  }, [clerkUserData.isSignedIn, navigate]);
 
   return (
     <div className={styles.leagueListContainer}>
