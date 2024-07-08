@@ -46,7 +46,7 @@ const LeagueList = () => {
 
   const fetchLeagueListData = async () => {
     // Fetch data logic
-    axios.get(`/api/leagues`).then(({ data }) => {
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/leagues`).then(({ data }) => {
       setLeagueListData(data);
     });
   };
@@ -57,7 +57,7 @@ const LeagueList = () => {
       navigate("/league-dashboard");
     } else {
       axios
-        .post(`/api/leagues/${leagueListData[index].leagueId}/join`, {
+        .post(`${process.env.REACT_APP_API_BASE_URL}/api/leagues/${leagueListData[index].leagueId}/join`, {
           leagueId: leagueListData[index].leagueId,
           username: userData.username,
         })

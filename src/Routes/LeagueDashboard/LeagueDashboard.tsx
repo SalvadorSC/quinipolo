@@ -35,14 +35,16 @@ const LeagueDashboard = () => {
       setLoading(true);
       // Fetch data logic
       // Update leagueData state based on the fetched data
-      axios.get(`/api/leagues/${leagueId}`).then(({ data }) => {
-        setLeagueData({
-          quinipolosToAnswer: data.quinipolosToAnswer,
-          leaguesToCorrect: data.leaguesToCorrect,
-          moderatorArray: data.moderatorArray,
-          leagueName: data.leagueName,
+      axios
+        .get(`${process.env.REACT_APP_API_BASE_URL}/api/leagues/${leagueId}`)
+        .then(({ data }) => {
+          setLeagueData({
+            quinipolosToAnswer: data.quinipolosToAnswer,
+            leaguesToCorrect: data.leaguesToCorrect,
+            moderatorArray: data.moderatorArray,
+            leagueName: data.leagueName,
+          });
         });
-      });
       setLoading(false);
     };
 
