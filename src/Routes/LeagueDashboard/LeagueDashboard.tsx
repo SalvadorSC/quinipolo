@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { CircularProgress, Paper, Tooltip } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import styles from "./LeagueDashboard.module.scss";
-import QuinipolosToAnswer from "../../components/QuinipolosToAnswer/QuinipolosToAnswer";
+import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
 import { useUser as useClerkUserData } from "@clerk/clerk-react";
 import { useUser } from "../../Context/UserContext/UserContext";
 import axios from "axios";

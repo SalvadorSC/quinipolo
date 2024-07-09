@@ -2,7 +2,7 @@
 import React, { useState, FormEvent, useEffect } from "react";
 import { Button, Tooltip } from "@mui/material";
 import { SurveyData } from "./SurveyForm.types";
-import MatchForm from "../../components/MatchForm/MatchForm";
+import MatchForm from "../../Components/MatchForm/MatchForm";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import locale from "antd/es/date-picker/locale/es_ES";
 import { DatePicker } from "antd";
