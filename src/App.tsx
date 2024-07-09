@@ -11,7 +11,7 @@ import { UserProvider } from "./Context/UserContext/UserContext";
 import { FeedbackProvider } from "./Context/FeedbackContext/FeedbackContext";
 import CorrectionSuccess from "./Routes/CorrectionSuccess/CorrectionSuccess";
 import { useUser } from "@clerk/clerk-react";
-import MenuBar from "./components/MenuBar/MenuBar";
+/* import MenuBar from "./components/MenuBar/MenuBar"; */
 import LeagueList from "./Routes/LeagueList/LeagueList";
 
 function App() {
@@ -37,10 +37,7 @@ function App() {
                 element={user.isSignedIn ? <LoginForm /> : null}
               />
 
-              <Route
-                path="/"
-                element={user.isSignedIn ? <MenuBar /> : <LoginForm />}
-              >
+              <Route path="/" element={user.isSignedIn ? null : <LoginForm />}>
                 <Route path="/" element={<Navigate to="/dashboard" />} />
                 <Route path="crear-quinipolo" element={<SurveyForm />} />
                 <Route
