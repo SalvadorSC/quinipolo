@@ -1,5 +1,4 @@
 import { Button, CircularProgress, Tooltip } from "@mui/material";
-import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
 import Countdown from "react-countdown";
 import { useNavigate } from "react-router-dom";
@@ -49,15 +48,6 @@ const QuinipolosToAnswer = ({
   useEffect(() => {
     memoizedQuinipolosToAnswer();
   }, [memoizedQuinipolosToAnswer]);
-
-  /* useEffect(() => {
-    if (role === "moderator" && leagueId) {
-      console.log(leagueId, moderatedLeagues);
-    }
-  }, [leagueId, quinipolosToAnswer, role]); */
-
-  const isModeratorOfThisLeague =
-    leagueId && moderatedLeagues.includes(leagueId);
 
   return (
     <div>
