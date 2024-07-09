@@ -1,12 +1,12 @@
 import React from "react";
 import styles from "./LoginForm.module.scss";
 import { SignUp } from "@clerk/clerk-react";
-/* import MenuBar from "../../components/MenuBar/MenuBar"; */
+import MenuBar from "../../Components/MenuBar/MenuBar";
 
 const LoginForm = () => {
   return (
     <div className={styles.loginContainer}>
-      {/* <MenuBar /> */}
+      <MenuBar />
       <SignUp />
     </div>
   );

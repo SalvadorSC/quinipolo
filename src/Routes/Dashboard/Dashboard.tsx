@@ -5,7 +5,7 @@ import { CircularProgress, Paper, Tooltip } from "@mui/material";
 import styles from "./Dashboard.module.scss";
 import axios from "axios";
 import { LoadingButton } from "@mui/lab";
-import QuinipolosToAnswer from "../../components/QuinipolosToAnswer/QuinipolosToAnswer";
+import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import {
   UserDataType,
