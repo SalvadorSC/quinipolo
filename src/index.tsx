@@ -4,12 +4,9 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ClerkProvider } from "@clerk/clerk-react";
+import { esES } from "@clerk/localizations";
 
-// Import your publishable key
-const PUBLISHABLE_KEY =
-  "pk_test_c21vb3RoLW1hZ2dvdC05Ni5jbGVyay5hY2NvdW50cy5kZXYk";
-
-if (!PUBLISHABLE_KEY) {
+if (!process.env.REACT_APP_VITE_CLERK_PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
 }
 
@@ -18,7 +15,10 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+    <ClerkProvider
+      publishableKey={process.env.REACT_APP_VITE_CLERK_PUBLISHABLE_KEY}
+      localization={esES}
+    >
       <App />
     </ClerkProvider>
   </React.StrictMode>
