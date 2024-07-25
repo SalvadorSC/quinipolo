@@ -146,7 +146,6 @@ const LeagueDashboard = () => {
   }, []);
 
   const handleSolicitarPermisos = () => {
-    console.log("started loading");
     setLoading(true);
     // set feedback on success and on error
     apiPost(`/api/leagues/${leagueId}/request-moderator`, {

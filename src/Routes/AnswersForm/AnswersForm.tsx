@@ -141,10 +141,10 @@ const AnswersForm = () => {
   useEffect(() => {
     setLoading(true);
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submitQuinipolo = async () => {
-    console.log(user.userData.userId);
     const answerToSubmit = {
       username: localStorage.getItem("username") ?? user.userData.username,
       quinipoloId: quinipolo._id,
@@ -155,13 +155,11 @@ const AnswersForm = () => {
         goalsAwayTeam: resposta.goalsAwayTeam,
       })),
     };
-    console.log(user.userData, quinipolo.leagueId);
-    console.log("moderated league");
     if (
       correctingModeOn &&
       user.userData.moderatedLeagues.includes(quinipolo.leagueId)
     ) {
-      console.log("correcting mode on");
+      console.log("Correcting mode on");
       const response = await apiPost<CorrectionResponseType>(
         `/api/quinipolos/quinipolo/${quinipolo._id}/submit-correction`,
         answerToSubmit
@@ -178,7 +176,7 @@ const AnswersForm = () => {
       editCorrectionModeOn &&
       user.userData.moderatedLeagues.includes(quinipolo.leagueId)
     ) {
-      console.log("editing correction mode on");
+      console.log("Editing correction mode on");
       const response = await apiPost<CorrectionResponseType>(
         `/api/quinipolos/quinipolo/${quinipolo._id}/submit-correction-edit`,
         answerToSubmit
