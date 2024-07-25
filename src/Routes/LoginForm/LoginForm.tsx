@@ -7,7 +7,7 @@ const LoginForm = () => {
   return (
     <div className={styles.loginContainer}>
       <MenuBar />
-      <SignUp />
+      <SignUp appearance={{ layout: { showOptionalFields: false } }} />
     </div>
   );
 };
