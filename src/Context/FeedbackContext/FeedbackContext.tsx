@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useMemo,
+} from "react";
 import Feedback from "../../Components/Feedback/Feedback";
 
 // Feedback type definition
@@ -36,8 +42,13 @@ export const FeedbackProvider: React.FC<FeedbackProviderProps> = ({
     setFeedback({ message: "", severity: "info", open: false });
   };
 
+  const value = useMemo(
+    () => ({ feedback, setFeedback }),
+    [feedback, setFeedback]
+  );
+
   return (
-    <FeedbackContext.Provider value={{ feedback, setFeedback }}>
+    <FeedbackContext.Provider value={value}>
       {children}
       <Feedback
         isOpen={feedback.open}

@@ -6,14 +6,14 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 /**
  * Makes an API call using Axios.
  *
- * @param method - The HTTP method ("get" or "post").
+ * @param method - The HTTP method ("get", "post", "put", or "patch").
  * @param url - The endpoint URL.
- * @param data - The data to be sent with the request (for POST requests).
+ * @param data - The data to be sent with the request (for POST, PUT, and PATCH requests).
  * @param config - Additional Axios request configuration.
  * @returns The response data of type T.
  */
 const apiCall = async <T>(
-  method: "get" | "post",
+  method: "get" | "post" | "put" | "patch",
   url: string,
   data: any = null,
   config: AxiosRequestConfig = {}
@@ -57,3 +57,31 @@ export const apiPost = async <T>(
   data: any,
   config: AxiosRequestConfig = {}
 ): Promise<T> => apiCall<T>("post", url, data, config);
+
+/**
+ * Makes a PUT request.
+ *
+ * @param url - The endpoint URL.
+ * @param data - The data to be sent with the request.
+ * @param config - Additional Axios request configuration.
+ * @returns The response data of type T.
+ */
+export const apiPut = async <T>(
+  url: string,
+  data: any,
+  config: AxiosRequestConfig = {}
+): Promise<T> => apiCall<T>("put", url, data, config);
+
+/**
+ * Makes a PATCH request.
+ *
+ * @param url - The endpoint URL.
+ * @param data - The data to be sent with the request.
+ * @param config - Additional Axios request configuration.
+ * @returns The response data of type T.
+ */
+export const apiPatch = async <T>(
+  url: string,
+  data: any,
+  config: AxiosRequestConfig = {}
+): Promise<T> => apiCall<T>("patch", url, data, config);

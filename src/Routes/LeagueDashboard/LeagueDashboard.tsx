@@ -1,18 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress, Paper, Tooltip } from "@mui/material";
+import { CircularProgress, Paper, Stack } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import styles from "./LeagueDashboard.module.scss";
 import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
 import { useUser as useClerkUserData } from "@clerk/clerk-react";
 import { useUser } from "../../Context/UserContext/UserContext";
-import axios from "axios";
-
-type LeaguesTypes = {
+import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
+import { apiGet, apiPost } from "../../utils/apiUtils";
+import Leaderboard from "../../Components/Leaderboard/Leaderboard";
+import RequestsTable from "../../Components/RequestsTable/RequestsTable";
+export type LeaguesTypes = {
   quinipolosToAnswer: any[];
   leaguesToCorrect: any[];
   moderatorArray: string[];
   leagueName: string;
+  isPrivate: boolean;
+  moderatorPetitions: {
+    userId: string;
+    username: string;
+    date: Date;
+    _id: string;
+    status: "pending" | "accepted" | "rejected" | "cancelled";
+  }[];
+  participantPetitions: {
+    userId: string;
+    username: string;
+    date: Date;
+    _id: string;
+    status: "pending" | "accepted" | "rejected" | "cancelled";
+  }[];
+  participants: {
+    username: string;
+    puntos: number;
+  }[];
+};
+
+type LeaderboardScore = {
+  username: string;
+  nQuinipolosParticipated: number;
+  points: number;
+  fullCorrectQuinipolos: number;
 };
 
 const LeagueDashboard = () => {
@@ -23,94 +51,210 @@ const LeagueDashboard = () => {
     leaguesToCorrect: [],
     moderatorArray: [],
     leagueName: "",
+    moderatorPetitions: [],
+    participantPetitions: [],
+    participants: [],
+    isPrivate: false,
   });
+  const [leaderboardData, setLeaderboardData] = useState<any[]>([]);
+  const [isUserModeratorInThisLeague, setIsUserModeratorInThisLeague] =
+    useState<boolean>(false);
   const queryParams = new URLSearchParams(window.location.search);
   const leagueId = queryParams.get("id");
+  const { setFeedback } = useFeedback();
 
-  const clerkUserData = useClerkUserData();
+  const { isSignedIn } = useClerkUserData();
   const { userData } = useUser();
+
+  const getLeagueData = async () => {
+    apiGet(`/api/leagues/${leagueId}`)
+      .then((data: any) => {
+        setLeagueData({
+          quinipolosToAnswer: data.quinipolosToAnswer,
+          leaguesToCorrect: data.leaguesToCorrect,
+          moderatorArray: data.moderatorArray,
+          leagueName: data.leagueName,
+          moderatorPetitions: data.moderatorPetitions,
+          participantPetitions: data.participantPetitions,
+          participants: data.participants,
+          isPrivate: data.isPrivate,
+        });
+        if (userData.username !== "") {
+          setIsUserModeratorInThisLeague(
+            data.moderatorArray?.includes(userData.username)
+          );
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setFeedback({
+          message: "Error cargando los datos de la liga",
+          severity: "error",
+          open: true,
+        });
+        setLoading(false);
+      });
+  };
+
+  const getLeagueLeaderBoardData = async () => {
+    apiGet(`/api/leagues/${leagueId}/leaderboard`)
+      .then((data: any) => {
+        const transformedLeaderboardData = data.participantsLeaderboard.map(
+          (score: LeaderboardScore) => {
+            return {
+              username: score.username,
+              nQuinipolosParticipated: score.nQuinipolosParticipated,
+              totalPoints: score.points,
+              fullCorrectQuinipolos: score.fullCorrectQuinipolos,
+            };
+          }
+        );
+
+        setLeaderboardData(
+          transformedLeaderboardData.sort(
+            (a: LeaderboardScore, b: LeaderboardScore) => b.points - a.points
+          )
+        );
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setFeedback({
+          message: "Error cargando los datos de la liga",
+          severity: "error",
+          open: true,
+        });
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
     const fetchLeagueData = async () => {
       setLoading(true);
-      // Fetch data logic
-      // Update leagueData state based on the fetched data
-      axios
-        .get(`${process.env.REACT_APP_API_BASE_URL}/api/leagues/${leagueId}`)
-        .then(({ data }) => {
-          setLeagueData({
-            quinipolosToAnswer: data.quinipolosToAnswer,
-            leaguesToCorrect: data.leaguesToCorrect,
-            moderatorArray: data.moderatorArray,
-            leagueName: data.leagueName,
-          });
-        });
-      setLoading(false);
+      getLeagueData();
+      getLeagueLeaderBoardData();
     };
 
     // Redirect to sign-in if not authenticated
-    if (clerkUserData.isSignedIn === false) {
+    if (isSignedIn === false) {
       navigate("/sign-in");
     } else {
       fetchLeagueData();
     }
-  }, [clerkUserData.isSignedIn, navigate, leagueId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleCreateQuinipolo = () => {
+  const handleSolicitarPermisos = () => {
+    console.log("started loading");
+    setLoading(true);
+    // set feedback on success and on error
+    apiPost(`/api/leagues/${leagueId}/request-moderator`, {
+      userId: userData.userId,
+      username: userData.username,
+    })
+      .then(() => {
+        setFeedback({
+          message: "Permisos solicitados!",
+          severity: "success",
+          open: true,
+        });
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setFeedback({
+          message: "Error solicitando permisos",
+          severity: "error",
+          open: true,
+        });
+        setLoading(false);
+      });
+  };
+
+  const handleBasicActionButtonClick = () => {
+    if (!isUserModeratorInThisLeague) {
+      handleSolicitarPermisos();
+      return;
+    }
     // Logic to handle creation of new Quinipolo
     navigate(`/crear-quinipolo?leagueId=${leagueId}`);
   };
 
-  const handleJoinLeague = () => {
-    // Logic to handle joining a league
-    navigate("/join-league");
-  };
-
-  // Additional helper functions as needed
-
   return (
     <div className={styles.leagueDashboardContainer}>
-      <Paper elevation={3} sx={{ width: "100%", p: 4 }}>
-        {!loading ? (
+      <Paper elevation={3} sx={{ width: "100%", p: 4, borderRadius: "20px" }}>
+        {loading ? (
+          <CircularProgress />
+        ) : (
           <>
-            <h1 style={{ marginBottom: 20 }}>Liga {leagueData.leagueName}</h1>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 20,
+              }}
+            >
+              <h1 className={styles.leagueTitle}>
+                Liga {leagueData.leagueName}
+              </h1>
+
+              {isUserModeratorInThisLeague ||
+              !leagueData.moderatorPetitions.find(
+                (petition) => petition.username === userData.username
+              ) ? (
+                <span>
+                  <LoadingButton
+                    variant="contained"
+                    style={{ margin: "20px 0" }}
+                    onClick={handleBasicActionButtonClick}
+                    loading={!leagueData || loading}
+                  >
+                    {isUserModeratorInThisLeague
+                      ? "Crear una quinipolo"
+                      : "Solicitar permisos de moderador"}
+                  </LoadingButton>
+                </span>
+              ) : null}
+            </div>
+
             <QuinipolosToAnswer
               wrapperLoading={loading}
-              leagueId={leagueId ?? undefined}
+              leagueId={leagueId!}
+              appLocation="league-dashboard"
             />
-
-            <Tooltip
-              title={
-                leagueData.moderatorArray?.find(
-                  (user) => user === userData.username
-                )
-                  ? ""
-                  : "Aún no puedes crear una quinipolo"
-              }
-            >
-              <span>
-                {/* {`userData.username ${userData.username}`}
-            {`leagueData.moderatorArray[0] ${leagueData.moderatorArray[0]}`} */}
-                <LoadingButton
-                  variant="contained"
-                  style={{ margin: "20px 0" }}
-                  onClick={handleCreateQuinipolo}
-                  loading={!leagueData || loading}
-                  disabled={
-                    !leagueData.moderatorArray?.includes(userData.username)
-                  }
-                >
-                  Crear una quinipolo
-                  {/* {" "}
-              {leagueData.moderatorArray.includes(userData.username).toString()} */}
-                </LoadingButton>
-              </span>
-            </Tooltip>
+            <Stack>
+              <h2 className={styles.actionsTitle}>Clasificación</h2>
+              <hr style={{ marginBottom: 16 }} />
+              <Leaderboard sortedResults={leaderboardData} />
+            </Stack>
+            {isUserModeratorInThisLeague ? (
+              <>
+                <h2 className={styles.actionsTitle}>Acciones</h2>
+                <hr style={{ marginBottom: 16 }} />
+                {leagueData.isPrivate ? (
+                  <RequestsTable
+                    leagueId={leagueId!}
+                    requests={leagueData.participantPetitions.filter(
+                      (petition) => petition.status === "pending"
+                    )}
+                    setLeagueData={setLeagueData}
+                    requestType="participant"
+                  />
+                ) : null}
+                <RequestsTable
+                  leagueId={leagueId!}
+                  requests={leagueData.moderatorPetitions.filter(
+                    (petition) => petition.status === "pending"
+                  )}
+                  setLeagueData={setLeagueData}
+                  requestType="moderator"
+                />
+              </>
+            ) : null}
           </>
-        ) : (
-          <CircularProgress />
         )}
-        {/* Additional UI elements */}
       </Paper>
     </div>
   );

@@ -1,0 +1,48 @@
+.buttonAction {
+  padding: 6px !important;
+}
+
+.buttonAccept {
+  background-color: #00b894 !important;
+}
+.buttonAccept:hover {
+  background-color: #00a884 !important;
+}
+.buttonReject {
+  margin-left: 16px !important;
+  background-color: #e15a46 !important;
+}
+.buttonReject:hover {
+  background-color: #d54a36 !important;
+}
+
+.actionColumn {
+  padding: 16px 0px !important;
+}
+
+.tableContainer {
+  margin-top: 16px !important;
+  box-shadow: none !important;
+}
+
+.tableTitle {
+  margin-bottom: 16px !important;
+  text-align: left !important;
+}
+
+.noActionsMessage {
+  font-size: 14px;
+  color: #6e6e6e;
+  margin: 30px 10px;
+}
+
+@media (max-width: 600px) {
+  .buttonAction {
+    margin-bottom: 16px !important;
+    width: calc(100% - 16px) !important;
+  }
+  .buttonReject {
+    margin-left: 0px !important;
+    margin-bottom: 0px !important;
+  }
+}

@@ -111,10 +111,7 @@ const MatchForm = ({
               onChange={(event) => {
                 setMatchData({
                   ...matchData,
-                  gameType: event.target.value as
-                    | "waterpolo"
-                    | "football"
-                    | undefined,
+                  gameType: event.target.value as "waterpolo" | "football",
                   homeTeam: "",
                   awayTeam: "",
                 });

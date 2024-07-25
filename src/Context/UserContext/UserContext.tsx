@@ -2,9 +2,6 @@ import React, { createContext, useState, useContext, ReactNode } from "react";
 
 // Define a type for Leagues
 
-/* 
-{"_id":{"$oid":"6687e4a78d344eb01bbcd067"},"leagueId":"global","moderatorArray":["salvadorsc"],"leagueName":"Global","participants":["salvadorsc"], leagueImg: "IMG"*/
-
 type Leagues = {
   leagueId: string;
   moderatorArray: string[];
@@ -48,11 +45,14 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     userId: localStorage.getItem("userId") ?? "",
     moderatedLeagues: [],
     emailAddress: "",
-    username: "",
+    username: localStorage.getItem("username") ?? "",
     isRegistered: false,
   });
 
   const updateUser = (newData: any) => {
+    localStorage.setItem("userId", newData.userId);
+    localStorage.setItem("username", newData.username);
+    localStorage.setItem("emailAddress", newData.emailAddress);
     setUserData({ ...userData, ...newData });
   };
 
