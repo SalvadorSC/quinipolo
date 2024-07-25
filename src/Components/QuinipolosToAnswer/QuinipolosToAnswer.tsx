@@ -1,145 +1,189 @@
-import { Button, CircularProgress, Tooltip } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
-import Countdown from "react-countdown";
+import { Box, Pagination, Tab } from "@mui/material";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
-import EditIcon from "@mui/icons-material/Edit";
-import styles from "./QuinipolosToAnswer.module.scss";
 import { useUser } from "../../Context/UserContext/UserContext";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { apiGet } from "../../utils/apiUtils";
+import Skeleton from "antd/lib/skeleton";
+
+import { TabContext, TabList, TabPanel } from "@mui/lab";
+import QuinipoloCard from "../QuinipoloCard/QuinipoloCard";
+import styles from "./QuinipolosToAnswer.module.scss";
 
 const QuinipolosToAnswer = ({
   leagueId,
   wrapperLoading = false,
+  appLocation,
 }: {
   leagueId?: string;
   wrapperLoading?: boolean;
+  appLocation?: "league-dashboard" | "user-dashboard";
 }) => {
   const {
-    userData: { moderatedLeagues, username, emailAddress, userId },
+    userData: { moderatedLeagues, username },
   } = useUser();
+  const [value, setValue] = useState<string>("1");
   const { setFeedback } = useFeedback();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
-  const [quinipolosToAnswer, setQuinipolosToAnswer] = useState<any[]>([]);
-  const memoizedQuinipolosToAnswer = useMemo(() => {
-    return () => {
+  const [quinipolos, setQuinipolos] = useState<any[]>([]);
+
+  const fetchQuinipolos = useCallback(
+    async (userId: string) => {
       setLoading(true);
-      if (userId && emailAddress && !loading) {
-        apiGet(`/api/user/quinipolos?email=${emailAddress}`)
-          .then((data: any) => {
-            setQuinipolosToAnswer(data);
-          })
-          .catch((error) => {
-            console.log(error);
-            setFeedback({
-              message: "Error cargando los datos del usuario",
-              severity: "error",
-              open: true,
-            });
-          });
+      try {
+        let data: any;
+        if (appLocation === "league-dashboard") {
+          data = await apiGet(
+            `/api/leagues/league/${leagueId}/leagueQuinipolos`
+          );
+        } else {
+          data = await apiGet(
+            `/api/users/user/quinipolos?username=${username}`
+          );
+        }
+        setQuinipolos(data);
+      } catch (error) {
+        console.error(error);
+        setFeedback({
+          message: "Error cargando los datos del usuario",
+          severity: "error",
+          open: true,
+        });
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setFeedback, username]);
+    },
+    [appLocation, leagueId, setFeedback, username]
+  );
 
   useEffect(() => {
-    memoizedQuinipolosToAnswer();
-  }, [memoizedQuinipolosToAnswer]);
+    if (username) {
+      fetchQuinipolos(username);
+    }
+  }, [fetchQuinipolos, username]);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
 
   return (
     <div>
-      <h2 className={styles.sectionTitle}>Quinipolos</h2>
       <hr />
-      {loading || wrapperLoading ? (
-        <CircularProgress />
-      ) : quinipolosToAnswer.filter((quinipolo) => {
-          return quinipolo.answered && !quinipolo.hasBeenCorrected;
-        }).length > 0 ? (
-        <p className={styles.noActionsMessage}>
-          No tienes quinipolos pendientes
-        </p>
-      ) : (
-        <>
-          {quinipolosToAnswer.map((quinipolo) => {
-            const deadline = new Date(quinipolo.endDate);
-            const deadlineIsInPast = deadline.getTime() < new Date().getTime();
-            // const deadlineIsInPast = new Date(quinipolo.endDate) > new Date();
-            const day = String(deadline.getDate()).padStart(2, "0"); // Ensures the day is 2 characters long
-            const month = String(deadline.getMonth() + 1).padStart(2, "0"); // Ensures the month is 2 characters long
-            if (
-              (leagueId && quinipolo.league !== leagueId) ||
-              quinipolo.hasBeenCorrected
-            )
-              return null;
-            return (
-              <div
-                className={styles.quinipoloContainer}
-                key={`${quinipolo.league}-${quinipolo.endDate}`}
+      <Box
+        sx={{
+          width: "100%",
+          typography: "body1",
+          mt: loading || wrapperLoading ? 2 : 0,
+        }}
+      >
+        {loading || wrapperLoading ? (
+          <Skeleton />
+        ) : (
+          <TabContext value={value}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <TabList
+                onChange={handleChange}
+                aria-label="lab API tabs example"
               >
-                <div className={styles.quinipoloInfo}>
-                  <h2>
-                    {`${quinipolo.league} -  ${day}/${month}`}
-                    {/* <span>
-                    {!quinipolo.hasBeenCorrected && quinipolo.answered && (
-                      <p style={{ color: "#CE4949" }}>
-                        <EditOffIcon />
-                      </p>
-                    )}
-                  </span> */}
-                  </h2>
-                  <p className={styles.countdown}>
-                    {new Date(quinipolo.endDate) > new Date() && (
-                      <Countdown date={quinipolo.endDate} />
-                    )}
-                  </p>
-                </div>
-                <div className={styles.quinipoloActions}>
-                  {
-                    <Button
-                      className={styles.actionButton}
-                      disabled={deadlineIsInPast || quinipolo.answered}
-                      onClick={() => {
-                        navigate(`/quinipolo?id=${quinipolo._id}`);
-                      }}
-                      variant={"contained"}
-                    >
-                      <span>Responder</span>
-                      <PlayCircleFilledIcon />
-                    </Button>
+                <Tab label="Pendientes" value="1" />
+                <Tab label="Anteriores" value="2" />
+                <Tab label="Todas" value="3" />
+              </TabList>
+            </Box>
+            <TabPanel sx={{ p: 0, mt: 2 }} value="1">
+              <TabPanelContent
+                quinipolos={quinipolos.filter((quinipolo) => {
+                  if (quinipolo.isDeleted) {
+                    return false;
                   }
-                  {moderatedLeagues.includes(quinipolo.league!) && (
-                    <Tooltip
-                      arrow
-                      title={
-                        !deadlineIsInPast &&
-                        "Debe esperar a que finalice el plazo de la Quinipolo antes de poder realizar una corrección."
-                      }
-                    >
-                      <Button
-                        className={`${styles.actionButton} ${styles.actionButtonCorrect}`}
-                        onClick={() => {
-                          navigate(
-                            `/quinipolo?id=${quinipolo._id}&correct=true`
-                          );
-                        }}
-                        variant={"contained"}
-                        disabled={!deadlineIsInPast}
-                      >
-                        <span>Corregir</span>
-                        <EditIcon />
-                      </Button>
-                    </Tooltip>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </>
-      )}
+                  return (
+                    (moderatedLeagues.includes(quinipolo.leagueName) &&
+                      !quinipolo.hasBeenCorrected) ||
+                    (quinipolo.endDate > new Date().toISOString() &&
+                      !quinipolo.participantsWhoAnswered.includes(username))
+                  );
+                })}
+                fallBackText={"No tienes quinipolos pendientes"}
+                username={username}
+                moderatedLeagues={moderatedLeagues}
+              />
+            </TabPanel>
+            <TabPanel sx={{ p: 0, mt: 2 }} value="2">
+              <TabPanelContent
+                quinipolos={quinipolos.filter(
+                  (quinipolo) =>
+                    quinipolo.endDate <= new Date().toISOString() &&
+                    (!leagueId || quinipolo.leagueId === leagueId)
+                )}
+                username={username}
+                moderatedLeagues={moderatedLeagues}
+                fallBackText={"No tienes quinipolos anteriores"}
+              />
+            </TabPanel>
+            <TabPanel sx={{ p: 0, mt: 2 }} value="3">
+              <TabPanelContent
+                quinipolos={quinipolos}
+                username={username}
+                moderatedLeagues={moderatedLeagues}
+                fallBackText={"No hay quinipolos"}
+              />
+            </TabPanel>
+          </TabContext>
+        )}
+      </Box>
     </div>
+  );
+};
+
+const TabPanelContent = ({
+  quinipolos,
+  username,
+  moderatedLeagues,
+  fallBackText,
+}: {
+  quinipolos: any[];
+  username: string;
+  moderatedLeagues: string[];
+  fallBackText?: string;
+}) => {
+  const itemsPerPage = 2;
+  const totalItems = quinipolos.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const [currentPage, setCurrentPage] = useState(1);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = quinipolos.slice(indexOfFirstItem, indexOfLastItem);
+  const handlePageChange = (e: any, page: number) => {
+    setCurrentPage(page);
+  };
+
+  return (
+    <>
+      {totalPages > 1 ? (
+        <Pagination
+          onChange={handlePageChange}
+          count={totalPages}
+          className={styles.pagination}
+        />
+      ) : null}
+      {quinipolos.length > 0 ? (
+        currentItems.map((quinipolo) => {
+          const deadline = new Date(quinipolo.endDate);
+          const deadlineIsInPast = deadline.getTime() < new Date().getTime();
+          return (
+            <QuinipoloCard
+              key={quinipolo._id}
+              deadlineIsInPast={deadlineIsInPast}
+              quinipolo={quinipolo}
+              moderatedLeagues={moderatedLeagues}
+              username={username}
+            />
+          );
+        })
+      ) : (
+        <p className={styles.noActionsMessage}>{fallBackText}</p>
+      )}
+    </>
   );
 };
 

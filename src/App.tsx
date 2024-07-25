@@ -17,15 +17,6 @@ import LeagueList from "./Routes/LeagueList/LeagueList";
 function App() {
   const user = useUser();
 
-  useEffect(() => {
-    localStorage.setItem("authenticated", "true");
-    if (user.user) {
-      localStorage.setItem("userId", user.user?.id);
-      localStorage.setItem("username", user.user?.username as string);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <React.StrictMode>
       <BrowserRouter>
@@ -51,7 +42,11 @@ function App() {
                   path="correction-success"
                   element={<CorrectionSuccess />}
                 />
-                <Route path="quinipolo" element={<AnswersForm />} />
+
+                <Route path="quinipolo" element={<AnswersForm />}>
+                  <Route path="correct" element={<AnswersForm />} />
+                </Route>
+
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="league-dashboard" element={<LeagueDashboard />} />
                 <Route path="join-league" element={<LeagueList />} />

@@ -1,69 +1,29 @@
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { CircularProgress, Paper, Tooltip } from "@mui/material";
 import styles from "./Dashboard.module.scss";
-import axios from "axios";
 import { LoadingButton } from "@mui/lab";
 import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
-import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
-import {
-  UserDataType,
-  useUser as useUserData,
-} from "../../Context/UserContext/UserContext";
-import { useUser } from "@clerk/clerk-react";
+import { useUser as useUserData } from "../../Context/UserContext/UserContext";
 import SportsVolleyballIcon from "@mui/icons-material/SportsVolleyball";
 import WavesIcon from "@mui/icons-material/Waves";
 import SportsBarIcon from "@mui/icons-material/SportsBar";
 import PoolIcon from "@mui/icons-material/Pool";
-import { apiGet } from "../../utils/apiUtils";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { userData, updateUser: updateUserData } = useUserData();
-  const { setFeedback } = useFeedback();
-
-  const { user } = useUser();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (userData.isRegistered) {
-        try {
-          const data = await apiGet<UserDataType>(
-            `/api/user/data/${user!.username}`
-          );
-          updateUserData({
-            role: data.role,
-            leagues: data.leagues,
-            quinipolosToAnswer: data.quinipolosToAnswer,
-            moderatedLeagues: data.moderatedLeagues,
-            username: user?.username as string,
-            emailAddress: user!.primaryEmailAddress?.emailAddress as string,
-          });
-        } catch (error) {
-          console.error(error);
-          setFeedback({
-            message: "Error cargando los datos del usuario",
-            severity: "error",
-            open: true,
-          });
-        }
-      }
-    };
-
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData.isRegistered]);
+  const { userData } = useUserData();
 
   const returnRandomIcon = () => {
     const iconStyle = {
       color: "#3f51b5",
     };
     const icons = [
-      <SportsVolleyballIcon style={iconStyle} />,
-      <WavesIcon style={iconStyle} />,
-      <SportsBarIcon style={iconStyle} />,
-      <PoolIcon style={iconStyle} />,
+      <SportsVolleyballIcon key="SportsVolleyball" style={iconStyle} />,
+      <WavesIcon key={"Waves"} style={iconStyle} />,
+      <SportsBarIcon key="SportsBar" style={iconStyle} />,
+      <PoolIcon key="Pool" style={iconStyle} />,
     ];
     return (
       <div
@@ -83,24 +43,26 @@ const Dashboard = () => {
     );
   };
 
-  console.log(window.innerWidth);
-
   return (
     <div className={styles.dashboardContainer}>
       <Paper
         elevation={3}
         sx={{
           width: "100%",
-          p: window.innerWidth > 400 ? 4 : 1,
+          p: window.innerWidth > 400 ? 4 : 2,
+          borderRadius: "20px",
         }}
       >
         <div className={styles.container}>
-          <QuinipolosToAnswer />
+          <h2 className={styles.leaguesTitle} style={{ marginTop: 0 }}>
+            Quinipolos
+          </h2>
+          <QuinipolosToAnswer appLocation="user-dashboard" />
           <div className={styles.leaguesContainer}>
             <h2 className={styles.leaguesTitle}>Mis ligas</h2>
             <hr />
             {userData.role === "" ? (
-              <CircularProgress />
+              <CircularProgress sx={{ mt: 4 }} />
             ) : userData.leagues.length === 0 ? (
               <p className={styles.noActionsMessage}>
                 No estas afiliado a ninguna liga.
@@ -163,7 +125,7 @@ const Dashboard = () => {
               }}
               style={{ margin: "20px  0", width: "100%" }}
             >
-              Unirme a una Liga
+              Ver todas las ligas
             </Button>
             <Tooltip
               arrow
@@ -195,34 +157,6 @@ const Dashboard = () => {
               </span>
             </Tooltip>
           </div>
-
-          {/* <Link to="/user/preferences" style={{ textDecoration: "none" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              style={{ marginRight: "20px" }}
-            >
-              User Preferences
-            </Button>
-          </Link>
-          <Link to="/my-leagues" style={{ textDecoration: "none" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              style={{ marginRight: "20px" }}
-            >
-              My Leagues
-            </Button>
-          </Link>
-          <Link to="/notifications" style={{ textDecoration: "none" }}>
-            <Button variant="contained" color="primary" size="large">
-              Notifications
-            </Button>
-          </Link> */}
-
-          {/* Add more buttons/routes as needed */}
         </div>
       </Paper>
     </div>

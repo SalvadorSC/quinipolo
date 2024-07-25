@@ -15,7 +15,8 @@ import { apiPost } from "../../utils/apiUtils";
 
 type QuinipoloCreateResponseType = {
   _id: string;
-  league: string;
+  leagueName: string;
+  leagueId: string;
   quinipolo: SurveyData[];
   endDate: Date;
   hasBeenCorrected: boolean;
@@ -28,7 +29,7 @@ const SurveyForm = () => {
   const { setFeedback } = useFeedback();
   const [quinipolo, setQuinipolo] = useState<SurveyData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [teamOptions, setTeamOptions] = useState<{
     waterpolo: string[];
     football: string[];
@@ -46,10 +47,19 @@ const SurveyForm = () => {
     const queryParams = new URLSearchParams(window.location.search);
     const leagueId = queryParams.get("leagueId");
     try {
+      if (selectedDate === null || selectedDate < new Date()) {
+        setFeedback({
+          message: "Por favor, selecciona una fecha y hora para la quinipolo",
+          severity: "error",
+          open: true,
+        });
+        window.scrollTo(0, 0);
+        return;
+      }
       const response = await apiPost<QuinipoloCreateResponseType>(
         `/api/quinipolos`,
         {
-          league: leagueId,
+          leagueId: leagueId,
           quinipolo,
           endDate: selectedDate,
           hasBeenCorrected: false,

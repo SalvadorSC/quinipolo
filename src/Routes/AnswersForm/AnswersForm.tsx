@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader/Loader";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { apiGet, apiPost } from "../../utils/apiUtils";
+import { useUser } from "../../Context/UserContext/UserContext";
+import GoalsToggleButtonGroup from "./GoalsToggleButtonGroup";
 
 type RespostesType = {
   matchNumber: number;
@@ -29,15 +31,21 @@ type RespostesType = {
 };
 
 type QuinipoloType = {
-  league: string;
+  leagueName: string;
+  leagueId: string;
   _id: string;
   quinipolo: SurveyData[];
+  participantsWhoAnswered: string[];
+  correctAnswers: RespostesType[];
+  creationDate?: string;
+  hasBeenCorrected: boolean;
+  endDate?: string;
 };
 
 type CorrectionResponseType = {
   message: string;
   results: {
-    correctAnswers: string[];
+    correctAnswers: { chosenWinner: string; matchNumber: number }[];
     userAnswers: string[];
     points: number;
   };
@@ -48,13 +56,18 @@ type AnswerResponseType = {
 };
 
 const AnswersForm = () => {
+  const user = useUser();
   const navigate = useNavigate();
   const { setFeedback } = useFeedback();
   const [loading, setLoading] = useState<boolean>(false);
   const [quinipolo, setQuinipolo] = useState<QuinipoloType>({
-    league: "",
+    leagueName: "",
+    leagueId: "",
     _id: "",
     quinipolo: [],
+    participantsWhoAnswered: [],
+    hasBeenCorrected: false,
+    correctAnswers: [],
   });
 
   const initialRespostes: RespostesType[] = new Array(14)
@@ -75,35 +88,65 @@ const AnswersForm = () => {
 
   // get via params if correcting or not
   const queryParams = new URLSearchParams(window.location.search);
-  const correctingModeOn = queryParams.get("correct");
+  const correctingModeOn = queryParams.get("correct"); // another submit
+  const editCorrectionModeOn = queryParams.get("correctionEdit"); // show corrections selected
+  const seeUserAnswersModeOn = queryParams.get("see"); // if user answered, show answers. If correction done, show corrections. If both, show corrected Answers
 
   const fetchData = async () => {
     try {
       const queryParams = new URLSearchParams(window.location.search);
       const id = queryParams.get("id");
-
+      let response: any;
       if (!id) {
         console.error("ID is missing in the query string");
         return;
       }
+      if (editCorrectionModeOn) {
+        // will show a quinipolo, the corrections selected and give option to edit them.
+        response = await apiGet<QuinipoloType>(
+          `/api/quinipolos/quinipolo/${id}/correction-see`
+        );
+        setRespostes(response.correctAnswers);
+      } else if (seeUserAnswersModeOn) {
+        // will show a quinipolo with the user's answers
+        response = await apiGet<{
+          quinipolo: QuinipoloType;
+          answers: RespostesType[];
+        }>(
+          `/api/quinipolos/quinipolo/${id}/answers-see/${user.userData.username}`
+        );
+        setQuinipolo(response!.quinipolo);
+        setLoading(false);
 
-      const response = await apiGet<QuinipoloType>(`/api/quinipolo?id=${id}`);
+        setRespostes(response!.answers.answers);
+        return;
+      } else {
+        response = await apiGet<QuinipoloType>(
+          `/api/quinipolos/quinipolo/${id}`
+        );
+      }
       setLoading(false);
       setQuinipolo(response);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching data:", error);
       // Handle the error as needed
+      setFeedback({
+        message: error.message,
+        severity: "error",
+        open: true,
+      });
     }
   };
 
   useEffect(() => {
     setLoading(true);
     fetchData();
-  }, [navigate]);
+  }, []);
 
   const submitQuinipolo = async () => {
+    console.log(user.userData.userId);
     const answerToSubmit = {
-      userId: localStorage.getItem("userId"), // Assuming you store userId in localStorage
+      username: localStorage.getItem("username") ?? user.userData.username,
       quinipoloId: quinipolo._id,
       answers: respostes.map((resposta, index) => ({
         matchNumber: index + 1,
@@ -112,10 +155,32 @@ const AnswersForm = () => {
         goalsAwayTeam: resposta.goalsAwayTeam,
       })),
     };
-    if (correctingModeOn) {
+    console.log(user.userData, quinipolo.leagueId);
+    console.log("moderated league");
+    if (
+      correctingModeOn &&
+      user.userData.moderatedLeagues.includes(quinipolo.leagueId)
+    ) {
       console.log("correcting mode on");
       const response = await apiPost<CorrectionResponseType>(
-        `/api/quinipolo/${quinipolo._id}/corrections`,
+        `/api/quinipolos/quinipolo/${quinipolo._id}/submit-correction`,
+        answerToSubmit
+      );
+      navigate("/correction-success", {
+        state: { results: response.results },
+      });
+      setFeedback({
+        message: response.message,
+        severity: "success",
+        open: true,
+      });
+    } else if (
+      editCorrectionModeOn &&
+      user.userData.moderatedLeagues.includes(quinipolo.leagueId)
+    ) {
+      console.log("editing correction mode on");
+      const response = await apiPost<CorrectionResponseType>(
+        `/api/quinipolos/quinipolo/${quinipolo._id}/submit-correction-edit`,
         answerToSubmit
       );
       navigate("/correction-success", {
@@ -129,7 +194,7 @@ const AnswersForm = () => {
     } else {
       try {
         const response = await apiPost<AnswerResponseType>(
-          `/api/quinipolo/answers`,
+          `/api/quinipolos/quinipolo/answers`,
           answerToSubmit
         );
         setFeedback({
@@ -168,6 +233,7 @@ const AnswersForm = () => {
     event: React.MouseEvent<HTMLElement>,
     newValue: string
   ) => {
+    if (newValue === null || seeUserAnswersModeOn) return;
     setRespostes((prevrespostes) => {
       const index = parseInt(newValue.split("__")[1]);
       const updatedData = [...prevrespostes];
@@ -183,6 +249,7 @@ const AnswersForm = () => {
     event: React.MouseEvent<HTMLElement>,
     newValue: string
   ) => {
+    if (newValue === null || seeUserAnswersModeOn) return;
     setRespostes((prevrespostes) => {
       const team = newValue.split("__")[1];
       const updatedData = [...prevrespostes];
@@ -200,27 +267,50 @@ const AnswersForm = () => {
       return updatedData;
     });
   };
+
+  const matchOption = (value: string, index: number) => {
+    const answerIsCorrect = (answer: string) => {
+      return quinipolo.correctAnswers[index].chosenWinner === answer;
+    };
+    return (
+      <span
+        className={`${
+          seeUserAnswersModeOn &&
+          (answerIsCorrect(`${value}__${index}`)
+            ? style.correctAnswer
+            : respostes[index].chosenWinner === `${value}__${index}` &&
+              style.answerIsWrong)
+        }`}
+      >
+        {value}
+      </span>
+    );
+  };
+
+  if (quinipolo.quinipolo === undefined) {
+    return <div>Loading...</div>;
+  }
   if (loading) {
     return <Loader />;
   } else {
     return (
-      <div>
-        <FormControl>
-          <TableContainer sx={{ mt: 16, mb: 8 }} component={Paper}>
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center" sx={{ marginBottom: 16 }}>
-                    {correctingModeOn
-                      ? "Corrección"
-                      : `Respostes Quinipolo ${quinipolo.league}`}
-                  </TableCell>
-                </TableRow>
-              </TableHead>
+      <FormControl>
+        <TableContainer sx={{ mb: 8 }} component={Paper}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center" sx={{ marginBottom: 16 }}>
+                  {correctingModeOn
+                    ? "Corrección"
+                    : `Respostes Quinipolo ${quinipolo.leagueName}`}
+                </TableCell>
+              </TableRow>
+            </TableHead>
 
-              {/* Partits */}
-              <TableBody>
-                {quinipolo.quinipolo.map((match, index) => (
+            {/* Partits */}
+            <TableBody>
+              {quinipolo.quinipolo.map((match, index) => {
+                return (
                   <TableRow
                     key={`${match.homeTeam}${match.awayTeam}__${index}`}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -236,91 +326,69 @@ const AnswersForm = () => {
                         aria-label="Match winner"
                       >
                         <ToggleButton
-                          className={style.teamAnswerButton}
+                          className={`${style.teamAnswerButton}`}
                           value={`${match.homeTeam}__${index}`}
                         >
-                          {match.homeTeam}
+                          {matchOption(match.homeTeam, index)}
                         </ToggleButton>
                         <ToggleButton value={`empat__${index}`}>
-                          Empat
+                          {matchOption("empat", index)}
                         </ToggleButton>
                         <ToggleButton
-                          className={style.teamAnswerButton}
+                          className={`${style.teamAnswerButton}`}
                           value={`${match.awayTeam}__${index}`}
                         >
-                          {match.awayTeam}
+                          {matchOption(match.awayTeam, index)}
                         </ToggleButton>
                       </ToggleButtonGroup>
                       {index === 14 && (
                         <div className={style.goalsContainer}>
-                          <div>
-                            <p>Gols {quinipolo.quinipolo[14].homeTeam}:</p>
-
-                            <ToggleButtonGroup
-                              color="primary"
-                              value={respostes[index].goalsHomeTeam}
-                              exclusive
-                              onChange={handleGame15Change}
-                              aria-label="Match winner"
-                            >
-                              <ToggleButton value={"-__home"}>-</ToggleButton>
-                              <ToggleButton
-                                value={
-                                  match.gameType === "waterpolo"
-                                    ? "9/10__home"
-                                    : "1/2__home"
-                                }
-                              >
-                                {match.gameType === "waterpolo"
-                                  ? "9/10"
-                                  : "1/2"}
-                              </ToggleButton>
-                              <ToggleButton value={"+__home"}>+</ToggleButton>
-                            </ToggleButtonGroup>
-                          </div>
-                          <div>
-                            <p>Gols {quinipolo.quinipolo[14].awayTeam}:</p>
-                            <ToggleButtonGroup
-                              color="primary"
-                              value={respostes[index].goalsAwayTeam}
-                              exclusive
-                              onChange={handleGame15Change}
-                              aria-label="Match winner"
-                            >
-                              <ToggleButton value={"-__away"}>-</ToggleButton>
-                              <ToggleButton
-                                value={
-                                  match.gameType === "waterpolo"
-                                    ? "9/10__away"
-                                    : "1/2__away"
-                                }
-                              >
-                                {match.gameType === "waterpolo"
-                                  ? "9/10"
-                                  : "1/2"}
-                              </ToggleButton>
-                              <ToggleButton value={"+__away"}>+</ToggleButton>
-                            </ToggleButtonGroup>
-                          </div>
+                          <GoalsToggleButtonGroup
+                            teamType="home"
+                            teamName={quinipolo.quinipolo[14].homeTeam}
+                            goals={respostes[index].goalsHomeTeam}
+                            correctGoals={
+                              quinipolo.correctAnswers[index].goalsHomeTeam
+                            }
+                            matchType={match.gameType}
+                            onChange={handleGame15Change}
+                            seeUserAnswersModeOn={seeUserAnswersModeOn}
+                          />
+                          <GoalsToggleButtonGroup
+                            teamType="away"
+                            teamName={quinipolo.quinipolo[14].awayTeam}
+                            goals={respostes[index].goalsAwayTeam}
+                            correctGoals={
+                              quinipolo.correctAnswers[index].goalsAwayTeam
+                            }
+                            matchType={match.gameType}
+                            onChange={handleGame15Change}
+                            seeUserAnswersModeOn={seeUserAnswersModeOn}
+                          />
                         </div>
                       )}
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-              {/* Submit button */}
+                );
+              })}
+            </TableBody>
+            {/* Submit button */}
+            {seeUserAnswersModeOn ? null : (
               <Button
                 variant="contained"
                 onClick={submitQuinipolo}
                 className={style.submitButton}
                 type="submit"
               >
-                Enviar
+                {editCorrectionModeOn &&
+                user.userData.moderatedLeagues.includes(quinipolo.leagueId)
+                  ? "Editar corrección"
+                  : "Enviar"}
               </Button>
-            </Table>
-          </TableContainer>
-        </FormControl>
-      </div>
+            )}
+          </Table>
+        </TableContainer>
+      </FormControl>
     );
   }
 };

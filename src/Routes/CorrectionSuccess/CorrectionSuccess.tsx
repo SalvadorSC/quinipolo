@@ -1,21 +1,13 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Button,
-  TableHead,
-} from "@mui/material";
+import { Paper, Button } from "@mui/material";
 import style from "../QuinipoloSuccess/QuinipoloSuccess.module.scss";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
+import Leaderboard from "../../Components/Leaderboard/Leaderboard";
 
-type Result = {
+export type Result = {
   username: string;
-  pointsEarned: number;
+  pointsEarned?: number;
   totalPoints: number;
   correct15thGame: boolean;
 };
@@ -33,10 +25,10 @@ const CorrectionSuccess = () => {
   const groupAndSortPointsEarned = (results: Result[]) => {
     const pointsEarnedGrouping: { [key: number]: string[] } = {};
     results.forEach(({ username, pointsEarned }) => {
-      if (!pointsEarnedGrouping[pointsEarned]) {
-        pointsEarnedGrouping[pointsEarned] = [];
+      if (!pointsEarnedGrouping[pointsEarned!]) {
+        pointsEarnedGrouping[pointsEarned!] = [];
       }
-      pointsEarnedGrouping[pointsEarned].push(username);
+      pointsEarnedGrouping[pointsEarned!].push(username);
     });
     return Object.entries(pointsEarnedGrouping).sort(
       ([a], [b]) => Number(b) - Number(a)
@@ -90,7 +82,7 @@ const CorrectionSuccess = () => {
       )
     ) {
       message += "\n *Ganadores de la Quinipolo*: \n";
-      results.forEach((result, index) => {
+      results.forEach((result) => {
         if (result.correct15thGame && result.pointsEarned === 15) {
           message += `- ${result.username}: ${result.totalPoints}p *(+${result.pointsEarned})* 🌟\n`;
         }
@@ -125,7 +117,6 @@ const CorrectionSuccess = () => {
       });
   };
 
-  console.log(sortedResults);
   return (
     <div className={style.correctionSuccessContainer}>
       <div>
@@ -158,77 +149,7 @@ const CorrectionSuccess = () => {
           )}
         </Paper>
         {results.length > 0 ? (
-          <TableContainer
-            sx={{
-              borderRadius: "0 0 10px 10px ",
-            }}
-            component={Paper}
-          >
-            <Table
-              sx={{
-                maxHeight: "50vh",
-              }}
-              aria-label="simple table"
-            >
-              <TableHead>
-                <TableRow>
-                  <TableCell>Usuario</TableCell>
-                  <TableCell align="right">Puntos Totales</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {sortedResults.map((row: Result, i) => {
-                  let position;
-                  if (
-                    i === 0 ||
-                    sortedResults[i].totalPoints ===
-                      sortedResults[0].totalPoints
-                  ) {
-                    position = "🥇";
-                  } else if (
-                    i === 1 ||
-                    sortedResults[i].totalPoints ===
-                      sortedResults[1].totalPoints
-                  ) {
-                    position = "🥈";
-                  } else if (
-                    i === 2 ||
-                    sortedResults[i].totalPoints ===
-                      sortedResults[2].totalPoints
-                  ) {
-                    position = "🥉";
-                  } else {
-                    position =
-                      sortedResults.findIndex(
-                        (element) => element.totalPoints === row.totalPoints
-                      ) + 1;
-                  }
-                  return (
-                    <TableRow
-                      key={`${row.username}-${row.totalPoints}`}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {position}. {row.username}
-                      </TableCell>
-                      <TableCell align="right" className={style.pointsCell}>
-                        {row.totalPoints}{" "}
-                        <span
-                          className={
-                            row.correct15thGame && row.pointsEarned === 15
-                              ? style.correct15
-                              : ""
-                          }
-                        >
-                          (+{row.pointsEarned})
-                        </span>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Leaderboard sortedResults={sortedResults} />
         ) : null}
       </div>
 

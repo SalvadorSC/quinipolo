@@ -1,0 +1,132 @@
+.quinipoloContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  /* From https://css.glass */
+  background: #1976d233;
+  box-shadow: 0 4px 30px #0000001a;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.quinipoloContainer:hover {
+  background: #1976d24d;
+  transition: background 0.3s;
+}
+
+.quinipoloContainer.deleted {
+  background: rgba(255, 0, 0, 0.2);
+}
+
+.quinipoloContainer.deleted:hover {
+  background: rgba(255, 0, 0, 0.3);
+}
+
+.sectionTitle {
+  text-align: left;
+}
+
+.quinipoloInfo {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.quinipoloInfo h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.quinipoloInfo h3 {
+  margin-left: 4px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.7);
+  font-weight: 600;
+}
+
+.quinipoloInfoLeft {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-right: 20px;
+}
+
+.quinipoloInfoRight {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.countdown {
+  margin-left: 14px;
+  font-size: 14px;
+  color: #6e6e6e;
+}
+
+.quinipoloActions {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.actionButton {
+  display: flex !important;
+  flex-direction: row;
+  justify-content: space-between !important;
+  align-items: center;
+  width: 100%;
+  border-radius: 5px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  margin: 10px !important;
+  margin-bottom: 0px !important;
+}
+
+.actionButtonCorrect {
+  background: #00b894 !important;
+}
+
+.actionButtonCorrect:hover {
+  background: #00a884 !important;
+}
+
+.quinipoloInfoHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+// make quinipoloInfoLeft responsive
+
+@media (max-width: 768px) {
+  .quinipoloInfoLeft {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .quinipoloInfoRight {
+    flex-direction: column;
+    margin-top: 10px;
+    justify-content: flex-start;
+  }
+  .countdown {
+    margin-left: 0;
+  }
+}
