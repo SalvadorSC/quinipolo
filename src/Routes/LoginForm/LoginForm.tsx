@@ -5,10 +5,12 @@ import MenuBar from "../../Components/MenuBar/MenuBar";
 
 const LoginForm = () => {
   return (
-    <div className={styles.loginContainer}>
+    <>
       <MenuBar />
-      <SignUp appearance={{ layout: { showOptionalFields: false } }} />
-    </div>
+      <div className={styles.signUpWrapper}>
+        <SignUp appearance={{ layout: { showOptionalFields: false } }} />
+      </div>
+    </>
   );
 };
 
