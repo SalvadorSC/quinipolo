@@ -40,8 +40,6 @@ const QuinipoloCard = ({
   };
 
   const handleDeleteQuinipolo = async () => {
-    console.log("delete");
-
     const response = await apiPatch(
       `/api/quinipolos/quinipolo/${quinipolo._id}/delete`,
       null
@@ -143,7 +141,6 @@ const QuinipoloCard = ({
                 <Button
                   className={`${styles.actionButton} ${styles.actionButtonCorrect}`}
                   onClick={() => {
-                    console.log("correct");
                     navigate(
                       `/quinipolo/correct?id=${quinipolo._id}&correct=true`
                     );
