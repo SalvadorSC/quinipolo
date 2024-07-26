@@ -13,6 +13,7 @@ import CorrectionSuccess from "./Routes/CorrectionSuccess/CorrectionSuccess";
 import { useUser } from "@clerk/clerk-react";
 import MenuBar from "./Components/MenuBar/MenuBar";
 import LeagueList from "./Routes/LeagueList/LeagueList";
+import ProPlanPayment from "./Routes/ProPlanPayment/ProPlanPayment";
 
 function App() {
   const user = useUser();
@@ -38,18 +39,18 @@ function App() {
                   path="quinipolo-success"
                   element={<QuinipoloSuccess />}
                 />
+                export default Dashboard;
                 <Route
                   path="correction-success"
                   element={<CorrectionSuccess />}
                 />
-
                 <Route path="quinipolo" element={<AnswersForm />}>
                   <Route path="correct" element={<AnswersForm />} />
                 </Route>
-
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="league-dashboard" element={<LeagueDashboard />} />
                 <Route path="join-league" element={<LeagueList />} />
+                <Route path="pro-plan" element={<ProPlanPayment />} />
                 <Route path="*" element={<Navigate to="/dashboard" />} />
               </Route>
 

@@ -36,7 +36,7 @@ const QuinipolosToAnswer = ({
           data = await apiGet(
             `/api/leagues/league/${leagueId}/leagueQuinipolos`
           );
-        } else {
+        } else if (username) {
           data = await apiGet(
             `/api/users/user/quinipolos?username=${username}`
           );

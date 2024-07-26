@@ -149,6 +149,7 @@ const Dashboard = () => {
                   disabled={/* userData !== "moderator" */ true}
                   style={{
                     marginRight: "20px",
+                    marginBottom: "20px",
                     width: "100%",
                   }}
                 >
@@ -158,6 +159,13 @@ const Dashboard = () => {
             </Tooltip>
           </div>
         </div>
+        <Button
+          variant="contained"
+          color="info"
+          onClick={() => navigate("/pro-plan")}
+        >
+          Quitar anuncios y ayudar al desarrollador
+        </Button>
       </Paper>
     </div>
   );
