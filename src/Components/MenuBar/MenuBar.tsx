@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -12,8 +12,6 @@ import {
 import { Box, Button, Container, Drawer, Toolbar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { apiGet } from "../../utils/apiUtils";
-import AdSense from "../Adsense/Adsense";
-
 const drawerWidth = 240;
 
 interface AppBarProps extends MuiAppBarProps {
@@ -74,7 +72,7 @@ export const MenuBar = () => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const logoStyle = {
     width: "140px",
@@ -131,8 +129,62 @@ export const MenuBar = () => {
                 onClick={() => navigate("/dashboard")}
               />
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                {/* <MenuItem
+                  onClick={() => scrollToSection("features")}
+                  sx={{ py: "6px", px: "12px" }}
+                >
+                  <Typography variant="body2" color="text.primary">
+                    Features
+                  </Typography>
+                </MenuItem> */}
+                {/* <MenuItem
+                  onClick={() => scrollToSection("testimonials")}
+                  sx={{ py: "6px", px: "12px" }}
+                >
+                  <Typography variant="body2" color="text.primary">
+                    Testimonials
+                  </Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => scrollToSection("highlights")}
+                  sx={{ py: "6px", px: "12px" }}
+                >
+                  <Typography variant="body2" color="text.primary">
+                    Highlights
+                  </Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => scrollToSection("pricing")}
+                  sx={{ py: "6px", px: "12px" }}
+                >
+                  <Typography variant="body2" color="text.primary">
+                    Pricing
+                  </Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => scrollToSection("faq")}
+                  sx={{ py: "6px", px: "12px" }}
+                >
+                  <Typography variant="body2" color="text.primary">
+                    FAQ
+                  </Typography>
+                </MenuItem> */}
                 <UserButton showName />
               </Box>
+              {/* {isSignedIn ? (
+                <div
+                  style={{
+                    position: "absolute",
+                    right: 15,
+                    height: 40,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <UserButton />
+                </div>
+              ) : null} */}
             </Box>
 
             <Box sx={{ display: { sm: "", md: "none" } }}>
@@ -178,14 +230,6 @@ export const MenuBar = () => {
           sx={{ mt: window.innerWidth > 400 ? "100px" : "88px" }}
         >
           <Outlet />
-          {/* Place the AdSense component wherever you want the ad to appear */}
-          <AdSense
-            client="pub-9824707177635245"
-            slot="5958237091"
-            style={{ display: "block", textAlign: "center" }}
-            format="auto"
-            responsive="true"
-          />
         </Container>
       ) : null}
     </>
