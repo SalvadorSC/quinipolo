@@ -117,8 +117,9 @@ const AnswersForm = () => {
         );
         setQuinipolo(response!.quinipolo);
         setLoading(false);
-
-        setRespostes(response!.answers.answers);
+        if (response!.answers.answers.length > 0) {
+          setRespostes(response!.answers.answers);
+        }
         return;
       } else {
         response = await apiGet<QuinipoloType>(
