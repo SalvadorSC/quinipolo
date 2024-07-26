@@ -1,0 +1,28 @@
+.proPlanAlertActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  flex-direction: row;
+  flex: 1;
+}
+
+// selector for .MuiAlert-action that has .proPlanAlertIcons as children
+.MuiAlert-action:has(.proPlanAlertIcons) {
+  /* Your styles for .MuiAlert-action when it contains .proPlanAlertIcons */
+  background-color: blue !important; /* Example style */
+}
+
+// make pro plan responsive
+
+@media (max-width: 600px) {
+  .proPlanAlertActions {
+    align-items: center;
+  }
+  .MuiAlert-action {
+    flex-direction: column;
+    align-items: center;
+  }
+}

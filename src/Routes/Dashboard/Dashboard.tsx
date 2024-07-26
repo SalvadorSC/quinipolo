@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
-import { CircularProgress, Paper, Tooltip } from "@mui/material";
+import { CircularProgress, Paper, Tooltip, Typography } from "@mui/material";
 import styles from "./Dashboard.module.scss";
 import { LoadingButton } from "@mui/lab";
 import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
@@ -54,12 +54,22 @@ const Dashboard = () => {
         }}
       >
         <div className={styles.container}>
-          <h2 className={styles.leaguesTitle} style={{ marginTop: 0 }}>
+          <Typography
+            variant="h6"
+            className={styles.leaguesTitle}
+            style={{ marginTop: 0 }}
+          >
             Quinipolos
-          </h2>
+          </Typography>
           <QuinipolosToAnswer appLocation="user-dashboard" />
           <div className={styles.leaguesContainer}>
-            <h2 className={styles.leaguesTitle}>Mis ligas</h2>
+            <Typography
+              variant={"h6"}
+              sx={{ mt: 2 }}
+              className={styles.leaguesTitle}
+            >
+              Mis ligas
+            </Typography>
             <hr />
             {userData.role === "" ? (
               <CircularProgress sx={{ mt: 4 }} />
@@ -113,7 +123,13 @@ const Dashboard = () => {
                 })}
               </>
             )}
-            <h2 className={styles.leaguesTitle}>Acciones</h2>
+            <Typography
+              variant={"h6"}
+              sx={{ mt: 2 }}
+              className={styles.leaguesTitle}
+            >
+              Acciones
+            </Typography>
             <hr />
 
             <Button

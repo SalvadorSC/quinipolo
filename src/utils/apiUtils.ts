@@ -16,14 +16,21 @@ const apiCall = async <T>(
   method: "get" | "post" | "put" | "patch",
   url: string,
   data: any = null,
-  config: AxiosRequestConfig = {}
+  config: AxiosRequestConfig = {},
+  accessToken: string | null = null
 ): Promise<T> => {
   try {
+    const headers = {
+      ...config.headers,
+      Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+    };
+
     const response: AxiosResponse<T> = await axios({
       method,
       url: `${API_BASE_URL}${url}`,
       data,
       ...config,
+      headers,
     });
     return response.data;
   } catch (error) {
@@ -41,8 +48,9 @@ const apiCall = async <T>(
  */
 export const apiGet = async <T>(
   url: string,
-  config: AxiosRequestConfig = {}
-): Promise<T> => apiCall<T>("get", url, null, config);
+  config: AxiosRequestConfig = {},
+  accessToken: string | null = null
+): Promise<T> => apiCall<T>("get", url, null, config, accessToken);
 
 /**
  * Makes a POST request.

@@ -13,9 +13,17 @@ import CorrectionSuccess from "./Routes/CorrectionSuccess/CorrectionSuccess";
 import { useUser } from "@clerk/clerk-react";
 import MenuBar from "./Components/MenuBar/MenuBar";
 import LeagueList from "./Routes/LeagueList/LeagueList";
+import ProPlan from "./Routes/ProPlan/ProPlan";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 function App() {
   const user = useUser();
+
+  const initialPayPalOptions = {
+    clientId: "test",
+    currency: "EUR",
+    intent: "capture",
+  };
 
   return (
     <React.StrictMode>
@@ -50,11 +58,20 @@ function App() {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="league-dashboard" element={<LeagueDashboard />} />
                 <Route path="join-league" element={<LeagueList />} />
+                <Route
+                  path="pro-plan"
+                  element={
+                    <PayPalScriptProvider options={initialPayPalOptions}>
+                      <ProPlan />
+                    </PayPalScriptProvider>
+                  }
+                />
                 <Route path="*" element={<Navigate to="/dashboard" />} />
               </Route>
 
               {/* <Route path="*" element={<NoMatch />} /> */}
             </Routes>
+            <div id="paypal-container-ZF4Z5LG3ANGG4"></div>
           </UserProvider>
         </FeedbackProvider>
       </BrowserRouter>

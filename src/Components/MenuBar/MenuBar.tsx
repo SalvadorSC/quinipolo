@@ -9,11 +9,20 @@ import {
   UserDataType,
   useUser as useUserData,
 } from "../../Context/UserContext/UserContext";
-import { Box, Button, Container, Drawer, Toolbar } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Collapse,
+  Container,
+  Drawer,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { apiGet } from "../../utils/apiUtils";
 import AdSense from "../Adsense/Adsense";
-
+import styles from "./MenuBar.module.scss";
 const drawerWidth = 240;
 
 interface AppBarProps extends MuiAppBarProps {
@@ -41,7 +50,7 @@ export const MenuBar = () => {
   const navigate = useNavigate();
   const { user, isSignedIn } = useUser();
   const { updateUser: updateUserData } = useUserData();
-
+  const [showAlert, setShowAlert] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       if (
@@ -75,7 +84,6 @@ export const MenuBar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [open, setOpen] = useState(false);
-
   const logoStyle = {
     width: "140px",
     height: "auto",
@@ -177,6 +185,31 @@ export const MenuBar = () => {
           className="content"
           sx={{ mt: window.innerWidth > 400 ? "100px" : "88px" }}
         >
+          <Collapse in={showAlert}>
+            <Alert
+              icon={false}
+              severity="warning"
+              onClose={() => setShowAlert(false)}
+              sx={{ textAlign: "left", display: "flex", alignItems: "center" }}
+            >
+              <div className={styles.proPlanAlertActions}>
+                <Typography variant="body2" sx={{ mr: 2 }}>
+                  Hazte PRO de Quinipolo para <b>quitar los anuncios</b>, tener
+                  análisis y disfrutar de más ligas!
+                </Typography>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => {
+                    setShowAlert(false);
+                    navigate("pro-plan");
+                  }}
+                >
+                  Unirse
+                </Button>
+              </div>
+            </Alert>
+          </Collapse>
           <Outlet />
           {/* Place the AdSense component wherever you want the ad to appear */}
           <AdSense
