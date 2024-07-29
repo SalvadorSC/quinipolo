@@ -37,7 +37,8 @@
     "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "generate-sitemap": "node generate-sitemap.js"
   },
   "eslintConfig": {
     "extends": [
@@ -63,6 +64,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
-    "@types/react-datepicker": "^4.19.5"
+    "@types/react-datepicker": "^4.19.5",
+    "sitemap": "^8.0.0"
   }
 }
