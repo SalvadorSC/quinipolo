@@ -115,19 +115,19 @@ const AnswersForm = () => {
         }>(
           `/api/quinipolos/quinipolo/${id}/answers-see/${user.userData.username}`
         );
-        if (response.answers.length === 0) {
+        if (response.answers && response.answers.length === 0) {
           setFeedback({
             message: "No tens cap resposta per aquest Quinipolò",
             severity: "error",
             open: true,
           });
-          return;
+        }
+
+        if (response.answers && response!.answers.answers.length > 0) {
+          setRespostes(response!.answers.answers);
         }
         setQuinipolo(response.quinipolo);
         setLoading(false);
-        if (response!.answers.answers.length > 0) {
-          setRespostes(response!.answers.answers);
-        }
         return;
       } else {
         response = await apiGet<QuinipoloType>(
@@ -296,10 +296,16 @@ const AnswersForm = () => {
       </span>
     );
   };
+  if (!quinipolo.quinipolo) {
+    setFeedback({
+      message: "Error cargando Quinipolo",
+      severity: "error",
+      open: true,
+    });
 
-  if (quinipolo.quinipolo === undefined) {
-    return <div>Loading...</div>;
+    navigate("/dashboard");
   }
+
   if (loading) {
     return <Loader />;
   } else {
