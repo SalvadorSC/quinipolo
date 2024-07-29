@@ -38,7 +38,7 @@ const AppBar = styled(MuiAppBar, {
 export const MenuBar = () => {
   const navigate = useNavigate();
   const { user, isSignedIn } = useUser();
-  const { updateUser: updateUserData } = useUserData();
+  const { updateUser: updateUserData, userData } = useUserData();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,11 +65,14 @@ export const MenuBar = () => {
           username: user?.username,
           emailAddress: user.primaryEmailAddress?.emailAddress,
           userId: user.id,
+          hasBeenChecked: true,
         });
       }
     };
 
-    fetchData();
+    if (!userData.hasBeenChecked) {
+      fetchData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [open, setOpen] = React.useState(false);

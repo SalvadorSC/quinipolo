@@ -19,6 +19,7 @@ export type UserDataType = {
   moderatedLeagues: string[];
   emailAddress: string;
   username: string;
+  hasBeenChecked: boolean;
   isRegistered: boolean;
 };
 
@@ -46,6 +47,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     moderatedLeagues: [],
     emailAddress: "",
     username: localStorage.getItem("username") ?? "",
+    hasBeenChecked: false,
     isRegistered: false,
   });
 
