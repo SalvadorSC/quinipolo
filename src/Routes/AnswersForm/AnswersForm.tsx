@@ -115,7 +115,15 @@ const AnswersForm = () => {
         }>(
           `/api/quinipolos/quinipolo/${id}/answers-see/${user.userData.username}`
         );
-        setQuinipolo(response!.quinipolo);
+        if (response.answers.length === 0) {
+          setFeedback({
+            message: "No tens cap resposta per aquest Quinipolò",
+            severity: "error",
+            open: true,
+          });
+          return;
+        }
+        setQuinipolo(response.quinipolo);
         setLoading(false);
         if (response!.answers.answers.length > 0) {
           setRespostes(response!.answers.answers);
@@ -268,6 +276,9 @@ const AnswersForm = () => {
   };
 
   const matchOption = (value: string, index: number) => {
+    if (!quinipolo.hasBeenCorrected) {
+      return <span>{value}</span>;
+    }
     const answerIsCorrect = (answer: string) => {
       return quinipolo.correctAnswers[index].chosenWinner === answer;
     };
@@ -347,22 +358,32 @@ const AnswersForm = () => {
                             teamName={quinipolo.quinipolo[14].homeTeam}
                             goals={respostes[index].goalsHomeTeam}
                             correctGoals={
-                              quinipolo.correctAnswers[index].goalsHomeTeam
+                              quinipolo.correctAnswers.length > 0
+                                ? quinipolo.correctAnswers[index].goalsHomeTeam
+                                : ""
                             }
                             matchType={match.gameType}
                             onChange={handleGame15Change}
                             seeUserAnswersModeOn={seeUserAnswersModeOn}
+                            quinipoloHasBeenCorrected={
+                              quinipolo.hasBeenCorrected
+                            }
                           />
                           <GoalsToggleButtonGroup
                             teamType="away"
                             teamName={quinipolo.quinipolo[14].awayTeam}
                             goals={respostes[index].goalsAwayTeam}
                             correctGoals={
-                              quinipolo.correctAnswers[index].goalsAwayTeam
+                              quinipolo.correctAnswers.length > 0
+                                ? quinipolo.correctAnswers[index].goalsAwayTeam
+                                : ""
                             }
                             matchType={match.gameType}
                             onChange={handleGame15Change}
                             seeUserAnswersModeOn={seeUserAnswersModeOn}
+                            quinipoloHasBeenCorrected={
+                              quinipolo.hasBeenCorrected
+                            }
                           />
                         </div>
                       )}

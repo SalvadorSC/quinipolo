@@ -63,18 +63,22 @@ const QuinipoloCard = ({
             <h3>{dayjs(quinipolo.endDate).utc().format("DD/MM/YY HH:mm")}</h3>
           </div>
           <div className={styles.quinipoloInfoRight}>
-            <p>
-              {quinipolo.participantsWhoAnswered.includes(username)
-                ? null
-                : "Sin responder"}
-            </p>
-            {!deadlineIsInPast ? (
-              <p className={styles.countdown}>
-                {new Date(quinipolo.endDate) > new Date() && (
-                  <Countdown date={quinipolo.endDate} />
-                )}
-              </p>
-            ) : null}
+            {quinipolo.isDeleted ? (
+              <p>Eliminada</p>
+            ) : (
+              <>
+                {!quinipolo.participantsWhoAnswered.includes(username) ? (
+                  <p>Sin responder</p>
+                ) : null}
+                {!deadlineIsInPast ? (
+                  <p className={styles.countdown}>
+                    {new Date(quinipolo.endDate) > new Date() && (
+                      <Countdown date={quinipolo.endDate} />
+                    )}
+                  </p>
+                ) : null}
+              </>
+            )}
           </div>
           {moderatedLeagues.includes(quinipolo.leagueId) &&
           !quinipolo.hasBeenCorrected &&

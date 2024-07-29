@@ -10,6 +10,7 @@ interface GoalsToggleButtonGroupProps {
   matchType: "waterpolo" | "football";
   onChange: (event: React.MouseEvent<HTMLElement>, newValue: string) => void;
   seeUserAnswersModeOn: string | null;
+  quinipoloHasBeenCorrected: boolean;
 }
 
 const GoalsToggleButtonGroup: React.FC<GoalsToggleButtonGroupProps> = ({
@@ -20,6 +21,7 @@ const GoalsToggleButtonGroup: React.FC<GoalsToggleButtonGroupProps> = ({
   matchType,
   onChange,
   seeUserAnswersModeOn,
+  quinipoloHasBeenCorrected,
 }) => {
   const values =
     matchType === "waterpolo"
@@ -27,9 +29,9 @@ const GoalsToggleButtonGroup: React.FC<GoalsToggleButtonGroupProps> = ({
       : ["1/2", `1/2__${teamType}`];
 
   const getButtonClassName = (value: string) => {
-    if (!seeUserAnswersModeOn) return "";
-    if (correctGoals === value) return style.correctAnswer;
-    if (goals === value) return style.answerIsWrong;
+    if (!seeUserAnswersModeOn || !quinipoloHasBeenCorrected) return "";
+    else if (correctGoals === value) return style.correctAnswer;
+    else if (goals === value) return style.answerIsWrong;
     return "";
   };
 
