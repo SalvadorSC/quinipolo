@@ -106,6 +106,13 @@
   background: #00a884 !important;
 }
 
+.actionButtonCorrect:disabled,
+.actionButtonCorrect:disabled:hover {
+  color: rgba(0, 0, 0, 0.26) !important;
+  box-shadow: none !important;
+  background-color: rgba(0, 0, 0, 0.12) !important;
+}
+
 .quinipoloInfoHeader {
   display: flex;
   flex-direction: row;
