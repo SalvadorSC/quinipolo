@@ -7,6 +7,7 @@ import { LoadingButton } from "@mui/lab";
 import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
 import { useUser as useUserData } from "../../Context/UserContext/UserContext";
 import SportsVolleyballIcon from "@mui/icons-material/SportsVolleyball";
+import WorkSpacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import WavesIcon from "@mui/icons-material/Waves";
 import SportsBarIcon from "@mui/icons-material/SportsBar";
 import PoolIcon from "@mui/icons-material/Pool";
@@ -158,6 +159,18 @@ const Dashboard = () => {
             </Tooltip>
           </div>
         </div>
+        {userData.role === "user" ? (
+          <Button
+            startIcon={<WorkSpacePremiumIcon />}
+            endIcon={<WorkSpacePremiumIcon />}
+            variant="contained"
+            color="warning"
+            sx={{ mt: 4 }}
+            onClick={() => navigate("/subscribe")}
+          >
+            Quitar anuncios y ayudar al desarrollador
+          </Button>
+        ) : null}
       </Paper>
     </div>
   );
