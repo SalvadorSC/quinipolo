@@ -13,10 +13,14 @@ import CorrectionSuccess from "./Routes/CorrectionSuccess/CorrectionSuccess";
 import { useUser } from "@clerk/clerk-react";
 import MenuBar from "./Components/MenuBar/MenuBar";
 import LeagueList from "./Routes/LeagueList/LeagueList";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import SubscriptionPage from "./Routes/SubscriptionPage/SubscriptionPage";
 
 function App() {
   const user = useUser();
 
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
   return (
     <React.StrictMode>
       <BrowserRouter>
@@ -50,6 +54,14 @@ function App() {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="league-dashboard" element={<LeagueDashboard />} />
                 <Route path="join-league" element={<LeagueList />} />
+                <Route
+                  path="subscribe"
+                  element={
+                    <Elements stripe={stripePromise}>
+                      <SubscriptionPage />
+                    </Elements>
+                  }
+                />
                 <Route path="*" element={<Navigate to="/dashboard" />} />
               </Route>
 

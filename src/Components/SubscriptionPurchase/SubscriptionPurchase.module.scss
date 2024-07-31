@@ -1,0 +1,31 @@
+.subscriptionCard {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  background-color: #1976d233 !important;
+}
+
+.subscriptionCard:hover {
+  background: #1976d24d !important;
+  transition: background 0.3s !important;
+}
+
+.subscriptionTypesWrapper {
+  gap: 20px;
+}
+
+.subscriptionCardTypesWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .subscriptionCardTypesWrapper,
+  .subscriptionTypesWrapper {
+    flex-direction: column;
+  }
+}
