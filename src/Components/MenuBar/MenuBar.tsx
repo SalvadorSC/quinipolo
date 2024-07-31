@@ -12,7 +12,6 @@ import {
 import { Box, Button, Container, Drawer, Toolbar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { apiGet } from "../../utils/apiUtils";
-import AdsComponent from "../AdsenseComponent/AdsenseComponent";
 const drawerWidth = 240;
 
 interface AppBarProps extends MuiAppBarProps {
@@ -201,14 +200,6 @@ export const MenuBar = () => {
           sx={{ mt: window.innerWidth > 400 ? "100px" : "88px" }}
         >
           <Outlet />
-          {userData.role === "user" ? (
-            <Box mt={3} mb={3}>
-              <AdsComponent
-                dataAdSlot="5958237091"
-                dataAdLayoutKey={"-6v+eu-h-24+5o"}
-              />
-            </Box>
-          ) : null}
         </Container>
       ) : null}
     </>

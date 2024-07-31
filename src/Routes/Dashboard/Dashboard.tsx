@@ -168,7 +168,7 @@ const Dashboard = () => {
             sx={{ mt: 4 }}
             onClick={() => navigate("/subscribe")}
           >
-            Quitar anuncios y ayudar al desarrollador
+            Hazte PRO y ayuda al desarrollador
           </Button>
         ) : null}
       </Paper>
