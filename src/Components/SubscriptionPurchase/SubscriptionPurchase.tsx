@@ -63,7 +63,7 @@ const SubscriptionPurchase: React.FC<SubscriptionPurchaseProps> = ({
                 planName="Plan PRO (Anual)"
                 planPrice="30€/año"
                 planId={process.env.REACT_APP_PRO_YEARLY_PLAN_ID as string}
-                description="Este plan te quitará los anuncios y te permitirá unirte a todas
+                description="Este plan ayuda al desarrollador y te permitirá unirte a todas
               las ligas que quieras."
                 onSelect={handlePlanSelect}
               />
@@ -73,8 +73,8 @@ const SubscriptionPurchase: React.FC<SubscriptionPurchaseProps> = ({
                 planName="Plan PRO"
                 planPrice="3€/mes"
                 planId={process.env.REACT_APP_PRO_MONTHLY_PLAN_ID as string}
-                description="Este plan te quitará los anuncios y te permitirá unirte a todas
-              las ligas que quieras."
+                description="Este plan ayuda al desarrollador y te permitirá unirte a todas
+              las ligas que quieras. En un futuro te permitirá ver tus propias estadísticas por liga."
                 onSelect={handlePlanSelect}
               />
             )}
