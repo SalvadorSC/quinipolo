@@ -5,7 +5,7 @@ import styles from "./SubscriptionPage.module.scss"; // Create a corresponding S
 import SubscriptionDetails from "../../Components/SubscriptionDetails/SubscriptionDetails";
 import SubscriptionPurchase from "../../Components/SubscriptionPurchase/SubscriptionPurchase";
 import { apiGet } from "../../utils/apiUtils";
-import { useUser } from "../../Context/UserContext/UserContext";
+import { UserDataType, useUser } from "../../Context/UserContext/UserContext";
 
 const SubscriptionPage: React.FC = () => {
   const [subscription, setSubscription] = useState<any>(null);
@@ -25,6 +25,12 @@ const SubscriptionPage: React.FC = () => {
         }
       );
       setSubscription(response);
+      const data = await apiGet<UserDataType>(
+        `/api/users/user/data/${user.userData.username}`
+      );
+      user.updateUser({
+        role: data.role,
+      });
       setLoading(false);
     } catch (error) {
       console.error("Error fetching subscription details:", error);

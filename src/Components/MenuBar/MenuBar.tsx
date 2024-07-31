@@ -12,6 +12,7 @@ import {
 import { Box, Button, Container, Drawer, Toolbar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { apiGet } from "../../utils/apiUtils";
+import AdsComponent from "../AdsenseComponent/AdsenseComponent";
 const drawerWidth = 240;
 
 interface AppBarProps extends MuiAppBarProps {
@@ -64,7 +65,7 @@ export const MenuBar = () => {
           moderatedLeagues: data.moderatedLeagues,
           username: user?.username,
           emailAddress: user.primaryEmailAddress?.emailAddress,
-          userId: user.id,
+          userId: data.userId,
           hasBeenChecked: true,
         });
       }
@@ -131,63 +132,22 @@ export const MenuBar = () => {
                 alt="logo of quinipolo"
                 onClick={() => navigate("/dashboard")}
               />
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                {/* <MenuItem
-                  onClick={() => scrollToSection("features")}
-                  sx={{ py: "6px", px: "12px" }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Features
-                  </Typography>
-                </MenuItem> */}
-                {/* <MenuItem
-                  onClick={() => scrollToSection("testimonials")}
-                  sx={{ py: "6px", px: "12px" }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Testimonials
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection("highlights")}
-                  sx={{ py: "6px", px: "12px" }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Highlights
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection("pricing")}
-                  sx={{ py: "6px", px: "12px" }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Pricing
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection("faq")}
-                  sx={{ py: "6px", px: "12px" }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    FAQ
-                  </Typography>
-                </MenuItem> */}
-                <UserButton showName />
+              <Box sx={{ display: "flex" }}>
+                {userData.role !== "user" ? (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="warning"
+                    sx={{ display: { xs: "none", sm: "none", md: "flex" } }}
+                    onClick={() => navigate("subscribe")}
+                  >
+                    Gestionar Suscripción
+                  </Button>
+                ) : null}
+                <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                  <UserButton showName />
+                </Box>
               </Box>
-              {/* {isSignedIn ? (
-                <div
-                  style={{
-                    position: "absolute",
-                    right: 15,
-                    height: 40,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <UserButton />
-                </div>
-              ) : null} */}
             </Box>
 
             <Box sx={{ display: { sm: "", md: "none" } }}>
@@ -215,9 +175,17 @@ export const MenuBar = () => {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        flexDirection: "column",
                       }}
                     >
                       <UserButton showName />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => navigate("subscribe")}
+                      >
+                        Gestionar Suscripción
+                      </Button>
                     </div>
                   ) : null}
                 </Box>
@@ -233,6 +201,14 @@ export const MenuBar = () => {
           sx={{ mt: window.innerWidth > 400 ? "100px" : "88px" }}
         >
           <Outlet />
+          {userData.role === "user" ? (
+            <Box mt={3} mb={3}>
+              <AdsComponent
+                dataAdSlot="5958237091"
+                dataAdLayoutKey={"-6v+eu-h-24+5o"}
+              />
+            </Box>
+          ) : null}
         </Container>
       ) : null}
     </>

@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  Alert,
+  Box,
+  Button,
   CircularProgress,
+  Collapse,
   Paper,
   Table,
   TableBody,
@@ -10,6 +14,7 @@ import {
   TableHead,
   TableRow,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import styles from "./LeagueList.module.scss";
@@ -17,6 +22,7 @@ import { useUser } from "../../Context/UserContext/UserContext";
 import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { apiGet, apiPut } from "../../utils/apiUtils";
+import WorkSpacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import LockIcon from "@mui/icons-material/Lock";
 type LeaguesTypes = {
@@ -33,9 +39,15 @@ const LeagueList = () => {
   const navigate = useNavigate();
   const [leagueListData, setLeagueListData] = useState<LeaguesTypes[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(true);
   const { setFeedback } = useFeedback();
 
   const { userData } = useUser();
+
+  const participantIsInMoreThan2Leagues =
+    leagueListData.filter((league) =>
+      league.participants.includes(userData.username)
+    ).length > 2 && userData.role === "user";
 
   const fetchLeagueListData = useCallback(async () => {
     // Fetch data logic
@@ -98,6 +110,38 @@ const LeagueList = () => {
     <div className={styles.leagueListContainer}>
       <Paper elevation={3} sx={{ width: "100%", p: 4, borderRadius: "20px" }}>
         <h1 style={{ marginBottom: 20 }}>Ligas actuales</h1>
+        {participantIsInMoreThan2Leagues ? (
+          <Collapse in={open}>
+            <Alert
+              severity={"warning"}
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              <Box
+                display={{ sm: "flex", md: "flex" }}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <Typography variant="body1">
+                  Debes ser usuario <b>PRO</b> o <b>Moderador</b> para
+                  pertenecer a más de 2 ligas
+                </Typography>
+                <Button
+                  startIcon={<WorkSpacePremiumIcon />}
+                  endIcon={<WorkSpacePremiumIcon />}
+                  variant="contained"
+                  color="warning"
+                  sx={{ ml: { sm: 0, md: 2 }, mt: { xs: 2, sm: 2, md: 0 } }}
+                  size="small"
+                  onClick={() => navigate("/subscribe")}
+                >
+                  Hacerse PRO
+                </Button>
+              </Box>
+            </Alert>
+          </Collapse>
+        ) : null}
         {loading || leagueListData.length === 0 ? (
           <CircularProgress sx={{ m: 4 }} />
         ) : (
@@ -148,7 +192,10 @@ const LeagueList = () => {
                             handleJoinLeague(leagueListData?.indexOf(league))
                           }
                           loading={!leagueListData}
-                          disabled={false}
+                          disabled={
+                            !league.participants.includes(userData.username) &&
+                            participantIsInMoreThan2Leagues
+                          }
                         >
                           {league.participants.includes(userData.username)
                             ? "Ir"
