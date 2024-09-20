@@ -21,7 +21,7 @@ import styles from "./LeagueList.module.scss";
 import { useUser } from "../../Context/UserContext/UserContext";
 import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { apiGet, apiPut } from "../../utils/apiUtils";
+import { apiGet, apiPost, apiPut } from "../../utils/apiUtils";
 import WorkSpacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import LockIcon from "@mui/icons-material/Lock";
@@ -72,6 +72,32 @@ const LeagueList = () => {
       navigate("/league-dashboard?id=" + leagueListData[index].leagueId);
     } else if (leagueListData?.[index]?.isPrivate) {
       // make api call to join private league
+      apiPost(
+        `/api/leagues/${leagueListData?.[index].leagueId}/request-participant`,
+        {
+          userId: userData.userId,
+        }
+      )
+        .then((data) => {
+          setLeagueListData((prevData) => {
+            const newData = [...prevData];
+            newData[index].participants.push(userData.username);
+            return newData;
+          });
+          setFeedback({
+            message: "Te has unido a la liga",
+            severity: "success",
+            open: true,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          setFeedback({
+            message: "Error al unirse a la liga",
+            severity: "error",
+            open: true,
+          });
+        });
     } else {
       apiPut(`/api/leagues/${leagueListData[index].leagueId}/join`, {
         leagueId: leagueListData[index].leagueId,
