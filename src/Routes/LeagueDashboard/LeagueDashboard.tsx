@@ -10,6 +10,7 @@ import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { apiGet, apiPost } from "../../utils/apiUtils";
 import Leaderboard from "../../Components/Leaderboard/Leaderboard";
 import RequestsTable from "../../Components/RequestsTable/RequestsTable";
+
 export type LeaguesTypes = {
   quinipolosToAnswer: any[];
   leaguesToCorrect: any[];
@@ -66,6 +67,9 @@ const LeagueDashboard = () => {
   const { isSignedIn } = useClerkUserData();
   const { userData } = useUser();
 
+  const MAX_RETRIES = 5;
+  const RETRY_DELAY = 3000; // 3 seconds
+
   const getLeagueData = async () => {
     apiGet(`/api/leagues/${leagueId}`)
       .then((data: any) => {
@@ -97,26 +101,33 @@ const LeagueDashboard = () => {
       });
   };
 
-  const getLeagueLeaderBoardData = async () => {
+  const getLeagueLeaderBoardData = async (retries = 0) => {
     apiGet(`/api/leagues/${leagueId}/leaderboard`)
       .then((data: any) => {
-        const transformedLeaderboardData = data.participantsLeaderboard.map(
-          (score: LeaderboardScore) => {
-            return {
-              username: score.username,
-              nQuinipolosParticipated: score.nQuinipolosParticipated,
-              totalPoints: score.points,
-              fullCorrectQuinipolos: score.fullCorrectQuinipolos,
-            };
-          }
-        );
+        if (
+          data.participantsLeaderboard.length === 0 &&
+          retries < MAX_RETRIES
+        ) {
+          setTimeout(() => getLeagueLeaderBoardData(retries + 1), RETRY_DELAY);
+        } else {
+          const transformedLeaderboardData = data.participantsLeaderboard.map(
+            (score: LeaderboardScore) => {
+              return {
+                username: score.username,
+                nQuinipolosParticipated: score.nQuinipolosParticipated,
+                totalPoints: score.points,
+                fullCorrectQuinipolos: score.fullCorrectQuinipolos,
+              };
+            }
+          );
 
-        setLeaderboardData(
-          transformedLeaderboardData.sort(
-            (a: LeaderboardScore, b: LeaderboardScore) => b.points - a.points
-          )
-        );
-        setLoading(false);
+          setLeaderboardData(
+            transformedLeaderboardData.sort(
+              (a: LeaderboardScore, b: LeaderboardScore) => b.points - a.points
+            )
+          );
+          setLoading(false);
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -226,6 +237,7 @@ const LeagueDashboard = () => {
             <Stack>
               <h2 className={styles.actionsTitle}>Clasificación</h2>
               <hr style={{ marginBottom: 16 }} />
+
               <Leaderboard sortedResults={leaderboardData} />
             </Stack>
             {isUserModeratorInThisLeague ? (
