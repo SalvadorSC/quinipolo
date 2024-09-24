@@ -44,6 +44,13 @@ type LeaderboardScore = {
   fullCorrectQuinipolos: number;
 };
 
+type TransformedLeaderboardScore = {
+  username: string;
+  nQuinipolosParticipated: number;
+  totalPoints: number;
+  fullCorrectQuinipolos: number;
+};
+
 const LeagueDashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
@@ -104,30 +111,34 @@ const LeagueDashboard = () => {
   const getLeagueLeaderBoardData = async (retries = 0) => {
     apiGet(`/api/leagues/${leagueId}/leaderboard`)
       .then((data: any) => {
-        if (
-          data.participantsLeaderboard.length === 0 &&
-          retries < MAX_RETRIES
+        /* if (
+          (data.participantsLeaderboard.length === 0 &&
+            retries < MAX_RETRIES) ||
+          leaderboardData.length === 0
         ) {
           setTimeout(() => getLeagueLeaderBoardData(retries + 1), RETRY_DELAY);
-        } else {
-          const transformedLeaderboardData = data.participantsLeaderboard.map(
-            (score: LeaderboardScore) => {
-              return {
-                username: score.username,
-                nQuinipolosParticipated: score.nQuinipolosParticipated,
-                totalPoints: score.points,
-                fullCorrectQuinipolos: score.fullCorrectQuinipolos,
-              };
-            }
-          );
+        } else { */
+        const transformedLeaderboardData = data.participantsLeaderboard.map(
+          (score: LeaderboardScore) => {
+            return {
+              username: score.username,
+              nQuinipolosParticipated: score.nQuinipolosParticipated,
+              totalPoints: score.points,
+              fullCorrectQuinipolos: score.fullCorrectQuinipolos,
+            };
+          }
+        );
 
-          setLeaderboardData(
-            transformedLeaderboardData.sort(
-              (a: LeaderboardScore, b: LeaderboardScore) => b.points - a.points
-            )
-          );
-          setLoading(false);
-        }
+        console.log(transformedLeaderboardData, data.participantsLeaderboard);
+
+        const sortedScores = transformedLeaderboardData.sort(
+          (a: TransformedLeaderboardScore, b: TransformedLeaderboardScore) =>
+            b.totalPoints - a.totalPoints
+        );
+
+        setLeaderboardData(sortedScores);
+        setLoading(false);
+        /* } */
       })
       .catch((error) => {
         console.error(error);
@@ -236,6 +247,9 @@ const LeagueDashboard = () => {
             />
             <Stack>
               <h2 className={styles.actionsTitle}>Clasificación</h2>
+              <p className={styles.disclaimer}>
+                Disclaimer: Hay un bug que multiplica los puntos por 3. WIP!{" "}
+              </p>
               <hr style={{ marginBottom: 16 }} />
 
               <Leaderboard sortedResults={leaderboardData} />

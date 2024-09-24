@@ -9,8 +9,10 @@ body {
   background: fixed;
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url("./assets/dark_bg_original.svg");
+  background-image: url("./assets/light_bg.svg");
   box-sizing: border-box;
+  background-color: var(--background);
+  color: var(--text);
 }
 
 .App-logo {
@@ -25,18 +27,18 @@ body {
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--primary);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--text);
 }
 
 .App-link {
-  color: #61dafb;
+  color: var(--accent);
 }
 
 @keyframes App-logo-spin {

@@ -97,6 +97,8 @@ const QuinipolosToAnswer = ({
                     return false;
                   }
                   return (
+                    /* moderatedLeagues.includes(quinipolo.leagueName) ||
+                    !quinipolo.hasBeenCorrected || */
                     (moderatedLeagues.includes(quinipolo.leagueName) &&
                       !quinipolo.hasBeenCorrected) ||
                     (quinipolo.endDate > new Date().toISOString() &&

@@ -22,7 +22,6 @@ import { useUser } from "../../Context/UserContext/UserContext";
 import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { apiGet, apiPost, apiPut } from "../../utils/apiUtils";
-import WorkSpacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import LockIcon from "@mui/icons-material/Lock";
 type LeaguesTypes = {
@@ -33,6 +32,12 @@ type LeaguesTypes = {
   leagueId: string;
   participants: string[];
   isPrivate: boolean;
+  participantPetitions: {
+    userId: string;
+    username: string;
+    status: string;
+    date: Date;
+  }[];
 };
 
 const LeagueList = () => {
@@ -71,21 +76,17 @@ const LeagueList = () => {
     if (leagueListData?.[index]?.participants.includes(userData.username)) {
       navigate("/league-dashboard?id=" + leagueListData[index].leagueId);
     } else if (leagueListData?.[index]?.isPrivate) {
-      // make api call to join private league
       apiPost(
         `/api/leagues/${leagueListData?.[index].leagueId}/request-participant`,
         {
           userId: userData.userId,
+          username: userData.username,
         }
       )
-        .then((data) => {
-          setLeagueListData((prevData) => {
-            const newData = [...prevData];
-            newData[index].participants.push(userData.username);
-            return newData;
-          });
+        .then((data: any) => {
+          setLeagueListData(data);
           setFeedback({
-            message: "Te has unido a la liga",
+            message: "Solicitud enviada",
             severity: "success",
             open: true,
           });
@@ -136,7 +137,7 @@ const LeagueList = () => {
     <div className={styles.leagueListContainer}>
       <Paper elevation={3} sx={{ width: "100%", p: 4, borderRadius: "20px" }}>
         <h1 style={{ marginBottom: 20 }}>Ligas actuales</h1>
-        {participantIsInMoreThan2Leagues ? (
+        {/* {participantIsInMoreThan2Leagues ? (
           <Collapse in={open}>
             <Alert
               severity={"warning"}
@@ -167,7 +168,7 @@ const LeagueList = () => {
               </Box>
             </Alert>
           </Collapse>
-        ) : null}
+        ) : null} */}
         {loading || leagueListData.length === 0 ? (
           <CircularProgress sx={{ m: 4 }} />
         ) : (
@@ -209,6 +210,14 @@ const LeagueList = () => {
                         title={
                           league.participants.includes(userData.username)
                             ? "Ir a la liga"
+                            : league.participantPetitions.find((petition) => {
+                                console.log(
+                                  petition,
+                                  petition.username === userData.username
+                                );
+                                return petition.username === userData.username;
+                              })
+                            ? "Solicitud Pendiente"
                             : "Unirse a la liga"
                         }
                       >
@@ -218,13 +227,23 @@ const LeagueList = () => {
                             handleJoinLeague(leagueListData?.indexOf(league))
                           }
                           loading={!leagueListData}
-                          disabled={
-                            !league.participants.includes(userData.username) &&
+                          /* disabled={
+                            !league.participants.includes(
+                              userData.username
+                            ) &&
                             participantIsInMoreThan2Leagues
-                          }
+                          } */
                         >
                           {league.participants.includes(userData.username)
                             ? "Ir"
+                            : league.participantPetitions.find((petition) => {
+                                console.log(
+                                  petition,
+                                  petition.username === userData.username
+                                );
+                                return petition.username === userData.username;
+                              })
+                            ? "Pendiente"
                             : "Unirse"}
                         </LoadingButton>
                       </Tooltip>
