@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, FormEvent } from "react";
 import {
   Paper,
   TextField,
@@ -7,94 +7,67 @@ import {
   Box,
   Switch,
   FormControlLabel,
-  styled,
   Snackbar,
   Alert,
 } from "@mui/material";
 import { apiPost } from "../../utils/apiUtils";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
+import { useUser } from "../../Context/UserContext/UserContext";
+import { useNavigate } from "react-router-dom";
 
 // Define the response type for the image upload
-interface ImageUploadResponse {
+/* interface ImageUploadResponse {
   imageUrl: string;
-}
+} */
 
 // Define the response type for league creation
 interface LeagueCreationResponse {
   leagueId: string;
   leagueName: string;
   isPrivate: boolean;
-  leagueImage: string;
+  leagueImage?: string;
 }
 
 // Define the NewLeague component
 const NewLeague: React.FC = () => {
   const [leagueName, setLeagueName] = useState<string>("");
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+
+  const { userData } = useUser();
 
   const { setFeedback } = useFeedback();
 
-  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      if (selectedFile.size > MAX_FILE_SIZE) {
-        setError("El tamaño del archivo excede el límite de 5MB.");
-        return;
-      }
-      setFile(selectedFile);
-      setPreview(URL.createObjectURL(selectedFile));
-      setError(null); // Clear previous errors
-    }
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!leagueName || !file) {
-      setError(
-        "Por favor complete todos los campos requeridos y suba una imagen."
-      );
+    if (!leagueName) {
+      setError("Por favor complete todos los campos requeridos.");
       return;
     }
-
+    const leagueId = leagueName.toLowerCase().replace(/\s/g, "_");
     try {
-      // First, upload the image
-      const formData = new FormData();
-      if (file) {
-        formData.append("file", file);
-      }
-      const imageResponse = await apiPost<ImageUploadResponse>(
-        "/images/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      // Then, create the league with the image URL
       const newLeague = {
         leagueName,
+        leagueId: leagueId,
         isPrivate,
-        leagueImage: imageResponse.imageUrl, // Assuming the imageUrl is returned
+        createdBy: userData.username,
+        participants: [userData.username],
+        moderatorArray: [userData.username],
       };
       const response = await apiPost<LeagueCreationResponse>(
-        "/leagues",
+        "/api/leagues",
         newLeague
       );
-      console.log("League created successfully:", response);
 
       setFeedback({
         message: "Liga creada exitosamente",
         severity: "success",
         open: true,
       });
+
+      navigate("/league-dashboard?id=" + response.leagueId);
     } catch (error) {
       console.error("Error creating league:", error);
       setFeedback({
@@ -104,18 +77,6 @@ const NewLeague: React.FC = () => {
       });
     }
   };
-
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
 
   return (
     <Paper
@@ -154,7 +115,7 @@ const NewLeague: React.FC = () => {
             label="Liga Privada"
           />
         </Box>
-        <Box mb={2}>
+        {/*  <Box mb={2}>
           <Button
             component="label"
             role={undefined}
@@ -169,12 +130,12 @@ const NewLeague: React.FC = () => {
               accept="image/*"
             />
           </Button>
-        </Box>
-        {preview && (
+        </Box> */}
+        {/* {preview && (
           <Box mb={2}>
             <img src={preview} alt="Archivo seleccionado" width="100%" />
           </Box>
-        )}
+        )} */}
         <Button type="submit" variant="contained" color="primary">
           Crear Liga
         </Button>

@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./QuinipoloCard.module.scss";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { apiPatch } from "../../utils/apiUtils";
+import { useTheme } from "../../Context/ThemeContext/ThemeContext";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -29,7 +30,7 @@ const QuinipoloCard = ({
   moderatedLeagues,
 }: QuinipoloCardProps) => {
   const navigate = useNavigate();
-
+  const { theme } = useTheme();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -53,14 +54,20 @@ const QuinipoloCard = ({
     <div
       className={`${styles.quinipoloContainer} ${
         quinipolo.isDeleted ? styles.deleted : ""
-      }`}
+      } ${theme === "dark" ? styles.dark : ""}`}
       key={`${quinipolo.league}-${quinipolo.endDate}`}
     >
       <div className={styles.quinipoloInfo}>
         <div className={styles.quinipoloInfoHeader}>
           <div className={styles.quinipoloInfoLeft}>
             <h2>{`${quinipolo.leagueName}`}</h2>
-            <h3>{dayjs(quinipolo.endDate).utc().format("DD/MM/YY HH:mm")}</h3>
+            <h3
+              className={`${styles.endDate} ${
+                theme === "dark" ? styles.endDateDark : ""
+              }`}
+            >
+              {dayjs(quinipolo.endDate).utc().format("DD/MM/YY HH:mm")}
+            </h3>
           </div>
           <div className={styles.quinipoloInfoRight}>
             {quinipolo.isDeleted ? (
@@ -71,7 +78,11 @@ const QuinipoloCard = ({
                   <p>Sin responder</p>
                 ) : null}
                 {!deadlineIsInPast ? (
-                  <p className={styles.countdown}>
+                  <p
+                    className={`${styles.countdown} ${
+                      theme !== "light" && styles.countdownDark
+                    }`}
+                  >
                     {new Date(quinipolo.endDate) > new Date() && (
                       <Countdown date={quinipolo.endDate} />
                     )}
@@ -143,7 +154,9 @@ const QuinipoloCard = ({
                 }
               >
                 <Button
-                  className={`${styles.actionButton} ${styles.actionButtonCorrect}`}
+                  className={`${styles.actionButton} ${
+                    styles.actionButtonCorrect
+                  } ${theme === "dark" ? styles.dark : ""}`}
                   onClick={() => {
                     navigate(
                       `/quinipolo/correct?id=${quinipolo._id}&correct=true`

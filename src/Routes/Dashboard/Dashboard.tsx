@@ -1,20 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
-import { CircularProgress, Paper, Tooltip } from "@mui/material";
+import { CircularProgress, Paper, Box } from "@mui/material";
 import styles from "./Dashboard.module.scss";
 import { LoadingButton } from "@mui/lab";
 import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
 import { useUser as useUserData } from "../../Context/UserContext/UserContext";
 import SportsVolleyballIcon from "@mui/icons-material/SportsVolleyball";
-import WorkSpacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import WavesIcon from "@mui/icons-material/Waves";
 import SportsBarIcon from "@mui/icons-material/SportsBar";
 import PoolIcon from "@mui/icons-material/Pool";
+import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
+import { Space } from "antd";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { userData } = useUserData();
+  const { setFeedback } = useFeedback();
+  const [leagues, setLeagues] = useState<any[]>([]);
+  /* const [leagueImages, setLeagueImages] = useState<{ [key: string]: string }>(
+    {}
+  ); */
+
+  /* useEffect(() => {
+    const fetchImages = async () => {
+      const images: { [key: string]: string } = {};
+      for (const league of userData.leagues) {
+        if (league.leagueImage) {
+          images[league.leagueId] = league.leagueImage;
+        } else if (league.hasImage) {
+          const imageUrl = await apiGet<string>(
+            `/api/leagues/images/${league.leagueId}`
+          );
+          images[league.leagueId] = imageUrl;
+        }
+      }
+      setLeagueImages(images);
+    };
+
+    fetchImages();
+  }, [userData.leagues]); */
 
   const returnRandomIcon = () => {
     const iconStyle = {
@@ -27,8 +52,8 @@ const Dashboard = () => {
       <PoolIcon key="Pool" style={iconStyle} />,
     ];
     return (
-      <div
-        style={{
+      <Box
+        sx={{
           marginLeft: "10px",
           width: "40px",
           background: "#ddd",
@@ -40,9 +65,36 @@ const Dashboard = () => {
         }}
       >
         {icons[Math.floor(Math.random() * icons.length)]}
-      </div>
+      </Box>
     );
   };
+
+  const canCreateLeague = (role: string, leagues: any[]) => {
+    if (role === "moderator" && leagues.length >= 1) {
+      setFeedback({
+        message: "Solo se permite crear una liga por moderador.",
+        severity: "error",
+        open: true,
+      });
+      return false;
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    // this is to ensure that the global league is always the first one
+    if (userData.leagues.length === 0) return;
+    let leaguesArray = userData.leagues;
+
+    leaguesArray.unshift(
+      leaguesArray.splice(
+        leaguesArray.findIndex((league) => league.leagueId === "global"),
+        1
+      )[0]
+    );
+
+    setLeagues(leaguesArray);
+  }, [userData.leagues]);
 
   return (
     <div className={styles.dashboardContainer}>
@@ -70,24 +122,24 @@ const Dashboard = () => {
               </p>
             ) : (
               <>
-                {userData.leagues.map((league) => {
-                  return (
-                    <Button
-                      sx={{
-                        display: "flex",
-                        width: "100%",
-                        marginTop: "20px",
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        padding: "10px",
-                        minHeight: "60px",
-                      }}
-                      key={league.leagueId}
-                      onClick={() => {
-                        navigate(`/league-dashboard?id=${league.leagueId}`);
-                      }}
-                      variant={"contained"}
-                    >
+                {leagues.map((league) => (
+                  <Button
+                    sx={{
+                      display: "flex",
+                      width: "100%",
+                      marginTop: "20px",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      padding: "10px",
+                      minHeight: "60px",
+                    }}
+                    key={league.leagueId}
+                    onClick={() => {
+                      navigate(`/league-dashboard?id=${league.leagueId}`);
+                    }}
+                    variant={"contained"}
+                  >
+                    <>
                       {league.leagueImage ? (
                         <img
                           style={{
@@ -101,7 +153,19 @@ const Dashboard = () => {
                       ) : (
                         returnRandomIcon()
                       )}
-
+                      {/*  {leagueImages[league.leagueId] ? (
+                        <img
+                          style={{
+                            maxHeight: "40px",
+                            maxWidth: "40px",
+                            margin: "0 10px",
+                          }}
+                          src={leagueImages[league.leagueId]}
+                          alt={`Logo Liga ${league.leagueName}`}
+                        />
+                      ) : (
+                        returnRandomIcon()
+                      )} */}
                       <p
                         style={{
                           marginLeft: "20px",
@@ -109,9 +173,9 @@ const Dashboard = () => {
                       >
                         <b>{league.leagueName}</b>
                       </p>
-                    </Button>
-                  );
-                })}
+                    </>
+                  </Button>
+                ))}
               </>
             )}
             <h2 className={styles.leaguesTitle}>Acciones</h2>
@@ -128,39 +192,45 @@ const Dashboard = () => {
             >
               Ver todas las ligas
             </Button>
-            <Tooltip
-              arrow
-              title={
-                "Por ahora no se permite crear ninguna liga." /* &&
-                userData === "" &&
-                "Cargando permisos del usuario...") ||
-              (userData !== "moderator" &&
-                "Solo los moderadores pueden crear Ligas") */
-              }
+
+            <LoadingButton
+              loading={userData.role === ""}
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                /* if (
+                  userData.role === "moderator" &&
+                  !canCreateLeague(userData.role, userData.leagues)
+                ) {
+                  navigate("/subscribe");
+                } else */ if (userData.role !== "moderator") {
+                  setFeedback({
+                    message: "Solo los moderadores pueden crear Ligas",
+                    severity: "error",
+                    open: true,
+                  });
+                  navigate("/subscribe");
+                } else {
+                  navigate("/crear-liga");
+                }
+              }}
+              size="large"
+              /* disabled={
+                userData.role !== "moderator" && userData.leagues.length >= 1
+              } */ // moderator
+              style={{
+                marginRight: "20px",
+                width: "100%",
+              }}
             >
-              <span>
-                <LoadingButton
-                  loading={userData.role === ""}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    navigate("/crear-liga");
-                  }}
-                  size="large"
-                  disabled={/* userData !== "moderator" */ true}
-                  style={{
-                    marginRight: "20px",
-                    width: "100%",
-                  }}
-                >
-                  Crear una liga
-                </LoadingButton>
-              </span>
-            </Tooltip>
+              Crear una liga
+            </LoadingButton>
           </div>
         </div>
         {userData.role === "user" ? (
-          <Button
+          <>
+            {
+              /* <Button
             startIcon={<WorkSpacePremiumIcon />}
             endIcon={<WorkSpacePremiumIcon />}
             variant="contained"
@@ -169,7 +239,9 @@ const Dashboard = () => {
             onClick={() => navigate("/subscribe")}
           >
             Hazte PRO y ayuda al desarrollador
-          </Button>
+          </Button> */ <Space />
+            }
+          </>
         ) : null}
       </Paper>
     </div>

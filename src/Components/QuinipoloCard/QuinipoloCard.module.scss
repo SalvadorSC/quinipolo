@@ -12,6 +12,20 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
   margin-top: 10px;
   margin-bottom: 10px;
+  transition: all 0.3s;
+}
+
+.quinipoloContainer:hover {
+  background: #1976d244;
+}
+
+.quinipoloContainer.dark {
+  background: rgba(0, 0, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.quinipoloContainer.dark:hover {
+  background: rgba(0, 0, 255, 0.3);
 }
 
 .quinipoloContainer.deleted {
@@ -41,11 +55,15 @@
   font-weight: 600;
 }
 
-.quinipoloInfo h3 {
+.endDate {
   margin-left: 4px;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.7);
   font-weight: 600;
+}
+
+.endDateDark {
+  color: rgb(255, 255, 255);
 }
 
 .quinipoloInfoLeft {
@@ -67,6 +85,10 @@
   margin-left: 14px;
   font-size: 14px;
   color: #6e6e6e;
+}
+
+.countdownDark {
+  color: #f1f1f1;
 }
 
 .quinipoloActions {
@@ -108,6 +130,21 @@
   background-color: rgba(0, 0, 0, 0.12) !important;
 }
 
+.actionButtonCorrect.dark {
+  background: #00b894 !important;
+}
+
+.actionButtonCorrect.dark:hover {
+  background: #00a884 !important;
+}
+
+.actionButtonCorrect.dark:disabled,
+.actionButtonCorrect.dark:disabled:hover {
+  color: rgba(255, 255, 255, 0.26) !important;
+  box-shadow: none !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
 .quinipoloInfoHeader {
   display: flex;
   flex-direction: row;
@@ -115,8 +152,6 @@
   align-items: center;
   width: 100%;
 }
-
-// make quinipoloInfoLeft responsive
 
 @media (max-width: 768px) {
   .quinipoloInfoLeft {
