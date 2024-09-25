@@ -215,9 +215,9 @@ const Dashboard = () => {
                 }
               }}
               size="large"
-              /* disabled={
+              disabled={
                 userData.role !== "moderator" && userData.leagues.length >= 1
-              } */ // moderator
+              }
               style={{
                 marginRight: "20px",
                 width: "100%",

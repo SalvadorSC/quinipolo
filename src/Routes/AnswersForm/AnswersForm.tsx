@@ -169,6 +169,7 @@ const AnswersForm = () => {
       user.userData.moderatedLeagues.includes(quinipolo.leagueId)
     ) {
       console.log("Correcting mode on");
+      setLoading(true);
       const response = await apiPost<CorrectionResponseType>(
         `/api/quinipolos/quinipolo/${quinipolo._id}/submit-correction`,
         answerToSubmit
@@ -176,6 +177,7 @@ const AnswersForm = () => {
       navigate("/correction-success", {
         state: { results: response.results },
       });
+      setLoading(false);
       setFeedback({
         message: response.message,
         severity: "success",
@@ -186,6 +188,7 @@ const AnswersForm = () => {
       user.userData.moderatedLeagues.includes(quinipolo.leagueId)
     ) {
       console.log("Editing correction mode on");
+      setLoading(true);
       const response = await apiPost<CorrectionResponseType>(
         `/api/quinipolos/quinipolo/${quinipolo._id}/submit-correction-edit`,
         answerToSubmit
@@ -193,6 +196,7 @@ const AnswersForm = () => {
       navigate("/correction-success", {
         state: { results: response.results },
       });
+      setLoading(false);
       setFeedback({
         message: response.message,
         severity: "success",
@@ -204,11 +208,13 @@ const AnswersForm = () => {
           `/api/quinipolos/quinipolo/answers`,
           answerToSubmit
         );
+        setLoading(true);
         setFeedback({
           message: response.message,
           severity: "success",
           open: true,
         });
+        setLoading(false);
         navigate("/dashboard");
       } catch (error: unknown) {
         console.error("Error submitting Quinipolo:", error);
@@ -226,6 +232,7 @@ const AnswersForm = () => {
           }
         } else {
           // Handle non-Axios errors
+          setLoading(false);
           setFeedback({
             message: "An unexpected error occurred",
             severity: "error",
@@ -405,6 +412,7 @@ const AnswersForm = () => {
                 onClick={submitQuinipolo}
                 className={style.submitButton}
                 type="submit"
+                disabled={loading}
               >
                 {editCorrectionModeOn &&
                 user.userData.moderatedLeagues.includes(quinipolo.leagueId)
