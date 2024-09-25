@@ -209,7 +209,7 @@ const Dashboard = () => {
                     severity: "error",
                     open: true,
                   });
-                  navigate("/subscribe");
+                  /* navigate("/subscribe"); */
                 } else {
                   navigate("/crear-liga");
                 }
