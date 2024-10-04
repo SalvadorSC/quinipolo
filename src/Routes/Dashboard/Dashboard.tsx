@@ -211,7 +211,12 @@ const Dashboard = () => {
                   });
                   /* navigate("/subscribe"); */
                 } else {
-                  navigate("/crear-liga");
+                  /* navigate("/crear-liga"); */
+                  setFeedback({
+                    message: "Funcionalidad deshabilitada temporalmente",
+                    severity: "error",
+                    open: true,
+                  });
                 }
               }}
               size="large"
