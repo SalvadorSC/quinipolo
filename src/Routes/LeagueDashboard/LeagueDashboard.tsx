@@ -247,9 +247,7 @@ const LeagueDashboard = () => {
             />
             <Stack>
               <h2 className={styles.actionsTitle}>Clasificación</h2>
-              <p className={styles.disclaimer}>
-                Disclaimer: Hay un bug que multiplica los puntos por 3. WIP!{" "}
-              </p>
+
               <hr style={{ marginBottom: 16 }} />
 
               <Leaderboard sortedResults={leaderboardData} />
