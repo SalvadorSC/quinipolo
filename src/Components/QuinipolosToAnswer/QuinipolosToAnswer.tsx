@@ -93,16 +93,26 @@ const QuinipolosToAnswer = ({
             <TabPanel sx={{ p: 0, mt: 2 }} value="1">
               <TabPanelContent
                 quinipolos={quinipolos.filter((quinipolo) => {
-                  if (quinipolo.isDeleted) {
-                    return false;
-                  }
+                  if (quinipolo.isDeleted) return false;
+
+                  const today = new Date();
+                  const date30DaysAgo = new Date(today);
+                  date30DaysAgo.setDate(today.getDate() - 30);
+
+                  const isModeratedAndUncorrected =
+                    moderatedLeagues.includes(quinipolo.leagueName) &&
+                    !quinipolo.hasBeenCorrected;
+                  const isActiveAndUnanswered =
+                    quinipolo.endDate > today.toISOString() &&
+                    !quinipolo.participantsWhoAnswered.includes(username);
+                  const isRecentAndUncorrected =
+                    quinipolo.endDate > date30DaysAgo.toISOString() &&
+                    !quinipolo.hasBeenCorrected;
+
                   return (
-                    /* moderatedLeagues.includes(quinipolo.leagueName) ||
-                    !quinipolo.hasBeenCorrected || */
-                    (moderatedLeagues.includes(quinipolo.leagueName) &&
-                      !quinipolo.hasBeenCorrected) ||
-                    (quinipolo.endDate > new Date().toISOString() &&
-                      !quinipolo.participantsWhoAnswered.includes(username))
+                    isModeratedAndUncorrected ||
+                    isActiveAndUnanswered ||
+                    isRecentAndUncorrected
                   );
                 })}
                 fallBackText={"No tienes quinipolos pendientes"}
@@ -115,7 +125,8 @@ const QuinipolosToAnswer = ({
                 quinipolos={quinipolos.filter(
                   (quinipolo) =>
                     quinipolo.endDate <= new Date().toISOString() &&
-                    (!leagueId || quinipolo.leagueId === leagueId)
+                    (!leagueId || quinipolo.leagueId === leagueId) &&
+                    quinipolo.hasBeenCorrected
                 )}
                 username={username}
                 moderatedLeagues={moderatedLeagues}
