@@ -2,21 +2,21 @@ import React from "react";
 import "./App.css";
 import SurveyForm from "./Routes/SurveyForm/SurveyForm";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { UserProvider } from "./Context/UserContext/UserContext";
+import { FeedbackProvider } from "./Context/FeedbackContext/FeedbackContext";
+import { useUser } from "@clerk/clerk-react";
+import { ThemeProvider } from "./Context/ThemeContext/ThemeContext";
 import AnswersForm from "./Routes/AnswersForm/AnswersForm";
 import LoginForm from "./Routes/LoginForm/LoginForm";
 import Dashboard from "./Routes/Dashboard/Dashboard";
+import Landing from "./Routes/Landing/Landing";
 import QuinipoloSuccess from "./Routes/QuinipoloSuccess/QuinipoloSuccess";
 import LeagueDashboard from "./Routes/LeagueDashboard/LeagueDashboard";
-import { UserProvider } from "./Context/UserContext/UserContext";
-import { FeedbackProvider } from "./Context/FeedbackContext/FeedbackContext";
-import CorrectionSuccess from "./Routes/CorrectionSuccess/CorrectionSuccess";
-import { useUser } from "@clerk/clerk-react";
 import MenuBar from "./Components/MenuBar/MenuBar";
 import LeagueList from "./Routes/LeagueList/LeagueList";
 import SubscriptionPage from "./Routes/SubscriptionPage/SubscriptionPage";
 import NewLeague from "./Routes/NewLeague/NewLeague";
-import { ThemeProvider } from "./Context/ThemeContext/ThemeContext";
-
+import CorrectionSuccess from "./Routes/CorrectionSuccess/CorrectionSuccess";
 function App() {
   const user = useUser();
 
@@ -29,12 +29,18 @@ function App() {
               <Routes>
                 <Route
                   path="sign-in"
-                  element={user.isSignedIn ? <LoginForm /> : null}
+                  element={
+                    !user.isSignedIn ? (
+                      <LoginForm />
+                    ) : (
+                      <Navigate to="/dashboard" />
+                    )
+                  }
                 />
 
                 <Route
                   path="/"
-                  element={user.isSignedIn ? <MenuBar /> : <LoginForm />}
+                  element={user.isSignedIn ? <MenuBar /> : <Landing />}
                 >
                   <Route path="/" element={<Navigate to="/dashboard" />} />
                   <Route path="crear-quinipolo" element={<SurveyForm />} />
