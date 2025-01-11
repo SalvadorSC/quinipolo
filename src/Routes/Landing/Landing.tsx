@@ -1,0 +1,98 @@
+import { Button, Flex, Typography } from "antd";
+import { Footer } from "antd/es/layout/layout";
+import React from "react";
+import MenuBar from "../../Components/MenuBar/MenuBar";
+import styles from "./Landing.module.scss";
+import { useNavigate } from "react-router-dom";
+import { Paper } from "@mui/material";
+import mockupPNG from "../../assets/mockup.png";
+import mockupPNG2 from "../../assets/mockup2.png";
+
+const { Title } = Typography;
+
+const items = [
+  {
+    key: String(1),
+    label: `nav ${1}`,
+  },
+];
+
+const Landing: React.FC = () => {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <MenuBar />
+      <div className={styles.container}>
+        <div className={styles.firstSection}>
+          <div className={styles.firstSectionContent}>
+            <Title style={{ color: "white" }}>
+              ¡Crea tu propia <span className={styles.gradientText}>LIGA</span>{" "}
+              y participa!
+            </Title>
+            <p>Reúne a tus amigos y prepárate para competir</p>
+            <Button
+              style={{ width: "140px" }}
+              onClick={() => navigate("sign-in")}
+            >
+              Crear Cuenta
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                width="1em"
+                height="1em"
+                viewBox="0 0 32 32"
+              >
+                <path
+                  fill="currentColor"
+                  d="M26 28H6a2.003 2.003 0 0 1-2-2V6a2.003 2.003 0 0 1 2-2h10v2H6v20h20V16h2v10a2.003 2.003 0 0 1-2 2"
+                ></path>
+                <path
+                  fill="currentColor"
+                  d="M20 2v2h6.586L18 12.586L19.414 14L28 5.414V12h2V2z"
+                ></path>
+              </svg>
+            </Button>
+          </div>
+          <img src={mockupPNG} alt="Placeholder" />
+        </div>
+        <Paper className={styles.secondSection}>
+          <Flex align="center" vertical justify="center">
+            <Title>¡Únete a tus amigos y juega!</Title>
+            <Typography style={{ marginTop: 10 }}>
+              ¡Participad en la liga global o crea tu propia liga privada!
+            </Typography>
+            <Button
+              style={{ width: "140px", marginTop: 10 }}
+              onClick={() => navigate("sign-in")}
+            >
+              Crear Liga
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                width="1em"
+                height="1em"
+                viewBox="0 0 32 32"
+              >
+                <path
+                  fill="currentColor"
+                  d="M26 28H6a2.003 2.003 0 0 1-2-2V6a2.003 2.003 0 0 1 2-2h10v2H6v20h20V16h2v10a2.003 2.003 0 0 1-2 2"
+                ></path>
+                <path
+                  fill="currentColor"
+                  d="M20 2v2h6.586L18 12.586L19.414 14L28 5.414V12h2V2z"
+                ></path>
+              </svg>
+            </Button>
+          </Flex>
+          <img src={mockupPNG2} alt="Placeholder" />
+        </Paper>
+        <Footer className={styles.footer}>
+          Quinipolo ©{new Date().getFullYear()} Creado por Salvador Sánchez
+        </Footer>
+      </div>
+    </>
+  );
+};
+
+export default Landing;
