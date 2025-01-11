@@ -35,7 +35,7 @@ const Landing: React.FC = () => {
               style={{ width: "140px" }}
               onClick={() => navigate("sign-in")}
             >
-              Crear Cuenta
+              ¡Entra ya!
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
