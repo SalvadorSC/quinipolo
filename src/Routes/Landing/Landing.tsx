@@ -66,7 +66,7 @@ const Landing: React.FC = () => {
               style={{ width: "140px", marginTop: 10 }}
               onClick={() => navigate("sign-in")}
             >
-              Crear Liga
+              Unirse ahora
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
