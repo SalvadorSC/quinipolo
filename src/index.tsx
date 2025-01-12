@@ -17,8 +17,6 @@ root.render(
   <React.StrictMode>
     <ClerkProvider
       publishableKey={process.env.REACT_APP_VITE_CLERK_PUBLISHABLE_KEY}
-      signInFallbackRedirectUrl="/dashboard"
-      signUpFallbackRedirectUrl="/dashboard"
       localization={esES}
     >
       <App />
