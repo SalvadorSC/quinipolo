@@ -42,7 +42,10 @@ function App() {
                   path="/"
                   element={user.isSignedIn ? <MenuBar /> : <Landing />}
                 >
-                  <Route path="/" element={<Navigate to="/dashboard" />} />
+                  <Route
+                    path="/"
+                    element={user.isSignedIn ? <Dashboard /> : <Landing />}
+                  />
                   <Route path="crear-quinipolo" element={<SurveyForm />} />
                   <Route
                     path="quinipolo-success"
