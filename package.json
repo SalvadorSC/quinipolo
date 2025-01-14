@@ -28,6 +28,7 @@
     "react-dom": "^18.2.0",
     "react-qr-code": "^2.0.12",
     "react-router-dom": "^6.20.1",
+    "react-scan": "^0.0.54",
     "react-scripts": "5.0.1",
     "sass": "^1.77.6",
     "scss": "^0.2.4",

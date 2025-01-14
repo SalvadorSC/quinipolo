@@ -1,49 +1,53 @@
 // components/SubscriptionCardContent.tsx
 import React from "react";
-import { CardContent, Typography } from "@mui/material";
-import PlanSelectButton from "../PlanSelectButton/PlanSelectButton";
+import { Button, CardContent, Typography } from "@mui/material";
+import { useUser } from "../../Context/UserContext/UserContext";
+import { Plan } from "../SubscriptionPurchase/SubscriptionPurchase";
 
 interface SubscriptionCardContentProps {
   planName: string;
   planPrice: string;
-  planId: string;
-  onSelect: (planId: string) => void;
   description: string;
-  selectedPlan: string;
+  plan: Plan;
 }
 
 const SubscriptionCardContent: React.FC<SubscriptionCardContentProps> = ({
   planName,
   planPrice,
-  planId,
-  onSelect,
   description,
-  selectedPlan,
-}) => (
-  <CardContent
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "space-around",
-      gap: 20,
-    }}
-  >
-    <Typography variant="h5" textAlign={"left"} component="h2">
-      {planName}
-    </Typography>
-    <Typography variant="body2" component="p" sx={{ textAlign: "left" }}>
-      {description}
-    </Typography>
-    <Typography variant="body2" component="p">
-      {planPrice}
-    </Typography>
-    <PlanSelectButton
-      planId={planId}
-      selectedPlan={selectedPlan}
-      onSelect={onSelect}
-    />
-  </CardContent>
-);
+  plan,
+}) => {
+  const user = useUser();
+  return (
+    <CardContent
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "space-around",
+        gap: 20,
+      }}
+    >
+      <Typography variant="h5" textAlign={"left"} component="h2">
+        <b>{planName}</b>
+      </Typography>
+      <Typography variant="body2" component="p" sx={{ textAlign: "left" }}>
+        {description}
+      </Typography>
+      <Typography variant="body2" component="p">
+        <b>{planPrice}</b>
+      </Typography>
+      <a
+        href={plan.link + "?prefilled_email=" + user.userData.emailAddress}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <Button variant="contained" color="primary">
+          Continuar
+        </Button>
+      </a>
+    </CardContent>
+  );
+};
 
 export default SubscriptionCardContent;

@@ -17,6 +17,7 @@ import LeagueList from "./Routes/LeagueList/LeagueList";
 import SubscriptionPage from "./Routes/SubscriptionPage/SubscriptionPage";
 import NewLeague from "./Routes/NewLeague/NewLeague";
 import CorrectionSuccess from "./Routes/CorrectionSuccess/CorrectionSuccess";
+
 function App() {
   const user = useUser();
 

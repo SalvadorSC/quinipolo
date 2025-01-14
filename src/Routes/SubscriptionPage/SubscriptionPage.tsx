@@ -57,7 +57,7 @@ const SubscriptionPage: React.FC = () => {
         )}
         {subscription &&
           (subscription.status !== "active" || subscription.canceled_at) && (
-            <SubscriptionPurchase onSubscriptionCreated={fetchSubscription} />
+            <SubscriptionPurchase />
           )}
       </Paper>
     </Container>
