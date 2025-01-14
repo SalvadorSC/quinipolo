@@ -29,6 +29,11 @@ interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
 
+const customerPortalLink =
+  process.env.REACT_APP_ENV === "development"
+    ? "https://billing.stripe.com/p/login/test_14kbLs7HL4fE8mI4gg"
+    : process.env.REACT_APP_CUSTOMER_PORTAL_LINK;
+
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })<AppBarProps>(({ theme, open }) => ({
@@ -167,6 +172,25 @@ export const MenuBar = () => {
                   </>
                 ) : null}
                 <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                  {isSignedIn &&
+                  userData.emailAddress ===
+                    "sanchezcampossalvador@gmail.com" ? (
+                    <a
+                      href={
+                        customerPortalLink +
+                        "?prefilled_email=" +
+                        userData.emailAddress
+                      }
+                    >
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => navigate("subscribe")}
+                      >
+                        Gestionar Suscripción
+                      </Button>
+                    </a>
+                  ) : null}
                   <IconButton onClick={toggleTheme}>
                     {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
                   </IconButton>
@@ -221,17 +245,25 @@ export const MenuBar = () => {
                         }}
                         showName
                       />
-                      {!isSignedIn ? (
-                        <>
-                          {/* <Button
-                          sx={{ mt: 4 }}
-                          variant="contained"
-                          color="primary"
-                          onClick={() => navigate("subscribe")}
+                      {isSignedIn &&
+                      userData.emailAddress ===
+                        "sanchezcampossalvador@gmail.com" ? (
+                        <a
+                          href={
+                            customerPortalLink +
+                            "?prefilled_email=" +
+                            userData.emailAddress
+                          }
                         >
-                          Gestionar Suscripción
-                        </Button> */}
-                        </>
+                          <Button
+                            sx={{ mt: 4 }}
+                            variant="contained"
+                            color="primary"
+                            onClick={() => navigate("subscribe")}
+                          >
+                            Gestionar Suscripción
+                          </Button>
+                        </a>
                       ) : null}
                     </div>
                   ) : null}
