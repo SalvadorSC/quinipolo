@@ -1,9 +1,8 @@
 // components/SubscriptionPurchase.tsx
-import { Box, Card, FormControlLabel, Switch, Typography } from "@mui/material";
+import { Box, Card, Typography } from "@mui/material";
 import React, { useState } from "react";
 import SubscriptionCardContent from "../SubscriptionCardComponent/SubscriptionCardComponent";
 import styles from "./SubscriptionPurchase.module.scss"; // Create a corresponding SCSS file
-import Subscribe from "../Subscribe/Subscribe";
 import { Button } from "antd";
 
 const plans = [
@@ -36,7 +35,7 @@ export type Plan = {
   priceId: string;
 };
 
-const SubscriptionPurchase: React.FC = ({}) => {
+const SubscriptionPurchase: React.FC = () => {
   const [isYearly, setIsYearly] = useState<boolean>(false);
   return (
     <>
