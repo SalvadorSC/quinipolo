@@ -158,49 +158,29 @@ export const MenuBar = () => {
                 onClick={() => navigate("/dashboard")}
               />
               <Box sx={{ display: "flex" }}>
-                {userData.role !== "user" && isSignedIn ? (
-                  <>
-                    {/* <Button
-                    size="small"
-                    variant="outlined"
-                    color="warning"
-                    sx={{ display: { xs: "none", sm: "none", md: "flex" } }}
-                    onClick={() => navigate("subscribe")}
+                {isSignedIn &&
+                userData.emailAddress === "sanchezcampossalvador@gmail.com" ? (
+                  <a
+                    href={
+                      customerPortalLink +
+                      "?prefilled_email=" +
+                      userData.emailAddress
+                    }
                   >
-                    Gestionar Suscripción
-                  </Button> */}
-                  </>
+                    <Button variant="contained" color="primary">
+                      Gestionar Suscripción
+                    </Button>
+                  </a>
                 ) : null}
-                <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                  {isSignedIn &&
-                  userData.emailAddress ===
-                    "sanchezcampossalvador@gmail.com" ? (
-                    <a
-                      href={
-                        customerPortalLink +
-                        "?prefilled_email=" +
-                        userData.emailAddress
-                      }
-                    >
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => navigate("subscribe")}
-                      >
-                        Gestionar Suscripción
-                      </Button>
-                    </a>
-                  ) : null}
-                  <IconButton onClick={toggleTheme}>
-                    {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
-                  </IconButton>
-                  <UserButton
-                    appearance={{
-                      baseTheme: theme === "light" ? undefined : dark,
-                    }}
-                    showName
-                  />
-                </Box>
+                <IconButton onClick={toggleTheme}>
+                  {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+                </IconButton>
+                <UserButton
+                  appearance={{
+                    baseTheme: theme === "light" ? undefined : dark,
+                  }}
+                  showName
+                />
               </Box>
             </Box>
 
@@ -247,7 +227,8 @@ export const MenuBar = () => {
                       />
                       {isSignedIn &&
                       userData.emailAddress ===
-                        "sanchezcampossalvador@gmail.com" ? (
+                        "sanchezcampossalvador@gmail.com" &&
+                      userData.stripeCustomerId !== undefined ? (
                         <a
                           href={
                             customerPortalLink +
@@ -259,11 +240,21 @@ export const MenuBar = () => {
                             sx={{ mt: 4 }}
                             variant="contained"
                             color="primary"
-                            onClick={() => navigate("subscribe")}
                           >
                             Gestionar Suscripción
                           </Button>
                         </a>
+                      ) : isSignedIn &&
+                        userData.emailAddress ===
+                          "sanchezcampossalvador@gmail.com" ? (
+                        <Button
+                          sx={{ mt: 4 }}
+                          variant="contained"
+                          color="primary"
+                          onClick={() => navigate("/subscribe")}
+                        >
+                          Suscribirse
+                        </Button>
                       ) : null}
                     </div>
                   ) : null}

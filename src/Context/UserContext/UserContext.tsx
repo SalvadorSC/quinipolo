@@ -21,6 +21,9 @@ export type UserDataType = {
   username: string;
   hasBeenChecked: boolean;
   isRegistered: boolean;
+  stripeCustomerId?: string;
+  isPro?: boolean;
+  productId?: string;
 };
 
 // Define a type for the context value
