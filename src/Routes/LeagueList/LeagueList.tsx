@@ -177,13 +177,13 @@ const LeagueList = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Nombre</TableCell>
-                  <TableCell align="right">
+                  <TableCell align="center">
                     <EmojiPeopleIcon />
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="center">
                     <LockIcon />
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="center">
                     <MoreHorizIcon />
                   </TableCell>
                 </TableRow>
@@ -199,11 +199,14 @@ const LeagueList = () => {
                     <TableCell component="th" scope="row">
                       {league.leagueName}
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell
+                      style={{ paddingLeft: 0, paddingRight: 0 }}
+                      align="center"
+                    >
                       {league.participants.length}
                     </TableCell>
-                    <TableCell align="right">
-                      {league.isPrivate ? "Liga privada" : "Liga pública"}
+                    <TableCell align="left">
+                      {league.isPrivate ? "Privada" : "Pública"}
                     </TableCell>
                     <TableCell align="right">
                       <Tooltip
@@ -223,6 +226,7 @@ const LeagueList = () => {
                       >
                         <LoadingButton
                           variant="contained"
+                          style={{ width: "80px" }}
                           onClick={() =>
                             handleJoinLeague(leagueListData?.indexOf(league))
                           }

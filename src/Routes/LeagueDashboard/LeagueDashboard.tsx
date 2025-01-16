@@ -9,7 +9,9 @@ import { useUser } from "../../Context/UserContext/UserContext";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { apiGet, apiPost } from "../../utils/apiUtils";
 import Leaderboard from "../../Components/Leaderboard/Leaderboard";
+import Stats from "../../Components/Stats/Stats";
 import RequestsTable from "../../Components/RequestsTable/RequestsTable";
+import { Tabs, TabsProps } from "antd";
 
 export type LeaguesTypes = {
   quinipolosToAnswer: any[];
@@ -202,6 +204,19 @@ const LeagueDashboard = () => {
     navigate(`/crear-quinipolo?leagueId=${leagueId}`);
   };
 
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "Clasificación",
+      children: <Leaderboard sortedResults={leaderboardData} />,
+    },
+    {
+      key: "2",
+      label: "Estadísticas",
+      children: <Stats results={leaderboardData} />,
+    },
+  ];
+
   return (
     <div className={styles.leagueDashboardContainer}>
       <Paper elevation={3} sx={{ width: "100%", p: 4, borderRadius: "20px" }}>
@@ -217,9 +232,7 @@ const LeagueDashboard = () => {
                 marginBottom: 20,
               }}
             >
-              <h1 className={styles.leagueTitle}>
-                Liga {leagueData.leagueName}
-              </h1>
+              <h1 className={styles.leagueTitle}>{leagueData.leagueName}</h1>
 
               {isUserModeratorInThisLeague ||
               !leagueData.moderatorPetitions.find(
@@ -246,11 +259,7 @@ const LeagueDashboard = () => {
               appLocation="league-dashboard"
             />
             <Stack>
-              <h2 className={styles.actionsTitle}>Clasificación</h2>
-
-              <hr style={{ marginBottom: 16 }} />
-
-              <Leaderboard sortedResults={leaderboardData} />
+              <Tabs defaultActiveKey="2" items={items} />
             </Stack>
             {isUserModeratorInThisLeague ? (
               <>
