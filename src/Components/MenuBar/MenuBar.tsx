@@ -109,6 +109,35 @@ export const MenuBar = () => {
     setOpen(newOpen);
   };
 
+  const subscribeButton = () => {
+    return (
+      <>
+        {isSignedIn &&
+        userData.emailAddress === "sanchezcampossalvador@gmail.com" &&
+        userData.stripeCustomerId !== undefined ? (
+          <a
+            href={
+              customerPortalLink + "?prefilled_email=" + userData.emailAddress
+            }
+          >
+            <Button sx={{ mt: 4 }} variant="contained" color="primary">
+              Gestionar Suscripción
+            </Button>
+          </a>
+        ) : isSignedIn &&
+          userData.emailAddress === "sanchezcampossalvador@gmail.com" ? (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/subscribe")}
+          >
+            Suscribirse
+          </Button>
+        ) : null}
+      </>
+    );
+  };
+
   return (
     <>
       <AppBar
@@ -157,21 +186,8 @@ export const MenuBar = () => {
                 alt="logo of quinipolo"
                 onClick={() => navigate("/dashboard")}
               />
-              <Box sx={{ display: "flex" }}>
-                {isSignedIn &&
-                userData.emailAddress === "sanchezcampossalvador@gmail.com" ? (
-                  <a
-                    href={
-                      customerPortalLink +
-                      "?prefilled_email=" +
-                      userData.emailAddress
-                    }
-                  >
-                    <Button variant="contained" color="primary">
-                      Gestionar Suscripción
-                    </Button>
-                  </a>
-                ) : null}
+              <Box sx={{ display: { xs: "none", lg: "flex" } }}>
+                {subscribeButton()}
                 <IconButton onClick={toggleTheme}>
                   {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
                 </IconButton>
@@ -208,7 +224,7 @@ export const MenuBar = () => {
                       style={{
                         display: "flex",
                         justifyContent: "center",
-                        alignItems: "center",
+                        alignItems: "flex-end",
                         flexDirection: "column",
                       }}
                     >
@@ -219,43 +235,16 @@ export const MenuBar = () => {
                           <LightModeIcon />
                         )}
                       </IconButton>
-                      <UserButton
-                        appearance={{
-                          baseTheme: theme === "light" ? undefined : dark,
-                        }}
-                        showName
-                      />
-                      {isSignedIn &&
-                      userData.emailAddress ===
-                        "sanchezcampossalvador@gmail.com" &&
-                      userData.stripeCustomerId !== undefined ? (
-                        <a
-                          href={
-                            customerPortalLink +
-                            "?prefilled_email=" +
-                            userData.emailAddress
-                          }
-                        >
-                          <Button
-                            sx={{ mt: 4 }}
-                            variant="contained"
-                            color="primary"
-                          >
-                            Gestionar Suscripción
-                          </Button>
-                        </a>
-                      ) : isSignedIn &&
-                        userData.emailAddress ===
-                          "sanchezcampossalvador@gmail.com" ? (
-                        <Button
-                          sx={{ mt: 4 }}
-                          variant="contained"
-                          color="primary"
-                          onClick={() => navigate("/subscribe")}
-                        >
-                          Suscribirse
-                        </Button>
-                      ) : null}
+                      <Box style={{ padding: "8px" }}>
+                        <UserButton
+                          appearance={{
+                            baseTheme: theme === "light" ? undefined : dark,
+                          }}
+                        />
+                      </Box>
+                      <div style={{ marginTop: "10px" }}>
+                        {subscribeButton()}
+                      </div>
                     </div>
                   ) : null}
                 </Box>
