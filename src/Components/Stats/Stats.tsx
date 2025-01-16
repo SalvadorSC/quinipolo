@@ -8,7 +8,15 @@ import {
   TableRow,
 } from "@mui/material";
 import React from "react";
-import { Result } from "../../Routes/CorrectionSuccess/CorrectionSuccess";
+
+type Result = {
+  username: string;
+  pointsEarned?: number;
+  totalPoints: number;
+  correct15thGame: boolean;
+  nQuinipolosParticipated: number;
+  averagePoints?: number;
+};
 
 const Stats = ({ results }: { results: Result[] }) => {
   // Calculate average points per participation and sort the results
