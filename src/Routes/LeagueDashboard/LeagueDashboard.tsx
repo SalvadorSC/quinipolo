@@ -259,7 +259,7 @@ const LeagueDashboard = () => {
               appLocation="league-dashboard"
             />
             <Stack>
-              <Tabs defaultActiveKey="2" items={items} />
+              <Tabs defaultActiveKey="1" items={items} />
             </Stack>
             {isUserModeratorInThisLeague ? (
               <>
