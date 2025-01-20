@@ -208,7 +208,7 @@ const LeagueList = () => {
                     <TableCell align="left">
                       {league.isPrivate ? "Privada" : "Pública"}
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell align="center">
                       <Tooltip
                         title={
                           league.participants.includes(userData.username)

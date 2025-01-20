@@ -10,6 +10,7 @@ export type Result = {
   pointsEarned?: number;
   totalPoints: number;
   correct15thGame: boolean;
+  nQuinipolosParticipated: number;
 };
 
 const CorrectionSuccess = () => {
@@ -54,7 +55,15 @@ const CorrectionSuccess = () => {
   const sorted_total_points = groupAndSortTotalPoints(results);
 
   const generateMessageToShare = () => {
-    let message = "*Resultados Quinipolo realizada:*\n\n";
+    const date = new Date();
+    const locale = "es-ES";
+
+    const formattedDate = date.toLocaleDateString(locale, {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    });
+    let message = `*Resultados Quinipolo realizada Jornada (${results[0]?.nQuinipolosParticipated}) ${formattedDate}:*\n\n`;
 
     // Points Earned Distribution
     message += "*Puntos ganados en esta Quinipolo:*\n";
