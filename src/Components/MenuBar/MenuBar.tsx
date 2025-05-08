@@ -23,6 +23,7 @@ import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { useTheme } from "../../Context/ThemeContext/ThemeContext";
 import { dark } from "@clerk/themes";
+import Notifications from "../Notifications/Notifications";
 const drawerWidth = 240;
 
 interface AppBarProps extends MuiAppBarProps {
@@ -188,6 +189,7 @@ export const MenuBar = () => {
               />
               <Box sx={{ display: { xs: "none", lg: "flex" } }}>
                 {subscribeButton()}
+                <Notifications />
                 <IconButton onClick={toggleTheme}>
                   {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
                 </IconButton>
@@ -244,6 +246,9 @@ export const MenuBar = () => {
                       </Box>
                       <div style={{ marginTop: "10px" }}>
                         {subscribeButton()}
+                      </div>
+                      <div style={{ marginTop: "10px" }}>
+                        <Notifications />
                       </div>
                     </div>
                   ) : null}

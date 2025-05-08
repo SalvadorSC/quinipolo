@@ -11,6 +11,7 @@ export type Result = {
   totalPoints: number;
   correct15thGame: boolean;
   nQuinipolosParticipated: number;
+  creationDate: string;
 };
 
 const CorrectionSuccess = () => {
@@ -55,25 +56,53 @@ const CorrectionSuccess = () => {
   const sorted_total_points = groupAndSortTotalPoints(results);
 
   const generateMessageToShare = () => {
-    const date = new Date();
     const locale = "es-ES";
-
-    const formattedDate = date.toLocaleDateString(locale, {
+    const dateOptions: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "numeric",
       day: "numeric",
-    });
-    let message = `*Resultados Quinipolo realizada Jornada (${results[0]?.nQuinipolosParticipated}) ${formattedDate}:*\n\n`;
+      hour: "2-digit",
+      minute: "2-digit"
+    };
+
+    const formattedCreationDate = new Date(results[0]?.creationDate || new Date()).toLocaleDateString(locale, dateOptions);
+    const formattedCorrectionDate = new Date().toLocaleDateString(locale, dateOptions);
+
+    let message = `*Resultados Quinipolo realizada Jornada (${results[0]?.nQuinipolosParticipated})*\n`;
+    message += `*Publicada:* ${formattedCreationDate}\n`;
+    message += `*Corregida:* ${formattedCorrectionDate}\n\n`;
 
     // Points Earned Distribution
     message += "*Puntos ganados en esta Quinipolo:*\n";
-    for (const [points, usernames] of sorted_points_earned) {
+    
+    // Create a map of all participants with their points
+    const allParticipants = new Map<string, number>();
+    results.forEach(result => {
+      if (result.pointsEarned !== undefined) {
+        allParticipants.set(result.username, result.pointsEarned);
+      }
+    });
+
+    // Sort participants by points earned
+    const sortedParticipants = new Map([...allParticipants.entries()].sort((a, b) => b[1] - a[1]));
+
+    // Group participants by points
+    const pointsGroups = new Map<number, string[]>();
+    sortedParticipants.forEach((points, username) => {
+      if (!pointsGroups.has(points)) {
+        pointsGroups.set(points, []);
+      }
+      pointsGroups.get(points)?.push(username);
+    });
+
+    // Add points distribution to message
+    for (const [points, usernames] of pointsGroups) {
       message += `- ${usernames.join(", ")}: *${points}p*\n`;
     }
 
     // Total Points Distribution (Leaderboard)
     message += "\n*Clasificación:*\n";
-    let position = 1; // To keep track of the current position
+    let position = 1;
     for (const [points, usernames] of sorted_total_points) {
       let prefix = `${position}.-`;
       if (position === 1) prefix = "🥇";
@@ -81,28 +110,22 @@ const CorrectionSuccess = () => {
       else if (position === 3) prefix = "🥉";
 
       message += `${prefix} ${usernames.join(", ")}: *${points}p*\n`;
-      position += usernames.length; // Increment position by the number of tied users
+      position += usernames.length;
     }
 
-    // Determinar ganadores de la Quinipolo
-    if (
-      results.find(
-        (result) => result.correct15thGame && result.pointsEarned === 15
-      )
-    ) {
-      message += "\n *Ganadores de la Quinipolo*: \n";
-      results.forEach((result) => {
+    // Determine Quinipolo winners
+    if (results.find(result => result.correct15thGame && result.pointsEarned === 15)) {
+      message += "\n*Ganadores de la Quinipolo*: \n";
+      results.forEach(result => {
         if (result.correct15thGame && result.pointsEarned === 15) {
           message += `- ${result.username}: ${result.totalPoints}p *(+${result.pointsEarned})* 🌟\n`;
         }
       });
     } else {
-      message += "\n Sin ganador. 😢\n";
+      message += "\nSin ganador. 😢\n";
     }
 
-    // Add additional information if necessary
-    message +=
-      "\nGracias por participar en la Quinipolo. ¡No te pierdas la próxima!";
+    message += "\nGracias por participar en la Quinipolo. ¡No te pierdas la próxima!";
     return message;
   };
 
