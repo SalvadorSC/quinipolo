@@ -21,11 +21,6 @@ const Notifications: React.FC = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const { userData } = useUserData();
 
-  // Only show notifications for moderators
-  if (!userData.moderatedLeagues || userData.moderatedLeagues.length === 0) {
-    return null;
-  }
-
   const fetchNotifications = async () => {
     try {
       const userId = localStorage.getItem('userId');
@@ -40,11 +35,18 @@ const Notifications: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchNotifications();
-    // Poll for new notifications every minute
-    const interval = setInterval(fetchNotifications, 60000);
-    return () => clearInterval(interval);
-  }, []);
+    if (userData.moderatedLeagues && userData.moderatedLeagues.length > 0) {
+      fetchNotifications();
+      // Poll for new notifications every minute
+      const interval = setInterval(fetchNotifications, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [userData.moderatedLeagues]);
+
+  // Only show notifications for moderators
+  if (!userData.moderatedLeagues || userData.moderatedLeagues.length === 0) {
+    return null;
+  }
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
