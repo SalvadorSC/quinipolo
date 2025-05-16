@@ -191,7 +191,9 @@ const QuinipoloCard = ({
               onClick={() => {
                 navigate(`/quinipolo?id=${quinipolo._id}&see=true`);
               }}
-              disabled={quinipolo.isDeleted}
+              disabled={
+                quinipolo.isDeleted || quinipolo.leagueId === "sant_feliu_24_25"
+              }
               variant={"contained"}
             >
               <span>Ver respuestas</span>
