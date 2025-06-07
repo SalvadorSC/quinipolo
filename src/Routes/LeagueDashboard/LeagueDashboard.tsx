@@ -208,7 +208,13 @@ const LeagueDashboard = () => {
     {
       key: "1",
       label: "Clasificación",
-      children: <Leaderboard sortedResults={leaderboardData} />,
+      children: (
+        <>
+          {leagueId !== "sant_feliu_24_25" && (
+            <Leaderboard sortedResults={leaderboardData} />
+          )}
+        </>
+      ),
     },
     {
       key: "2",
