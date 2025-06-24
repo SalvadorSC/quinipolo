@@ -17,6 +17,7 @@ import LeagueList from "./Routes/LeagueList/LeagueList";
 import SubscriptionPage from "./Routes/SubscriptionPage/SubscriptionPage";
 import NewLeague from "./Routes/NewLeague/NewLeague";
 import CorrectionSuccess from "./Routes/CorrectionSuccess/CorrectionSuccess";
+import AuthCallback from "./Routes/AuthCallback/AuthCallback";
 
 function App() {
   const user = useUser();
@@ -38,6 +39,9 @@ function App() {
                     )
                   }
                 />
+
+                {/* Auth callback route for magic link deep linking */}
+                <Route path="auth/callback" element={<AuthCallback />} />
 
                 <Route
                   path="/"
