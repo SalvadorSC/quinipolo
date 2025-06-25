@@ -253,7 +253,7 @@ export const MenuBar = () => {
                 onClick={() => setOpen(true)}
                 sx={{ ml: 1 }}
               >
-                <MenuIcon sx={{ color: "black" }} />
+                <MenuIcon sx={{ color: theme === "light" ? "black" : "white" }} />
               </IconButton>
               <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
                 <Box

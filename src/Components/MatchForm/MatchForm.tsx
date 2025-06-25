@@ -190,9 +190,9 @@ const MatchForm = ({
 
           {index === 14 && (
             <div style={{ marginTop: 10 }}>
-              <p>{t('numberOfGoals')}:</p>
+              <Typography color="text.primary">{t('numberOfGoals')}:</Typography>
               <br />
-              <p>{goalsText}</p>
+              <Typography color="text.primary">{goalsText}</Typography>
             </div>
           )}
         </Box>
