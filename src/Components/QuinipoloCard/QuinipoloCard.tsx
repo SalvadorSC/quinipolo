@@ -12,6 +12,7 @@ import styles from "./QuinipoloCard.module.scss";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { apiPatch } from "../../utils/apiUtils";
 import { useTheme } from "../../Context/ThemeContext/ThemeContext";
+import { useTranslation } from 'react-i18next';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -39,6 +40,7 @@ const QuinipoloCard = ({
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  const { t } = useTranslation();
 
   const handleDeleteQuinipolo = async () => {
     const response = await apiPatch(
@@ -124,7 +126,7 @@ const QuinipoloCard = ({
                   }}
                   onClick={handleDeleteQuinipolo}
                 >
-                  Eliminar
+                  {t('deleteBtn')}
                 </MenuItem>
               </Menu>
             </>
@@ -139,7 +141,7 @@ const QuinipoloCard = ({
               onClick={() => navigate(`/quinipolo?id=${quinipolo._id}`)}
               variant={"contained"}
             >
-              <span>Responder</span>
+              <span>{t('submit')}</span>
               <PlayCircleFilledIcon />
             </Button>
           )}
@@ -150,13 +152,11 @@ const QuinipoloCard = ({
                 arrow
                 title={
                   !deadlineIsInPast &&
-                  "Debe esperar a que finalice el plazo de la Quinipolo antes de poder realizar una corrección."
+                  t('edit')
                 }
               >
                 <Button
-                  className={`${styles.actionButton} ${
-                    styles.actionButtonCorrect
-                  } ${theme === "dark" ? styles.dark : ""}`}
+                  className={`${styles.actionButton} ${styles.actionButtonCorrect} ${theme === "dark" ? styles.dark : ""}`}
                   onClick={() => {
                     navigate(
                       `/quinipolo/correct?id=${quinipolo._id}&correct=true`
@@ -165,7 +165,7 @@ const QuinipoloCard = ({
                   variant={"contained"}
                   disabled={!deadlineIsInPast || quinipolo.isDeleted}
                 >
-                  <span>Corregir</span>
+                  <span>{t('correct')}</span>
                   <EditIcon />
                 </Button>
               </Tooltip>
@@ -180,12 +180,12 @@ const QuinipoloCard = ({
                 disabled={quinipolo.isDeleted}
                 variant={"contained"}
               >
-                <span>Editar corrección</span>
+                <span>{t('edit')}</span>
                 <EditIcon />
               </Button>
             )}
-          {quinipolo.hasBeenCorrected ||
-          quinipolo.participantsWhoAnswered.includes(username) ? (
+          {(quinipolo.hasBeenCorrected ||
+            quinipolo.participantsWhoAnswered.includes(username)) ? (
             <Button
               className={`${styles.actionButton}`}
               onClick={() => {
@@ -196,7 +196,7 @@ const QuinipoloCard = ({
               }
               variant={"contained"}
             >
-              <span>Ver respuestas</span>
+              <span>{t('answers')}</span>
               <VisibilityIcon />
             </Button>
           ) : null}

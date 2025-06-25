@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Paper } from "@mui/material";
 import mockupPNG from "../../assets/mockup.png";
 import mockupPNG2 from "../../assets/mockup2.png";
+import { useTranslation } from 'react-i18next';
 
 const { Title } = Typography;
 
@@ -19,6 +20,7 @@ const items = [
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -27,15 +29,14 @@ const Landing: React.FC = () => {
         <div className={styles.firstSection}>
           <div className={styles.firstSectionContent}>
             <Title style={{ color: "white" }}>
-              ¡Crea tu propia <span className={styles.gradientText}>LIGA</span>{" "}
-              y participa!
+              {t('landingTitle')}
             </Title>
-            <p>Reúne a tus amigos y prepárate para competir</p>
+            <p>{t('landingSubtitle')}</p>
             <Button
               style={{ width: "140px" }}
               onClick={() => navigate("sign-in")}
             >
-              ¡Entra ya!
+              {t('landingCta')}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"

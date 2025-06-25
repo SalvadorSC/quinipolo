@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import SubscriptionCardContent from "../SubscriptionCardComponent/SubscriptionCardComponent";
 import styles from "./SubscriptionPurchase.module.scss"; // Create a corresponding SCSS file
 import { Button } from "antd";
+import { useTranslation } from "react-i18next";
 
 const plans = [
   // Quinipolo Pro Plan Mensual
@@ -37,17 +38,19 @@ export type Plan = {
 
 const SubscriptionPurchase: React.FC = () => {
   const [isYearly, setIsYearly] = useState<boolean>(false);
+  const { t } = useTranslation();
+
   return (
     <>
       <Typography variant="h5" component="h1" gutterBottom>
-        ¡Suscríbete y apoya el desarrollo de Quinipolo!
+        {t('subscribeAndSupport')}
       </Typography>
 
       <Button
         style={{ margin: "10px auto" }}
         onClick={() => setIsYearly(!isYearly)}
       >
-        Cambiar a {!isYearly ? "Plan Anual" : "Plan Mensual"}
+        {t('switchTo')} {!isYearly ? t('yearlyPlan') : t('monthlyPlan')}
       </Button>
       <Typography
         variant="body2"
@@ -55,8 +58,8 @@ const SubscriptionPurchase: React.FC = () => {
         sx={{ color: "green", fontWeight: 600 }}
       >
         {!isYearly
-          ? `Obtén 2 meses gratis con el plan anual!`
-          : `Elige el plan que prefieras.`}
+          ? t('twoMonthsFreeYearly')
+          : t('chooseYourPlan')}
       </Typography>
       <Box
         display="flex"
@@ -68,19 +71,17 @@ const SubscriptionPurchase: React.FC = () => {
           <div className={styles.subscriptionCardTypesWrapper}>
             {isYearly ? (
               <SubscriptionCardContent
-                planName="Plan PRO (Anual)"
-                planPrice="30€/año"
+                planName={t('proPlanYearly')}
+                planPrice={t('yearlyPrice')}
                 plan={plans[1]}
-                description="Este plan ayuda al desarrollador y te permitirá unirte a todas
-              las ligas que quieras. En un futuro te permitirá ver tus propias estadísticas por liga. Además, obtén 2 meses gratis!"
+                description={t('yearlyPlanDescription')}
               />
             ) : (
               <SubscriptionCardContent
-                planName="Plan PRO"
-                planPrice="3€/mes"
+                planName={t('proPlan')}
+                planPrice={t('monthlyPrice')}
                 plan={plans[0]}
-                description="Este plan ayuda al desarrollador y te permitirá unirte a todas
-              las ligas que quieras. En un futuro te permitirá ver tus propias estadísticas por liga."
+                description={t('monthlyPlanDescription')}
               />
             )}
           </div>

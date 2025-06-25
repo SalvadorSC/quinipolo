@@ -5,6 +5,7 @@ import { useUser } from "../../Context/UserContext/UserContext";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { apiGet } from "../../utils/apiUtils";
 import Skeleton from "antd/lib/skeleton";
+import { useTranslation } from 'react-i18next';
 
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import QuinipoloCard from "../QuinipoloCard/QuinipoloCard";
@@ -26,6 +27,7 @@ const QuinipolosToAnswer = ({
   const { setFeedback } = useFeedback();
   const [loading, setLoading] = useState<boolean>(false);
   const [quinipolos, setQuinipolos] = useState<any[]>([]);
+  const { t } = useTranslation();
 
   const fetchQuinipolos = useCallback(
     async (userId: string) => {
@@ -45,7 +47,7 @@ const QuinipolosToAnswer = ({
       } catch (error) {
         console.error(error);
         setFeedback({
-          message: "Error cargando los datos del usuario",
+          message: t('error'),
           severity: "error",
           open: true,
         });
@@ -53,7 +55,7 @@ const QuinipolosToAnswer = ({
         setLoading(false);
       }
     },
-    [appLocation, leagueId, setFeedback, username]
+    [appLocation, leagueId, setFeedback, username, t]
   );
 
   useEffect(() => {
@@ -85,9 +87,9 @@ const QuinipolosToAnswer = ({
                 onChange={handleChange}
                 aria-label="lab API tabs example"
               >
-                <Tab label="Pendientes" value="1" />
-                <Tab label="Anteriores" value="2" />
-                <Tab label="Todas" value="3" />
+                <Tab label={t('pending')} value="1" />
+                <Tab label={t('previous')} value="2" />
+                <Tab label={t('all')} value="3" />
               </TabList>
             </Box>
             <TabPanel sx={{ p: 0, mt: 2 }} value="1">
@@ -115,7 +117,7 @@ const QuinipolosToAnswer = ({
                     isRecentAndUncorrected
                   );
                 })}
-                fallBackText={"No tienes quinipolos pendientes"}
+                fallBackText={t('noPendingQuinipolos')}
                 username={username}
                 moderatedLeagues={moderatedLeagues}
               />
@@ -130,7 +132,7 @@ const QuinipolosToAnswer = ({
                 )}
                 username={username}
                 moderatedLeagues={moderatedLeagues}
-                fallBackText={"No tienes quinipolos anteriores"}
+                fallBackText={t('noPreviousQuinipolos')}
               />
             </TabPanel>
             <TabPanel sx={{ p: 0, mt: 2 }} value="3">
@@ -138,7 +140,7 @@ const QuinipolosToAnswer = ({
                 quinipolos={quinipolos}
                 username={username}
                 moderatedLeagues={moderatedLeagues}
-                fallBackText={"No hay quinipolos"}
+                fallBackText={t('noQuinipolos')}
               />
             </TabPanel>
           </TabContext>

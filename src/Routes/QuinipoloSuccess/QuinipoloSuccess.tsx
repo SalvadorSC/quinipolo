@@ -5,29 +5,31 @@ import { useLocation, useNavigate } from "react-router-dom";
 import QRCode from "react-qr-code";
 import dayjs from "dayjs";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
+import { useTranslation } from 'react-i18next';
 
 const QuinipoloSuccess = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { setFeedback } = useFeedback();
+  const { t } = useTranslation();
   const deepLink = `https://quinipolo.com/quinipolo?${location.state.quinipolo._id}`;
   // Function to construct the deep link
 
-  const messageToShare = `¡Hola! Te invito a participar en la Quinipolo de esta semana. Ingresa tus predicciones para los partidos y compite con otros participantes. ¡Buena suerte! 🏆 ${deepLink}`;
+  const messageToShare = `${t('inviteToQuinipolo')} ${deepLink}`;
 
   const copyMessageToClipboard = () => {
     navigator.clipboard
       .writeText(messageToShare)
       .then(() => {
         setFeedback({
-          message: "Mensaje copiado al portapapeles!",
+          message: t('messageCopied'),
           severity: "success",
           open: true,
         });
       })
       .catch((err) => {
         setFeedback({
-          message: "Error copiando el mensaje al portapapeles!",
+          message: t('errorCopyingMessage'),
           severity: "error",
           open: true,
         });
@@ -47,20 +49,19 @@ const QuinipoloSuccess = () => {
           justifyContent: "space-evenly",
         }}
       >
-        <h2>¡Quinipolo creada con éxito!</h2>
-        <p>La fecha limite para responder esta Quinipolo es:</p>
+        <h2>{t('quinipoloCreatedSuccess')}</h2>
+        <p>{t('deadlineToAnswer')}</p>
         <p>
           {dayjs(location.state.quinipolo.endDate).format("DD-MM-YYYY HH:mm")}h
         </p>
         <br />
         <p>
-          Para compartir tu Quinipolo con tus amigos, usa alguno de los
-          siguientes métodos:
+          {t('shareQuinipoloWithFriends')}
         </p>
         {/* Mensaje de compartir */}
         <QRCode className={style.qrCode} value={deepLink} />
         <Button variant="contained" onClick={copyMessageToClipboard}>
-          Copiar mensaje
+          {t('copyMessage')}
         </Button>
         <Button
           variant="contained"
@@ -73,7 +74,7 @@ const QuinipoloSuccess = () => {
             style={{ color: "white", textDecoration: "none" }}
             rel="noopener noreferrer"
           >
-            Compartir en WhatsApp
+            {t('shareOnWhatsApp')}
           </a>
         </Button>
         <Button
@@ -84,7 +85,7 @@ const QuinipoloSuccess = () => {
           className={style.returnButton}
           style={{ marginTop: 16 }}
         >
-          Volver al menú principal
+          {t('returnToMainMenu')}
         </Button>
       </Paper>
     </div>

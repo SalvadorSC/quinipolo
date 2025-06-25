@@ -4,6 +4,7 @@ import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { Button, Box, CircularProgress } from "@mui/material";
 import { apiPost } from "../../utils/apiUtils";
 import { useUser } from "../../Context/UserContext/UserContext";
+import { useTranslation } from 'react-i18next';
 
 import styles from "./Subscribe.module.scss";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
@@ -18,6 +19,7 @@ const Subscribe: React.FC<SubscribeProps> = ({ planId, setCurrentPlan }) => {
   const user = useUser();
   const { setFeedback } = useFeedback();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const { t } = useTranslation();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -48,7 +50,7 @@ const Subscribe: React.FC<SubscribeProps> = ({ planId, setCurrentPlan }) => {
     setCurrentPlan(planId);
     setLoading(false);
     setFeedback({
-      message: "Subscription created successfully",
+      message: t('subscriptionCreatedSuccess'),
       severity: "success",
       open: true,
     });
@@ -77,7 +79,7 @@ const Subscribe: React.FC<SubscribeProps> = ({ planId, setCurrentPlan }) => {
           disabled={!stripe || planId === ""}
           sx={{ mt: 4 }}
         >
-          Subscribe
+          {t('subscribe')}
         </Button>
       )}
     </Box>

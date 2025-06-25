@@ -24,6 +24,8 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { apiGet, apiPost, apiPut } from "../../utils/apiUtils";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import LockIcon from "@mui/icons-material/Lock";
+import { useTranslation } from 'react-i18next';
+
 type LeaguesTypes = {
   quinipolosToAnswer: any[];
   leaguesToCorrect: any[];
@@ -46,6 +48,7 @@ const LeagueList = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(true);
   const { setFeedback } = useFeedback();
+  const { t } = useTranslation();
 
   const { userData } = useUser();
 
@@ -136,7 +139,7 @@ const LeagueList = () => {
   return (
     <div className={styles.leagueListContainer}>
       <Paper elevation={3} sx={{ width: "100%", p: 4, borderRadius: "20px" }}>
-        <h1 style={{ marginBottom: 20 }}>Ligas actuales</h1>
+        <h1 style={{ marginBottom: 20 }}>{t('leagues')}</h1>
         {/* {participantIsInMoreThan2Leagues ? (
           <Collapse in={open}>
             <Alert
@@ -176,7 +179,7 @@ const LeagueList = () => {
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Nombre</TableCell>
+                  <TableCell>{t('name')}</TableCell>
                   <TableCell align="center">
                     <EmojiPeopleIcon />
                   </TableCell>
@@ -206,30 +209,24 @@ const LeagueList = () => {
                       {league.participants.length}
                     </TableCell>
                     <TableCell align="left">
-                      {league.isPrivate ? "Privada" : "Pública"}
+                      {league.isPrivate ? t('private') : t('public')}
                     </TableCell>
                     <TableCell align="center">
                       <Tooltip
                         title={
                           league.participants.includes(userData.username)
-                            ? "Ir a la liga"
+                            ? t('goToLeague')
                             : league.participantPetitions.find((petition) => {
-                                console.log(
-                                  petition,
-                                  petition.username === userData.username
-                                );
                                 return petition.username === userData.username;
                               })
-                            ? "Solicitud Pendiente"
-                            : "Unirse a la liga"
+                            ? t('pendingRequest')
+                            : t('joinLeague')
                         }
                       >
                         <LoadingButton
                           variant="contained"
                           style={{ width: "80px" }}
-                          onClick={() =>
-                            handleJoinLeague(leagueListData?.indexOf(league))
-                          }
+                          onClick={() => handleJoinLeague(leagueListData?.indexOf(league))}
                           loading={!leagueListData}
                           /* disabled={
                             !league.participants.includes(
@@ -239,16 +236,12 @@ const LeagueList = () => {
                           } */
                         >
                           {league.participants.includes(userData.username)
-                            ? "Ir"
+                            ? t('go')
                             : league.participantPetitions.find((petition) => {
-                                console.log(
-                                  petition,
-                                  petition.username === userData.username
-                                );
                                 return petition.username === userData.username;
                               })
-                            ? "Pendiente"
-                            : "Unirse"}
+                            ? t('pending')
+                            : t('join')}
                         </LoadingButton>
                       </Tooltip>
                     </TableCell>

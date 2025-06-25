@@ -12,6 +12,7 @@ import styles from "./SurveyForm.module.scss";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { apiPost } from "../../utils/apiUtils";
+import { useTranslation } from 'react-i18next';
 
 type QuinipoloCreateResponseType = {
   _id: string;
@@ -37,6 +38,7 @@ const SurveyForm = () => {
   const selectedTeams = quinipolo
     .map((match) => match.awayTeam)
     .concat(quinipolo.map((match) => match.homeTeam));
+  const { t } = useTranslation();
 
   const handleDateChange = (date: Dayjs | null, dateString: string) => {
     setSelectedDate(dayjs(dateString, "DD/MM/YYYY hh:mm").toDate());
@@ -49,7 +51,7 @@ const SurveyForm = () => {
     try {
       if (selectedDate === null || selectedDate < new Date()) {
         setFeedback({
-          message: "Por favor, selecciona una fecha y hora para la quinipolo",
+          message: t('selectDateTimeForQuinipolo'),
           severity: "error",
           open: true,
         });
@@ -67,15 +69,14 @@ const SurveyForm = () => {
         }
       );
       setFeedback({
-        message: "Quinipolo creada correctamente!",
+        message: t('quinipoloCreatedSuccess'),
         severity: "success",
         open: true,
       });
       navigate("/quinipolo-success", { state: { quinipolo: response } });
     } catch (error) {
       setFeedback({
-        message:
-          "Error creando la Quinipolo! Revisa todos los campos y prueba otra vez.",
+        message: t('errorCreatingQuinipolo'),
         severity: "error",
         open: true,
       });
@@ -108,20 +109,20 @@ const SurveyForm = () => {
           padding: 26,
         }}
       >
-        <h1>Formulario creación Quinipolo</h1>
-        <Tooltip title="Si no sabes como hacerlo, escribe al desarrollador. Cuando pueda escribirá una guía.">
+        <h2>{t('createQuinipolo')}</h2>
+        <Tooltip title={t('surveyFormHelpTooltip')}>
           <HelpOutlineRoundedIcon />
         </Tooltip>
       </div>
       <p className={styles.dateTimeDisclaimer}>
-        Escoge la fecha y hora cuando ya no se podrá responder la quinipolo
+        {t('dateTimeDisclaimer')}
       </p>
       <div className={styles.datePickerContainer}>
         <DatePicker
           format="DD/MM/YYYY HH:mm"
           onChange={handleDateChange as any}
           locale={locale}
-          placeholder="Fecha"
+          placeholder={t('date')}
           className={styles.datePicker}
           showNow={false}
           popupClassName={styles.datePickerPopup}
@@ -142,7 +143,7 @@ const SurveyForm = () => {
 
       <div className={styles.submitButton}>
         <Button type="submit" variant="contained" color="primary">
-          Crear Quinipolo
+          {t('createQuinipolo')}
         </Button>
       </div>
     </form>

@@ -16,13 +16,20 @@ import {
   Drawer,
   IconButton,
   Toolbar,
+  useMediaQuery,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
+import { Select } from "antd";
 import MenuIcon from "@mui/icons-material/Menu";
 import { apiGet } from "../../utils/apiUtils";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { useTheme } from "../../Context/ThemeContext/ThemeContext";
 import { dark } from "@clerk/themes";
+import { useTranslation } from "react-i18next";
+
 const drawerWidth = 240;
 
 interface AppBarProps extends MuiAppBarProps {
@@ -51,6 +58,18 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+const LANGUAGES = [
+  { value: "en", label: "EN" },
+  { value: "es", label: "ES" },
+  { value: "ca", label: "CA" },
+  { value: "fr", label: "FR" },
+  { value: "de", label: "DE" },
+  { value: "it", label: "IT" },
+  { value: "pt", label: "PT" },
+  { value: "ja", label: "JA" },
+  { value: "zh", label: "ZH" },
+];
+
 export const MenuBar = () => {
   const navigate = useNavigate();
   const { user, isSignedIn } = useUser();
@@ -58,6 +77,8 @@ export const MenuBar = () => {
   const location = useLocation();
   const { updateUser: updateUserData, userData } = useUserData();
   const [open, setOpen] = useState(false);
+  const { t, i18n } = useTranslation();
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const getUserData = async (user: any) => {
     const data = await apiGet<UserDataType>(
@@ -131,12 +152,31 @@ export const MenuBar = () => {
             color="primary"
             onClick={() => navigate("/subscribe")}
           >
-            Suscribirse
+            {t('subscribe')}
           </Button>
         ) : null}
       </>
     );
   };
+
+  // Language picker component
+  const LanguagePicker = ({ inDrawer = false }) => (
+    <Select
+      value={i18n.language}
+      onChange={(value) => i18n.changeLanguage(value)}
+      options={LANGUAGES}
+      size={inDrawer ? "large" : "small"}
+      style={{
+        minWidth: 60,
+        fontSize: inDrawer ? 18 : 12,
+        marginLeft: inDrawer ? 0 : 8,
+        marginRight: inDrawer ? 0 : 8,
+        display: inDrawer ? "block" : isMobile ? "none" : "inline-block",
+      }}
+      getPopupContainer={trigger => document.body}
+      dropdownStyle={{ zIndex: 3000 }}
+    />
+  );
 
   return (
     <>
@@ -197,20 +237,25 @@ export const MenuBar = () => {
                   }}
                   showName
                 />
+                {!isMobile && (
+                  <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flex: 1 }}>
+                    <LanguagePicker />
+                  </Box>
+                )}
               </Box>
             </Box>
 
             <Box sx={{ display: { sm: "", md: "none" } }}>
-              <Button
-                variant="text"
-                color="primary"
+              <IconButton
+                edge="end"
+                color="inherit"
                 aria-label="menu"
-                onClick={toggleDrawer(true)}
-                sx={{ minWidth: "30px", p: "4px" }}
+                onClick={() => setOpen(true)}
+                sx={{ ml: 1 }}
               >
-                <MenuIcon />
-              </Button>
-              <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+                <MenuIcon sx={{ color: "black" }} />
+              </IconButton>
+              <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
                 <Box
                   sx={{
                     minWidth: "60dvw",
@@ -223,28 +268,33 @@ export const MenuBar = () => {
                     <div
                       style={{
                         display: "flex",
-                        justifyContent: "center",
-                        alignItems: "flex-end",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                         flexDirection: "column",
+                        maxWidth: "160px",
+                        gap: 10,
+                        margin: "0 auto",
                       }}
                     >
-                      <IconButton onClick={toggleTheme}>
-                        {theme === "light" ? (
-                          <DarkModeIcon />
-                        ) : (
-                          <LightModeIcon />
-                        )}
-                      </IconButton>
-                      <Box style={{ padding: "8px" }}>
+                     
+                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-around", gap: 1, p: 1, width: "100%" }}>
+                        <IconButton onClick={toggleTheme}>
+                          {theme === "light" ? (
+                            <DarkModeIcon />
+                          ) : (
+                            <LightModeIcon />
+                          )}
+                        </IconButton>
                         <UserButton
                           appearance={{
                             baseTheme: theme === "light" ? undefined : dark,
                           }}
                         />
                       </Box>
-                      <div style={{ marginTop: "10px" }}>
-                        {subscribeButton()}
-                      </div>
+                        {subscribeButton()} <ListItem>
+                        <ListItemText primary={t("language")} />
+                        <LanguagePicker inDrawer />
+                      </ListItem>
                     </div>
                   ) : null}
                 </Box>

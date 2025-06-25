@@ -20,6 +20,7 @@ import { apiPut } from "../../utils/apiUtils";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { LeaguesTypes } from "../../Routes/LeagueDashboard/LeagueDashboard";
+import { useTranslation } from 'react-i18next';
 
 interface IRequest {
   userId: string;
@@ -42,6 +43,7 @@ const RequestsTable = ({
   requestType,
 }: IRequestsTable) => {
   const { setFeedback } = useFeedback();
+  const { t } = useTranslation();
 
   const handleAccept = (id: string) => {
     apiPut(`/api/leagues/${leagueId}/${requestType}-petitions/${id}/accept`, {})
@@ -91,9 +93,7 @@ const RequestsTable = ({
         id="panel1-header"
         sx={{ textAlign: "left" }}
       >
-        Peticiones para{" "}
-        {requestType === "moderator" ? "moderar" : "participar en"} esta liga (
-        {requests.length})
+        {t('pendingRequestsTitle')} ({requests.length})
       </AccordionSummary>
       <AccordionDetails sx={{ p: 0 }}>
         {requests.length > 0 ? (
@@ -105,15 +105,13 @@ const RequestsTable = ({
             <Table aria-label={`${requestType} requests table`}>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: "600" }}>Usuario</TableCell>
-                  <TableCell sx={{ fontWeight: "600" }}>
-                    Fecha de petición
-                  </TableCell>
+                  <TableCell sx={{ fontWeight: "600" }}>{t('user')}</TableCell>
+                  <TableCell sx={{ fontWeight: "600" }}>{t('requestDate')}</TableCell>
                   <TableCell
                     sx={{ fontWeight: "600" }}
                     className={style.actionColumn}
                   >
-                    Acciones
+                    {t('actionsHeader')}
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -149,9 +147,7 @@ const RequestsTable = ({
           </TableContainer>
         ) : (
           <p className={style.noActionsMessage}>
-            No hay peticiones para{" "}
-            {requestType === "moderator" ? "moderar" : "participar en"} esta
-            liga.
+            {t('noRequestsToModerate')}
           </p>
         )}
       </AccordionDetails>

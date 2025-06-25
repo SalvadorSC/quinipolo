@@ -12,12 +12,14 @@ import SportsBarIcon from "@mui/icons-material/SportsBar";
 import PoolIcon from "@mui/icons-material/Pool";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { Space } from "antd";
+import { useTranslation } from 'react-i18next';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { userData } = useUserData();
   const { setFeedback } = useFeedback();
   const [leagues, setLeagues] = useState<any[]>([]);
+  const { t } = useTranslation();
   /* const [leagueImages, setLeagueImages] = useState<{ [key: string]: string }>(
     {}
   ); */
@@ -72,7 +74,7 @@ const Dashboard = () => {
   const canCreateLeague = (role: string, leagues: any[]) => {
     if (role === "moderator" && leagues.length >= 1) {
       setFeedback({
-        message: "Solo se permite crear una liga por moderador.",
+        message: t('error'),
         severity: "error",
         open: true,
       });
@@ -108,11 +110,11 @@ const Dashboard = () => {
       >
         <div className={styles.container}>
           <h2 className={styles.leaguesTitle} style={{ marginTop: 0 }}>
-            Quinipolos
+            {t('leagues')}
           </h2>
           <QuinipolosToAnswer appLocation="user-dashboard" />
           <div className={styles.leaguesContainer}>
-            <h2 className={styles.leaguesTitle}>Mis ligas</h2>
+            <h2 className={styles.leaguesTitle}>{t('myLeagues')}</h2>
             <hr />
             {userData.role === "" ? (
               <CircularProgress sx={{ mt: 4 }} />
@@ -178,7 +180,7 @@ const Dashboard = () => {
                 ))}
               </>
             )}
-            <h2 className={styles.leaguesTitle}>Acciones</h2>
+            <h2 className={styles.leaguesTitle}>{t('actions')}</h2>
             <hr />
 
             <Button
@@ -190,7 +192,7 @@ const Dashboard = () => {
               }}
               style={{ margin: "20px  0", width: "100%" }}
             >
-              Ver todas las ligas
+              {t('viewAllLeagues')}
             </Button>
 
             <LoadingButton
@@ -205,7 +207,7 @@ const Dashboard = () => {
                   navigate("/subscribe");
                 } else */ if (userData.role !== "moderator") {
                   setFeedback({
-                    message: "Solo los moderadores pueden crear Ligas",
+                    message: t('onlyModeratorsCanCreateLeagues'),
                     severity: "error",
                     open: true,
                   });
@@ -213,7 +215,7 @@ const Dashboard = () => {
                 } else {
                   /* navigate("/crear-liga"); */
                   setFeedback({
-                    message: "Funcionalidad deshabilitada temporalmente",
+                    message: t('featureTemporarilyDisabled'),
                     severity: "error",
                     open: true,
                   });
@@ -228,7 +230,7 @@ const Dashboard = () => {
                 width: "100%",
               }}
             >
-              Crear una liga
+              {t('createLeague')}
             </LoadingButton>
           </div>
         </div>

@@ -20,6 +20,8 @@ import { apiPut } from "../../utils/apiUtils";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { LeaguesTypes } from "../../Routes/LeagueDashboard/LeagueDashboard";
+import { useTranslation } from 'react-i18next';
+
 interface IParticipantRequestsTable {
   requests: { userId: string; username: string; date: Date; _id: string }[];
   leagueId: string;
@@ -32,6 +34,7 @@ const ParticipantRequestsTable = ({
   setLeagueData,
 }: IParticipantRequestsTable) => {
   const { setFeedback } = useFeedback();
+  const { t } = useTranslation();
 
   function handleAccept(id: string) {
     apiPut(`/api/leagues/${leagueId}/moderator-petitions/${id}/accept`, {})
@@ -81,7 +84,7 @@ const ParticipantRequestsTable = ({
         id="panel1-header"
         sx={{ textAlign: "left" }}
       >
-        Peticiones para unirse a esta liga ({requests.length})
+        {t('pendingRequestsTitle')} ({requests.length})
       </AccordionSummary>
       <AccordionDetails sx={{ p: 0 }}>
         {requests.length > 0 ? (
@@ -93,15 +96,13 @@ const ParticipantRequestsTable = ({
             <Table aria-label="moderator requests table">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: "600" }}>Usuario</TableCell>
-                  <TableCell sx={{ fontWeight: "600" }}>
-                    Fecha de petición
-                  </TableCell>
+                  <TableCell sx={{ fontWeight: "600" }}>{t('user')}</TableCell>
+                  <TableCell sx={{ fontWeight: "600" }}>{t('requestDate')}</TableCell>
                   <TableCell
                     sx={{ fontWeight: "600" }}
                     className={style.actionColumn}
                   >
-                    Acciones
+                    {t('actionsHeader')}
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -137,7 +138,7 @@ const ParticipantRequestsTable = ({
           </TableContainer>
         ) : (
           <p className={style.noActionsMessage}>
-            No hay peticiones para moderar esta liga
+            {t('noRequestsToJoin')}
           </p>
         )}
       </AccordionDetails>

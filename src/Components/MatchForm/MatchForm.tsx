@@ -8,6 +8,7 @@ import {
   Skeleton,
   TextField,
   Typography,
+  Box,
 } from "@mui/material";
 import {
   ChangeEvent,
@@ -18,6 +19,9 @@ import {
 } from "react";
 import { SurveyData } from "../../Routes/SurveyForm/SurveyForm.types";
 import styles from "./MatchForm.module.scss";
+import { useTranslation } from 'react-i18next';
+import { useTheme as useMuiTheme } from "@mui/material/styles";
+
 interface MatchFormProps {
   teamOptions: { waterpolo: string[]; football: string[] };
   selectedTeams: string[];
@@ -33,6 +37,8 @@ const MatchForm = ({
   setQuinipolo,
   loading,
 }: MatchFormProps) => {
+  const { t } = useTranslation();
+  const muiTheme = useMuiTheme();
   const initialSurveyData: SurveyData = {
     gameType: "waterpolo",
     homeTeam: "",
@@ -79,33 +85,39 @@ const MatchForm = ({
     }));
   };
 
-  let goalsText = "None";
+  let goalsText = t('none');
 
   if (matchData.gameType) {
     if (matchData.gameType === "waterpolo") {
-      goalsText = "Menos de 9, 9 o 10, más de 10.";
+      goalsText = t('waterpoloGoalsText');
     } else {
-      goalsText = "0, 1 o 2, más de 2";
+      goalsText = t('footballGoalsText');
     }
   }
 
   return (
     <>
       <Typography className={styles.matchFormTitle}>
-        Partido {index + 1}: <br />
+        {t('matchNumber', { number: index + 1 })} <br />
       </Typography>
       <br />
-      <div className={styles.matchForm} key={`matchForm-${index}`}>
-        <div>
+      <Box
+        className={styles.matchForm}
+        key={`matchForm-${index}`}
+        sx={{
+          backgroundColor: muiTheme.palette.mode === 'dark' ? '#23272b' : '#fff',
+        }}
+      >
+        <Box>
           <FormControl
             className="matchForm__gameType"
             fullWidth
             variant="outlined"
             margin="normal"
           >
-            <InputLabel>Deporte</InputLabel>
+            <InputLabel>{t('sport')}</InputLabel>
             <Select
-              label="Deporte"
+              label={t('sport')}
               name="gameType"
               value={matchData.gameType}
               onChange={(event) => {
@@ -117,8 +129,8 @@ const MatchForm = ({
                 });
               }}
             >
-              <MenuItem value="waterpolo">Waterpolo</MenuItem>
-              <MenuItem value="football">Football</MenuItem>
+              <MenuItem value="waterpolo">{t('waterpolo')}</MenuItem>
+              <MenuItem value="football">{t('football')}</MenuItem>
             </Select>
           </FormControl>
 
@@ -140,7 +152,7 @@ const MatchForm = ({
                   <TextField
                     required
                     {...params}
-                    label="Local"
+                    label={t('homeTeam')}
                     variant="outlined"
                     name="homeTeam"
                     value={matchData.homeTeam}
@@ -162,7 +174,7 @@ const MatchForm = ({
                   <TextField
                     {...params}
                     required
-                    label="Visitante"
+                    label={t('awayTeam')}
                     variant="outlined"
                     name="awayTeam"
                     value={matchData.awayTeam}
@@ -178,13 +190,13 @@ const MatchForm = ({
 
           {index === 14 && (
             <div style={{ marginTop: 10 }}>
-              <p>Número de gols:</p>
+              <p>{t('numberOfGoals')}:</p>
               <br />
               <p>{goalsText}</p>
             </div>
           )}
-        </div>
-      </div>
+        </Box>
+      </Box>
     </>
   );
 };

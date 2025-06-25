@@ -3,6 +3,7 @@ import React from "react";
 import { Button, CardContent, Typography } from "@mui/material";
 import { useUser } from "../../Context/UserContext/UserContext";
 import { Plan } from "../SubscriptionPurchase/SubscriptionPurchase";
+import { useTranslation } from "react-i18next";
 
 interface SubscriptionCardContentProps {
   planName: string;
@@ -18,6 +19,8 @@ const SubscriptionCardContent: React.FC<SubscriptionCardContentProps> = ({
   plan,
 }) => {
   const user = useUser();
+  const { t } = useTranslation();
+
   return (
     <CardContent
       style={{
@@ -43,7 +46,7 @@ const SubscriptionCardContent: React.FC<SubscriptionCardContentProps> = ({
         rel="noreferrer"
       >
         <Button variant="contained" color="primary">
-          Continuar
+          {t('continue')}
         </Button>
       </a>
     </CardContent>
