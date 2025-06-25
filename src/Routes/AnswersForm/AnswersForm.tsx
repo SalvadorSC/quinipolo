@@ -21,6 +21,7 @@ import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { apiGet, apiPost } from "../../utils/apiUtils";
 import { useUser } from "../../Context/UserContext/UserContext";
 import GoalsToggleButtonGroup from "./GoalsToggleButtonGroup";
+import { useTranslation } from 'react-i18next';
 
 type RespostesType = {
   matchNumber: number;
@@ -91,6 +92,8 @@ const AnswersForm = () => {
   const correctingModeOn = queryParams.get("correct"); // another submit
   const editCorrectionModeOn = queryParams.get("correctionEdit"); // show corrections selected
   const seeUserAnswersModeOn = queryParams.get("see"); // if user answered, show answers. If correction done, show corrections. If both, show corrected Answers
+
+  const { t } = useTranslation();
 
   const fetchData = async () => {
     try {
@@ -324,8 +327,8 @@ const AnswersForm = () => {
               <TableRow>
                 <TableCell align="center" sx={{ marginBottom: 16 }}>
                   {correctingModeOn
-                    ? "Corrección"
-                    : `Respostes Quinipolo ${quinipolo.leagueName}`}
+                    ? t('edit')
+                    : `${t('answers')} Quinipolo ${quinipolo.leagueName}`}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -416,8 +419,8 @@ const AnswersForm = () => {
               >
                 {editCorrectionModeOn &&
                 user.userData.moderatedLeagues.includes(quinipolo.leagueId)
-                  ? "Editar corrección"
-                  : "Enviar"}
+                  ? t('edit')
+                  : t('submit')}
               </Button>
             )}
           </Table>

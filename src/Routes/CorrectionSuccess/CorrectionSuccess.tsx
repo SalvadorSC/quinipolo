@@ -4,6 +4,7 @@ import { Paper, Button } from "@mui/material";
 import style from "../QuinipoloSuccess/QuinipoloSuccess.module.scss";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import Leaderboard from "../../Components/Leaderboard/Leaderboard";
+import { useTranslation } from 'react-i18next';
 
 export type Result = {
   username: string;
@@ -21,6 +22,7 @@ const CorrectionSuccess = () => {
   const sortedResults = results.sort(
     (a: Result, b: Result) => b.totalPoints - a.totalPoints
   );
+  const { t } = useTranslation();
 
   // Group and sort points earned
   const groupAndSortPointsEarned = (results: Result[]) => {
@@ -63,16 +65,16 @@ const CorrectionSuccess = () => {
       month: "numeric",
       day: "numeric",
     });
-    let message = `*Resultados Quinipolo realizada Jornada (${results[0]?.nQuinipolosParticipated}) ${formattedDate}:*\n\n`;
+    let message = `*${t('resultsTitle', { n: results[0]?.nQuinipolosParticipated, date: formattedDate })}*\n\n`;
 
     // Points Earned Distribution
-    message += "*Puntos ganados en esta Quinipolo:*\n";
+    message += `*${t('pointsEarnedThisQuinipolo')}*\n`;
     for (const [points, usernames] of sorted_points_earned) {
       message += `- ${usernames.join(", ")}: *${points}p*\n`;
     }
 
     // Total Points Distribution (Leaderboard)
-    message += "\n*Clasificación:*\n";
+    message += `\n*${t('leaderboardTitle')}*\n`;
     let position = 1; // To keep track of the current position
     for (const [points, usernames] of sorted_total_points) {
       let prefix = `${position}.-`;
@@ -90,19 +92,18 @@ const CorrectionSuccess = () => {
         (result) => result.correct15thGame && result.pointsEarned === 15
       )
     ) {
-      message += "\n *Ganadores de la Quinipolo*: \n";
+      message += `\n *${t('quinipoloWinners')}:* \n`;
       results.forEach((result) => {
         if (result.correct15thGame && result.pointsEarned === 15) {
           message += `- ${result.username}: ${result.totalPoints}p *(+${result.pointsEarned})* 🌟\n`;
         }
       });
     } else {
-      message += "\n Sin ganador. 😢\n";
+      message += `\n ${t('noWinner')} 😢\n`;
     }
 
     // Add additional information if necessary
-    message +=
-      "\nGracias por participar en la Quinipolo. ¡No te pierdas la próxima!";
+    message += `\n${t('thanksForParticipating')}\n`;
     return message;
   };
 
@@ -112,14 +113,14 @@ const CorrectionSuccess = () => {
       .writeText(messageToShare)
       .then(() => {
         setFeedback({
-          message: "Mensaje copiado al portapapeles!",
+          message: t('messageCopied'),
           severity: "success",
           open: true,
         });
       })
       .catch((err) => {
         setFeedback({
-          message: "Error copiando el mensaje al portapapeles!",
+          message: t('errorCopyingMessage'),
           severity: "error",
           open: true,
         });
@@ -141,19 +142,19 @@ const CorrectionSuccess = () => {
             borderRadius: results.length > 0 ? "10px 10px 0 0" : null,
           }}
         >
-          <h2>¡Quinipolo corregida con éxito!</h2>
+          <h2>{t('quinipoloCorrectedSuccess')}</h2>
 
           <p
             className={style.copyCorrection}
             style={results.length > 0 ? {} : { marginTop: 40 }}
           >
             {results.length > 0
-              ? "A continuación, se muestra la tabla con los resultados de los usuarios."
-              : "Aunque... Vaya! Parece que nadie ha respondido esta Quinipolo! "}
+              ? t('resultsTableInfo')
+              : t('noOneAnswered')}
           </p>
           {results.length > 0 ? null : (
             <p className={style.copyCorrection}>
-              Asegúrate de comunicar bien como se hace!
+              {t('communicateWell')}
             </p>
           )}
         </Paper>
@@ -174,13 +175,13 @@ const CorrectionSuccess = () => {
           marginTop: "20px",
         }}
       >
-        <p className={style.reminder}>No olvides compartir los resultados!</p>
+        <p className={style.reminder}>{t('dontForgetToShare')}</p>
         <Button
           style={{ marginTop: 16 }}
           variant="contained"
           onClick={copyMessageToClipboard}
         >
-          Copiar mensaje
+          {t('copyMessage')}
         </Button>
         <Button
           variant="contained"
@@ -193,7 +194,7 @@ const CorrectionSuccess = () => {
             style={{ color: "white", textDecoration: "none" }}
             rel="noopener noreferrer"
           >
-            Compartir en WhatsApp
+            {t('shareOnWhatsApp')}
           </a>
         </Button>
         <Button
@@ -204,7 +205,7 @@ const CorrectionSuccess = () => {
           className={style.returnButton}
           style={{ marginTop: 16 }}
         >
-          Volver al menú principal
+          {t('returnToMainMenu')}
         </Button>
       </Paper>
       {/* Additional component content... */}

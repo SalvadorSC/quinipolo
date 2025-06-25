@@ -1,0 +1,23 @@
+{
+  "componentDefaults": {},
+  "style": "default",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "tailwind.config.js",
+    "css": "src/index.css",
+    "baseColor": "zinc",
+    "cssVariables": true
+  },
+  "aliases": {
+    "components": "@/Components",
+    "utils": "@/utils",
+    "ui": "@/Components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "paths": {
+    "components": "src/Components",
+    "utils": "src/utils"
+  }
+}

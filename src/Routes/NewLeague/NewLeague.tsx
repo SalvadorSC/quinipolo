@@ -14,6 +14,7 @@ import { apiPost } from "../../utils/apiUtils";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { useUser } from "../../Context/UserContext/UserContext";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 // Define the response type for the image upload
 /* interface ImageUploadResponse {
@@ -40,10 +41,12 @@ const NewLeague: React.FC = () => {
 
   const { setFeedback } = useFeedback();
 
+  const { t } = useTranslation();
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!leagueName) {
-      setError("Por favor complete todos los campos requeridos.");
+      setError(t('fillAllRequiredFields'));
       return;
     }
     const leagueId = leagueName.toLowerCase().replace(/\s/g, "_");
@@ -62,7 +65,7 @@ const NewLeague: React.FC = () => {
       );
 
       setFeedback({
-        message: "Liga creada exitosamente",
+        message: t('leagueCreatedSuccess'),
         severity: "success",
         open: true,
       });
@@ -71,7 +74,7 @@ const NewLeague: React.FC = () => {
     } catch (error) {
       console.error("Error creating league:", error);
       setFeedback({
-        message: "Error al crear la liga",
+        message: t('errorCreatingLeague'),
         severity: "error",
         open: true,
       });
@@ -90,13 +93,13 @@ const NewLeague: React.FC = () => {
       }}
     >
       <Typography variant="h4" component="h1" gutterBottom>
-        Crear Nueva Liga
+        {t('createNewLeague')}
       </Typography>
       <form onSubmit={handleSubmit}>
         <Box mb={2}>
           <TextField
             fullWidth
-            label="Nombre de la Liga"
+            label={t('leagueName')}
             value={leagueName}
             onChange={(e) => setLeagueName(e.target.value)}
             required
@@ -112,7 +115,7 @@ const NewLeague: React.FC = () => {
                 color="primary"
               />
             }
-            label="Liga Privada"
+            label={t('privateLeague')}
           />
         </Box>
         {/*  <Box mb={2}>
@@ -137,7 +140,7 @@ const NewLeague: React.FC = () => {
           </Box>
         )} */}
         <Button type="submit" variant="contained" color="primary">
-          Crear Liga
+          {t('createLeague')}
         </Button>
       </form>
       {error && (

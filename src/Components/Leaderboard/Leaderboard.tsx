@@ -10,8 +10,11 @@ import {
 import React from "react";
 import { Result } from "../../Routes/CorrectionSuccess/CorrectionSuccess";
 import style from "./Leaderboard.module.scss";
+import { useTranslation } from 'react-i18next';
 
 const Leaderboard = ({ sortedResults }: { sortedResults: Result[] }) => {
+  const { t } = useTranslation();
+
   return (
     <TableContainer
       sx={{
@@ -27,8 +30,8 @@ const Leaderboard = ({ sortedResults }: { sortedResults: Result[] }) => {
       >
         <TableHead>
           <TableRow>
-            <TableCell>Usuario</TableCell>
-            <TableCell align="right">Puntos Totales</TableCell>
+            <TableCell>{t('user')}</TableCell>
+            <TableCell align="right">{t('points')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

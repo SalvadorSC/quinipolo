@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "@mui/material";
 import React from "react";
+import { useTranslation } from 'react-i18next';
 
 type Result = {
   username: string;
@@ -19,6 +20,8 @@ type Result = {
 };
 
 const Stats = ({ results }: { results: Result[] }) => {
+  const { t } = useTranslation();
+
   // Calculate average points per participation and sort the results
   const sortedResults = results
     .map((row) => ({
@@ -44,8 +47,8 @@ const Stats = ({ results }: { results: Result[] }) => {
       >
         <TableHead>
           <TableRow>
-            <TableCell>Usuario</TableCell>
-            <TableCell align="right">Promedio de Puntos</TableCell>
+            <TableCell>{t('user')}</TableCell>
+            <TableCell align="right">{t('averagePoints')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

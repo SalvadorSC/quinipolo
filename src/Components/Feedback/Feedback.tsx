@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Snackbar, SnackbarContent, IconButton } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
+import { useTranslation } from 'react-i18next';
 
 interface IFeedback {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface IFeedback {
 }
 
 const Feedback = ({ isOpen, onClose, message, severity }: IFeedback) => {
+  const { t } = useTranslation();
   let color;
 
   switch (severity) {
@@ -42,7 +44,7 @@ const Feedback = ({ isOpen, onClose, message, severity }: IFeedback) => {
     >
       <SnackbarContent
         style={{ backgroundColor: color }}
-        message={<span>{message}</span>}
+        message={<span>{t(message)}</span>}
         action={[
           <IconButton key="close" color="inherit" onClick={onClose}>
             <CloseIcon />

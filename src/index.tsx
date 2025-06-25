@@ -6,6 +6,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { esES } from "@clerk/localizations";
+import "./utils/i18n";
 /* if (typeof window !== "undefined") {
   scan({
     enabled: true,

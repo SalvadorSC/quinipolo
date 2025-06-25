@@ -12,6 +12,7 @@ import Leaderboard from "../../Components/Leaderboard/Leaderboard";
 import Stats from "../../Components/Stats/Stats";
 import RequestsTable from "../../Components/RequestsTable/RequestsTable";
 import { Tabs, TabsProps } from "antd";
+import { useTranslation } from 'react-i18next';
 
 export type LeaguesTypes = {
   quinipolosToAnswer: any[];
@@ -72,6 +73,7 @@ const LeagueDashboard = () => {
   const queryParams = new URLSearchParams(window.location.search);
   const leagueId = queryParams.get("id");
   const { setFeedback } = useFeedback();
+  const { t } = useTranslation();
 
   const { isSignedIn } = useClerkUserData();
   const { userData } = useUser();
@@ -102,7 +104,7 @@ const LeagueDashboard = () => {
       .catch((error) => {
         console.error(error);
         setFeedback({
-          message: "Error cargando los datos de la liga",
+          message: t('errorLoadingLeagueData'),
           severity: "error",
           open: true,
         });
@@ -178,7 +180,7 @@ const LeagueDashboard = () => {
     })
       .then(() => {
         setFeedback({
-          message: "Permisos solicitados!",
+          message: t('success'),
           severity: "success",
           open: true,
         });
@@ -187,7 +189,7 @@ const LeagueDashboard = () => {
       .catch((error) => {
         console.error(error);
         setFeedback({
-          message: "Error solicitando permisos",
+          message: t('error'),
           severity: "error",
           open: true,
         });
@@ -207,12 +209,12 @@ const LeagueDashboard = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "Clasificación",
+      label: t('points'),
       children: <Leaderboard sortedResults={leaderboardData} />,
     },
     {
       key: "2",
-      label: "Estadísticas",
+      label: t('stats'),
       children: <Stats results={leaderboardData} />,
     },
   ];
@@ -246,8 +248,8 @@ const LeagueDashboard = () => {
                     loading={!leagueData || loading}
                   >
                     {isUserModeratorInThisLeague
-                      ? "Crear una quinipolo"
-                      : "Solicitar permisos de moderador"}
+                      ? t('createQuinipolo')
+                      : t('edit')}
                   </LoadingButton>
                 </span>
               ) : null}
@@ -263,7 +265,7 @@ const LeagueDashboard = () => {
             </Stack>
             {isUserModeratorInThisLeague ? (
               <>
-                <h2 className={styles.actionsTitle}>Acciones</h2>
+                <h2 className={styles.actionsTitle}>{t('actions')}</h2>
                 <hr style={{ marginBottom: 16 }} />
                 {leagueData.isPrivate ? (
                   <RequestsTable

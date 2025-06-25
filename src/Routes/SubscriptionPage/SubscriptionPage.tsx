@@ -6,11 +6,13 @@ import SubscriptionDetails from "../../Components/SubscriptionDetails/Subscripti
 import SubscriptionPurchase from "../../Components/SubscriptionPurchase/SubscriptionPurchase";
 import { apiGet } from "../../utils/apiUtils";
 import { UserDataType, useUser } from "../../Context/UserContext/UserContext";
+import { useTranslation } from 'react-i18next';
 
 const SubscriptionPage: React.FC = () => {
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const user = useUser();
+  const { t } = useTranslation();
 
   const fetchSubscription = async () => {
     try {
@@ -46,6 +48,7 @@ const SubscriptionPage: React.FC = () => {
   return (
     <Container className={styles.subscriptionContainer}>
       <Paper elevation={3} className={styles.subscriptionPaper}>
+        <h2>{t('subscribe')}</h2>
         {subscription !== null && (
           <Box mb={4}>
             <SubscriptionDetails

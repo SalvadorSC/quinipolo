@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Typography, Box, CircularProgress, Button } from "@mui/material";
 import { apiPost } from "../../utils/apiUtils";
+import { useTranslation } from "react-i18next";
 
 interface SubscriptionDetailsProps {
   loading: boolean;
@@ -14,8 +15,9 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
   subscription,
   onCancel,
 }) => {
+  const { t } = useTranslation();
   const [canceling, setCanceling] = useState<boolean>(false);
-  let planName = "Unknown Plan";
+  let planName = t("unknownPlan");
   interface PlanData {
     [key: string]: string;
   }
@@ -43,7 +45,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
   }
   if (subscription.message !== "No active subscriptions found") {
     const productId = subscription.items.data[0].price.product;
-    planName = planData[productId] || "Unknown Plan";
+    planName = planData[productId] || t("unknownPlan");
   }
 
   return (
@@ -56,25 +58,25 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
       }}
     >
       <Typography variant="h6" gutterBottom>
-        Detalles de la suscripción
+        {t("subscriptionDetails")}
       </Typography>
       {subscription.message !== "No active subscriptions found" ? (
         <Box>
           <Typography variant="body1">
-            <strong>Plan:</strong> {planName}
+            <strong>{t("subscriptionType")}:</strong> {planName}
           </Typography>
           <Typography variant="body1">
-            <strong>Precio:</strong>{" "}
+            <strong>{t("price")}:</strong>{" "}
             {subscription.items.data[0].price.unit_amount / 100}{" "}
-            {subscription.items.data[0].price.currency.toUpperCase()} por{" "}
+            {subscription.items.data[0].price.currency.toUpperCase()} {t("per")}{" "}
             {subscription.items.data[0].price.recurring.interval}
           </Typography>
           <Typography variant="body1">
-            <strong>Estado:</strong>{" "}
-            {subscription.canceled_at ? "Cancelado" : subscription.status}
+            <strong>{t("subscriptionStatus")}:</strong>{" "}
+            {subscription.canceled_at ? t("cancelled") : subscription.status}
           </Typography>
           <Typography variant="body1">
-            <strong>Fin del período actual:</strong>{" "}
+            <strong>{t("subscriptionEnd")}:</strong>{" "}
             {new Date(
               subscription.current_period_end * 1000
             ).toLocaleDateString()}
@@ -87,10 +89,8 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
                 alignItems: "center",
               }}
             >
-              {/* Add copy to explain that if you want to change plans, you first need to cancel the one you have. */}
               <Typography variant="body1">
-                Para modificar el plan actual hay que cancelar la suscripción
-                primero.
+                {t("changePlanCancelFirst")}
               </Typography>
 
               <Button
@@ -100,13 +100,13 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
                 disabled={canceling}
                 sx={{ marginTop: "16px", marginRight: "8px" }}
               >
-                {canceling ? "Cancelando..." : "Cancelar suscripción"}
+                {canceling ? t("cancelling") : t("subscriptionCancel")}
               </Button>
             </Box>
           )}
         </Box>
       ) : (
-        <Typography variant="body1">No hay suscripciones activas</Typography>
+        <Typography variant="body1">{t("noActiveSubscriptions")}</Typography>
       )}
     </Box>
   );
