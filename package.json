@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:3001",
+  "license": "MIT",
+  "description": "Frontend for the Quinipolo website",
   "dependencies": {
     "@clerk/clerk-react": "^5.2.5",
     "@clerk/localizations": "^2.4.6",
