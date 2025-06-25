@@ -1,4 +1,5 @@
 // SurveyForm.tsx
+// TODO: Make date picker responsive to theme changes by adding theme-specific styles and configuration
 import React, { useState, FormEvent, useEffect } from "react";
 import { Button, Tooltip } from "@mui/material";
 import { SurveyData } from "./SurveyForm.types";
