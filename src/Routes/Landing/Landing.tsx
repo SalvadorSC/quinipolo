@@ -55,19 +55,19 @@ const Landing: React.FC = () => {
               </svg>
             </Button>
           </div>
-          <img src={mockupPNG} alt="Placeholder" />
+          <img src={mockupPNG} alt={t('mockupAlt')} />
         </div>
         <Paper className={styles.secondSection}>
           <Flex align="center" vertical justify="center">
-            <Title>¡Únete a tus amigos y juega!</Title>
+            <Title>{t('landingSecondTitle')}</Title>
             <Typography style={{ marginTop: 10 }}>
-              ¡Participad en la liga global o crea tu propia liga privada!
+              {t('landingSecondSubtitle')}
             </Typography>
             <Button
               style={{ width: "140px", marginTop: 10 }}
               onClick={() => navigate("sign-in")}
             >
-              Unirse ahora
+              {t('landingSecondCta')}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
@@ -86,10 +86,10 @@ const Landing: React.FC = () => {
               </svg>
             </Button>
           </Flex>
-          <img src={mockupPNG2} alt="Placeholder" />
+          <img src={mockupPNG2} alt={t('mockup2Alt')} />
         </Paper>
         <Footer className={styles.footer}>
-          Quinipolo ©{new Date().getFullYear()} Creado por Salvador Sánchez
+          {t('footerText', { year: new Date().getFullYear(), author: 'Salvador Sánchez' })}
         </Footer>
       </div>
     </>

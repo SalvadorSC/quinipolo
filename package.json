@@ -6,6 +6,10 @@
   "license": "MIT",
   "description": "Frontend for the Quinipolo website",
   "dependencies": {
+    "@capacitor/android": "^7.4.0",
+    "@capacitor/cli": "^7.4.0",
+    "@capacitor/core": "^7.4.0",
+    "@capacitor/ios": "^7.4.0",
     "@clerk/clerk-react": "^5.2.5",
     "@clerk/localizations": "^2.4.6",
     "@clerk/themes": "^2.1.18",
@@ -75,6 +79,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@types/react-datepicker": "^4.19.5",
+    "node-fetch": "^2.7.0",
     "sitemap": "^8.0.0"
   }
 }

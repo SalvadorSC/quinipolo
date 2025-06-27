@@ -192,7 +192,7 @@ const QuinipoloCard = ({
                 navigate(`/quinipolo?id=${quinipolo._id}&see=true`);
               }}
               disabled={
-                quinipolo.isDeleted || quinipolo.leagueId === "sant_feliu_24_25"
+                quinipolo.isDeleted 
               }
               variant={"contained"}
             >

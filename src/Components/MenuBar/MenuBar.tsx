@@ -246,15 +246,17 @@ export const MenuBar = () => {
             </Box>
 
             <Box sx={{ display: { sm: "", md: "none" } }}>
-              <IconButton
-                edge="end"
-                color="inherit"
-                aria-label="menu"
-                onClick={() => setOpen(true)}
-                sx={{ ml: 1 }}
-              >
-                <MenuIcon sx={{ color: theme === "light" ? "black" : "white" }} />
-              </IconButton>
+              {isSignedIn && (
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={() => setOpen(true)}
+                  sx={{ ml: 1 }}
+                >
+                  <MenuIcon sx={{ color: theme === "light" ? "black" : "white" }} />
+                </IconButton>
+              )}
               <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
                 <Box
                   sx={{

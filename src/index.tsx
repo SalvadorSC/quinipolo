@@ -26,6 +26,8 @@ root.render(
     <ClerkProvider
       publishableKey={process.env.REACT_APP_VITE_CLERK_PUBLISHABLE_KEY}
       localization={esES}
+      signInUrl={process.env.REACT_APP_VITE_CLERK_SIGN_IN_URL}
+      // proxyUrl="https://quinipolo.com"
     >
       <App />
     </ClerkProvider>
