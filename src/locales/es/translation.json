@@ -215,5 +215,20 @@
   "errorCreatingLeague": "Error al crear la liga",
   "createNewLeague": "Crear Nueva Liga",
   "leagueName": "Nombre de la Liga",
-  "privateLeague": "Liga Privada"
+  "privateLeague": "Liga Privada",
+  "alreadyHaveAccountLogin": "¿Ya tienes una cuenta? Inicia sesión aquí.",
+  "noAccountSignUpHere": "¿No tienes cuenta? Regístrate aquí.",
+  "fullName": "Nombre completo",
+  "username": "Nombre de usuario",
+  "signUp": "Registrarse",
+  "isRequired": "es obligatorio",
+  "landingSecondTitle": "¡Únete a la diversión!",
+  "landingSecondSubtitle": "Crea o únete a ligas, compite con amigos y sube en la clasificación.",
+  "landingSecondCta": "Iniciar sesión",
+  "mockup2Alt": "Captura de pantalla de la app",
+  "footerText": "© {{year}} por {{author}}. Todos los derechos reservados.",
+  "quinipolos": "Quinípolos",
+  "dashboardSubtitle": "Consulta tus ligas, responde quinipolos y sube en la clasificación.",
+  "pendingQuinipolos": "Quinipolos pendientes",
+  "totalPoints": "Puntos totales"
 }

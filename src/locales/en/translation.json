@@ -51,6 +51,7 @@
   "noPendingQuinipolos": "No pending quinipolos",
   "noPreviousQuinipolos": "No previous quinipolos",
   "noQuinipolos": "No quinipolos",
+  "quinipolos": "Quinipolos",
   "actionsTitle": "Actions",
   "myLeagues": "My Leagues",
   "subscribeNow": "Subscribe now",
@@ -215,5 +216,19 @@
   "errorCreatingLeague": "Error creating league",
   "createNewLeague": "Create New League",
   "leagueName": "League Name",
-  "privateLeague": "Private League"
+  "privateLeague": "Private League",
+  "alreadyHaveAccountLogin": "Already have an account? Log in here.",
+  "noAccountSignUpHere": "No account? Sign up here.",
+  "fullName": "Full Name",
+  "username": "Username",
+  "signUp": "Sign Up",
+  "isRequired": "is required",
+  "landingSecondTitle": "Join the fun!",
+  "landingSecondSubtitle": "Create or join leagues, compete with friends, and climb the leaderboard.",
+  "landingSecondCta": "Sign In",
+  "mockup2Alt": "App mockup screenshot",
+  "footerText": "© {{year}} by {{author}}. All rights reserved.",
+  "dashboardSubtitle": "Check your leagues, answer quinipolos, and climb the leaderboard!",
+  "pendingQuinipolos": "Pending Quinipolos",
+  "totalPoints": "Total Points"
 } 

@@ -4,9 +4,8 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { ClerkProvider } from "@clerk/clerk-react";
-import { esES } from "@clerk/localizations";
 import "./utils/i18n";
+import { UserProvider } from "./Context/UserContext/UserContext";
 /* if (typeof window !== "undefined") {
   scan({
     enabled: true,
@@ -14,23 +13,14 @@ import "./utils/i18n";
   });
 } */
 
-if (!process.env.REACT_APP_VITE_CLERK_PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key");
-}
-
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <ClerkProvider
-      publishableKey={process.env.REACT_APP_VITE_CLERK_PUBLISHABLE_KEY}
-      localization={esES}
-      signInUrl={process.env.REACT_APP_VITE_CLERK_SIGN_IN_URL}
-      // proxyUrl="https://quinipolo.com"
-    >
+   <UserProvider>
       <App />
-    </ClerkProvider>
+    </UserProvider>
   </React.StrictMode>
 );
 

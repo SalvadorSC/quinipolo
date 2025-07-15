@@ -12,4 +12,5 @@
 
 WORK IN MALTA:
 
-TO DO: handle having more than one moderator.
+TO DO: 
+Do a user profile tab.  

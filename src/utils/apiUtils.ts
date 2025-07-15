@@ -1,10 +1,19 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { supabase } from '../lib/supabaseClient';
 
 // Base URL for the API
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 /**
- * Makes an API call using Axios.
+ * Helper to get the current Supabase access token (async).
+ */
+const getAccessToken = async (): Promise<string | null> => {
+  const { data: { session } } = await supabase.auth.getSession();
+  return session?.access_token || null;
+};
+
+/**
+ * Makes an API call using Axios, always including the Supabase access token if available.
  *
  * @param method - The HTTP method ("get", "post", "put", or "patch").
  * @param url - The endpoint URL.
@@ -19,11 +28,17 @@ const apiCall = async <T>(
   config: AxiosRequestConfig = {}
 ): Promise<T> => {
   try {
+    const token = await getAccessToken();
+    const headers = {
+      ...(config.headers || {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
     const response: AxiosResponse<T> = await axios({
       method,
       url: `${API_BASE_URL}${url}`,
       data,
       ...config,
+      headers,
     });
     return response.data;
   } catch (error) {

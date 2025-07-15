@@ -215,5 +215,20 @@
   "errorCreatingLeague": "Error creant la lliga",
   "createNewLeague": "Crear Nova Lliga",
   "leagueName": "Nom de la Lliga",
-  "privateLeague": "Lliga Privada"
+  "privateLeague": "Lliga Privada",
+  "alreadyHaveAccountLogin": "Ja tens un compte? Inicia sessió aquí.",
+  "noAccountSignUpHere": "No tens compte? Registra't aquí.",
+  "fullName": "Nom complet",
+  "username": "Nom d'usuari",
+  "signUp": "Registrar-se",
+  "isRequired": "és obligatori",
+  "landingSecondTitle": "Uneix-te a la diversió!",
+  "landingSecondSubtitle": "Crea o uneix-te a lligues, competeix amb amics i puja al rànquing.",
+  "landingSecondCta": "Inicia sessió",
+  "mockup2Alt": "Captura de pantalla de l'app",
+  "footerText": "© {{year}} per {{author}}. Tots els drets reservats.",
+  "quinipolos": "Quinípolos",
+  "dashboardSubtitle": "Consulta les teves lligues, respon quinipolos i puja al rànquing!",
+  "pendingQuinipolos": "Quinipolos pendents",
+  "totalPoints": "Punts totals"
 }

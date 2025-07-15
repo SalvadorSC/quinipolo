@@ -2,12 +2,12 @@ import React from "react";
 import "./App.css";
 import SurveyForm from "./Routes/SurveyForm/SurveyForm";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { UserProvider } from "./Context/UserContext/UserContext";
+import { UserProvider, useUser } from "./Context/UserContext/UserContext";
 import { FeedbackProvider } from "./Context/FeedbackContext/FeedbackContext";
-import { useUser } from "@clerk/clerk-react";
 import { ThemeProvider } from "./Context/ThemeContext/ThemeContext";
 import AnswersForm from "./Routes/AnswersForm/AnswersForm";
 import LoginForm from "./Routes/LoginForm/LoginForm";
+import { SignUpForm } from "./Routes";
 import Dashboard from "./Routes/Dashboard/Dashboard";
 import Landing from "./Routes/Landing/Landing";
 import QuinipoloSuccess from "./Routes/QuinipoloSuccess/QuinipoloSuccess";
@@ -20,8 +20,9 @@ import CorrectionSuccess from "./Routes/CorrectionSuccess/CorrectionSuccess";
 import { useTranslation } from 'react-i18next';
 
 function App() {
-  const user = useUser();
+  const { userData } = useUser();
   const { t } = useTranslation();
+  const isAuthenticated = Boolean(userData && userData.userId);
 
   return (
     <React.StrictMode>
@@ -30,27 +31,19 @@ function App() {
           <UserProvider>
             <ThemeProvider>
               <Routes>
-                <Route
-                  path="sign-in"
-                  element={
-                    !user.isSignedIn ? (
-                      <LoginForm />
-                    ) : (
-                      <Navigate to="/dashboard" />
-                    )
-                  }
-                />
+                <Route path="/sign-in" element={<LoginForm />} />
+                <Route path="/signup" element={<SignUpForm />} />
 
                 {/* Auth callback route for magic link deep linking */}
                 {/* <Route path="auth/callback" element={<AuthCallback />} /> */}
 
                 <Route
                   path="/"
-                  element={user.isSignedIn ? <MenuBar /> : <Landing />}
+                  element={isAuthenticated ? <MenuBar /> : <Landing />}
                 >
                   <Route
                     path="/"
-                    element={user.isSignedIn ? <Dashboard /> : <Landing />}
+                    element={isAuthenticated ? <Dashboard /> : <Landing />}
                   />
                   <Route path="crear-quinipolo" element={<SurveyForm />} />
                   <Route

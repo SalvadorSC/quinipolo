@@ -5,7 +5,7 @@ import { CircularProgress, Paper, Box } from "@mui/material";
 import styles from "./Dashboard.module.scss";
 import { LoadingButton } from "@mui/lab";
 import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
-import { useUser as useUserData } from "../../Context/UserContext/UserContext";
+import { UserDataType, useUser as useUserData } from "../../Context/UserContext/UserContext";
 import SportsVolleyballIcon from "@mui/icons-material/SportsVolleyball";
 import WavesIcon from "@mui/icons-material/Waves";
 import SportsBarIcon from "@mui/icons-material/SportsBar";
@@ -13,35 +13,16 @@ import PoolIcon from "@mui/icons-material/Pool";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { Space } from "antd";
 import { useTranslation } from 'react-i18next';
+import { apiGet } from "../../utils/apiUtils";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { userData } = useUserData();
+  const { userData, updateUser } = useUserData();
   const { setFeedback } = useFeedback();
-  const [leagues, setLeagues] = useState<any[]>([]);
+  const [leagues, setLeagues] = useState<{leagueId: string, leagueName: string, participants: string[]}[]>([]);
   const { t } = useTranslation();
-  /* const [leagueImages, setLeagueImages] = useState<{ [key: string]: string }>(
-    {}
-  ); */
+  const [hasFetchedProfile, setHasFetchedProfile] = useState(false);
 
-  /* useEffect(() => {
-    const fetchImages = async () => {
-      const images: { [key: string]: string } = {};
-      for (const league of userData.leagues) {
-        if (league.leagueImage) {
-          images[league.leagueId] = league.leagueImage;
-        } else if (league.hasImage) {
-          const imageUrl = await apiGet<string>(
-            `/api/leagues/images/${league.leagueId}`
-          );
-          images[league.leagueId] = imageUrl;
-        }
-      }
-      setLeagueImages(images);
-    };
-
-    fetchImages();
-  }, [userData.leagues]); */
 
   const returnRandomIcon = () => {
     const iconStyle = {
@@ -84,18 +65,37 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // this is to ensure that the global league is always the first one
-    if (userData.leagues.length === 0) return;
-    let leaguesArray = userData.leagues;
+    if (!hasFetchedProfile && (!userData.leagues || userData.leagues.length === 0)) {
+      apiGet<UserDataType>('/api/users/me/profile').then(profile => {
+        const leagues = profile.leagues || [];
+        leagues.sort((a, b) => (a.leagueId === "global" ? -1 : b.leagueId === "global" ? 1 : 0));
+        updateUser({ leagues, role: profile.role, username: profile.username });
+        setHasFetchedProfile(true);
+      });
+    }
+  }, [userData.leagues, updateUser, hasFetchedProfile]);
 
-    leaguesArray.unshift(
-      leaguesArray.splice(
-        leaguesArray.findIndex((league) => league.leagueId === "global"),
-        1
-      )[0]
-    );
+  const getLeaguesData = async () => {
+    const leaguesData = await Promise.all(userData.leagues.map(league => {
+      return apiGet<any>(`/api/leagues/${league}`).then(leagueData => {
+        return leagueData;
+      });
+    }));
+   
+    const leaguesWithData = leaguesData.map(league => {
+      return {
+        leagueId: league.id,
+        leagueName: league.league_name,
+        participants: league.participants,
+      }
+    });
+    setLeagues(leaguesWithData);
+  }
 
-    setLeagues(leaguesArray);
+  useEffect(() => {
+    if (userData.leagues.length > 0) {
+      getLeaguesData();
+    }
   }, [userData.leagues]);
 
   return (
@@ -108,6 +108,7 @@ const Dashboard = () => {
           borderRadius: "20px",
         }}
       >
+        <h1>Welcome {userData.username}</h1>
         <div className={styles.container}>
           <h2 className={styles.leaguesTitle} style={{ marginTop: 0 }}>
             {t('leagues')}
@@ -120,7 +121,7 @@ const Dashboard = () => {
               <CircularProgress sx={{ mt: 4 }} />
             ) : userData.leagues.length === 0 ? (
               <p className={styles.noActionsMessage}>
-                No estas afiliado a ninguna liga.
+                {t('noLeagues')}
               </p>
             ) : (
               <>
@@ -142,32 +143,7 @@ const Dashboard = () => {
                     variant={"contained"}
                   >
                     <>
-                      {league.leagueImage ? (
-                        <img
-                          style={{
-                            maxHeight: "40px",
-                            maxWidth: "40px",
-                            margin: "0 10px",
-                          }}
-                          src={league.leagueImage}
-                          alt={`Logo Liga ${league.leagueName}`}
-                        />
-                      ) : (
-                        returnRandomIcon()
-                      )}
-                      {/*  {leagueImages[league.leagueId] ? (
-                        <img
-                          style={{
-                            maxHeight: "40px",
-                            maxWidth: "40px",
-                            margin: "0 10px",
-                          }}
-                          src={leagueImages[league.leagueId]}
-                          alt={`Logo Liga ${league.leagueName}`}
-                        />
-                      ) : (
-                        returnRandomIcon()
-                      )} */}
+                      {returnRandomIcon()}
                       <p
                         style={{
                           marginLeft: "20px",

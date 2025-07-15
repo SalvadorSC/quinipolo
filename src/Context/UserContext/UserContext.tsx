@@ -1,4 +1,6 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo } from "react";
+import { supabase } from "../../lib/supabaseClient";
+import { apiGet } from '../../utils/apiUtils';
 
 // Define a type for Leagues
 
@@ -54,12 +56,21 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     isRegistered: false,
   });
 
-  const updateUser = (newData: any) => {
-    localStorage.setItem("userId", newData.userId);
-    localStorage.setItem("username", newData.username);
-    localStorage.setItem("emailAddress", newData.emailAddress);
-    setUserData({ ...userData, ...newData });
+  const updateUser = (newData: Partial<UserDataType>) => {
+    const merged = { ...userData, ...newData };
+    // Only update if something actually changed
+    const changed = Object.keys(newData).some(
+      key => merged[key as keyof UserDataType] !== userData[key as keyof UserDataType]
+    );
+    if (changed) {
+      // Optionally update localStorage for specific fields
+      if (newData.userId) localStorage.setItem("userId", newData.userId);
+      if (newData.username) localStorage.setItem("username", newData.username);
+      if (newData.emailAddress) localStorage.setItem("emailAddress", newData.emailAddress);
+      setUserData(merged);
+    }
   };
+
 
   return (
     <UserContext.Provider value={{ userData, updateUser }}>

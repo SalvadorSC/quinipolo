@@ -1,25 +1,32 @@
 import React, { useState } from "react";
-import styles from "./LoginForm.module.scss";
+import styles from "../LoginForm/LoginForm.module.scss";
 import MenuBar from "../../Components/MenuBar/MenuBar";
 import { useTheme } from "../../Context/ThemeContext/ThemeContext";
 import { useTranslation } from 'react-i18next';
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { supabase } from "../../lib/supabaseClient";
 import { Form, Input, Button, Alert, Card } from "antd";
-import { MailOutlined, LockOutlined, GoogleOutlined, SmileOutlined } from '@ant-design/icons';
+import { MailOutlined, LockOutlined, UserOutlined, IdcardOutlined, SmileOutlined } from '@ant-design/icons';
 
-const LoginForm = () => {
+const SignUpForm = () => {
   const { theme } = useTheme();
   const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const onFinish = async (values: { email: string; password: string }) => {
+  const onFinish = async (values: { email: string; password: string; username: string; fullName: string }) => {
     setLoading(true);
     setError(null);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
+    const { email, password, username, fullName } = values;
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          username,
+          fullName,
+        },
+      },
     });
     setLoading(false);
     if (error) {
@@ -29,29 +36,16 @@ const LoginForm = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    setError(null);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin + "/dashboard"
-      }
-    });
-    setLoading(false);
-    if (error) setError(error.message);
-  };
-
   return (
     <div
       style={{
         minHeight: '100vh',
+        //background: 'linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         paddingTop: 40,
-
       }}
     >
       <MenuBar />
@@ -69,11 +63,11 @@ const LoginForm = () => {
         <div style={{ textAlign: 'center', marginBottom: 12 }}>
           <SmileOutlined style={{ fontSize: 36, color: '#1890ff' }} />
           <Typography variant="h5" mb={2} style={{ fontWeight: 700, marginTop: 8 }}>
-            {t('signIn')} 🎉
+            {t('signUp')} 🎉
           </Typography>
         </div>
         <Form
-          name="login"
+          name="signup"
           onFinish={onFinish}
           layout="vertical"
         >
@@ -99,7 +93,31 @@ const LoginForm = () => {
               prefix={<LockOutlined style={{ color: '#1890ff' }} />}
               placeholder={t('password')}
               size="large"
-              autoComplete="current-password"
+              autoComplete="new-password"
+            />
+          </Form.Item>
+          <Form.Item
+            name="username"
+            label={t('username')}
+            rules={[{ required: true, message: t('username') + ' ' + t('isRequired') }]}
+          >
+            <Input
+              prefix={<UserOutlined style={{ color: '#1890ff' }} />}
+              placeholder={t('username')}
+              size="large"
+              autoComplete="username"
+            />
+          </Form.Item>
+          <Form.Item
+            name="fullName"
+            label={t('fullName')}
+            rules={[{ required: true, message: t('fullName') + ' ' + t('isRequired') }]}
+          >
+            <Input
+              prefix={<IdcardOutlined style={{ color: '#1890ff' }} />}
+              placeholder={t('fullName')}
+              size="large"
+              autoComplete="name"
             />
           </Form.Item>
           {error && <Alert message={error} type="error" style={{ marginBottom: 16 }} showIcon />} 
@@ -112,34 +130,13 @@ const LoginForm = () => {
               size="large"
               style={{ marginTop: 8, borderRadius: 8, fontWeight: 600 }}
             >
-              {t('signIn')}
+              {t('signUp')}
             </Button>
           </Form.Item>
         </Form>
-        <Button
-          onClick={handleGoogleSignIn}
-          icon={<GoogleOutlined />}
-          type="default"
-          block
-          size="large"
-          style={{
-            marginTop: 8,
-            borderRadius: 8,
-            fontWeight: 600,
-            background: '#fff',
-            color: '#4285F4',
-            border: '1px solid #e0e0e0',
-            transition: 'background 0.2s, color 0.2s',
-          }}
-          disabled={loading}
-          onMouseOver={e => (e.currentTarget.style.background = '#e8f0fe')}
-          onMouseOut={e => (e.currentTarget.style.background = '#fff')}
-        >
-          {t('signIn')} Google
-        </Button>
         <div style={{ marginTop: 20, textAlign: 'center' }}>
-          <a href="/signup" style={{ color: '#1890ff', fontWeight: 500 }}>
-            {t('noAccountSignUpHere') || 'No account? Sign up here.'}
+          <a href="/sign-in" style={{ color: '#1890ff', fontWeight: 500 }}>
+            {t('alreadyHaveAccountLogin') || 'Already have an account? Log in here.'}
           </a>
         </div>
       </Card>
@@ -147,4 +144,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default SignUpForm; 

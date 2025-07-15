@@ -40,7 +40,7 @@ const QuinipolosToAnswer = ({
           );
         } else {
           data = await apiGet(
-            `/api/users/user/quinipolos?username=${username}`
+            `/api/users/me/quinipolos`
           );
         }
         setQuinipolos(data);

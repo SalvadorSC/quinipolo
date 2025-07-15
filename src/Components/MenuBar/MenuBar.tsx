@@ -3,7 +3,6 @@ import { styled } from "@mui/material/styles";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import logoNew from "../../assets/LOGOS/QUINIPOLO_NEW_LOGO.svg";
-import { UserButton, useUser } from "@clerk/clerk-react";
 import { checkUser } from "../../utils/checkUser";
 import {
   UserDataType,
@@ -27,7 +26,6 @@ import { apiGet } from "../../utils/apiUtils";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { useTheme } from "../../Context/ThemeContext/ThemeContext";
-import { dark } from "@clerk/themes";
 import { useTranslation } from "react-i18next";
 
 const drawerWidth = 240;
@@ -72,25 +70,24 @@ const LANGUAGES = [
 
 export const MenuBar = () => {
   const navigate = useNavigate();
-  const { user, isSignedIn } = useUser();
+  const { updateUser: updateUserData, userData } = useUserData();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
-  const { updateUser: updateUserData, userData } = useUserData();
   const [open, setOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  const getUserData = async (user: any) => {
+  const getUserData = async (username: string) => {
     const data = await apiGet<UserDataType>(
-      `/api/users/user/data/${user.username}`
+      `/api/users/user/data/${username}`
     );
     updateUserData({
       role: data.role,
       leagues: data.leagues,
       quinipolosToAnswer: data.quinipolosToAnswer,
       moderatedLeagues: data.moderatedLeagues,
-      username: user?.username,
-      emailAddress: user.primaryEmailAddress?.emailAddress,
+      username: data.username,
+      emailAddress: data.emailAddress,
       userId: data.userId,
       hasBeenChecked: true,
     });
@@ -99,21 +96,19 @@ export const MenuBar = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (
-        user?.primaryEmailAddress?.emailAddress &&
-        user?.username &&
-        user?.fullName
+        userData?.emailAddress &&
+        userData?.username
       ) {
         const isaUserRegistered = await checkUser({
-          email: user.primaryEmailAddress?.emailAddress,
-          username: user.username,
-          fullName: user.fullName,
+          email: userData.emailAddress,
+          username: userData.username,
+          fullName: userData.username,
           participateGlobalQuinipolo: true,
         });
         updateUserData({ isRegistered: isaUserRegistered });
-        getUserData(user);
+        getUserData(userData.username);
       }
     };
-    // if path is dashboard
     if (!userData.hasBeenChecked || location.pathname === "/dashboard") {
       fetchData();
     }
@@ -129,6 +124,9 @@ export const MenuBar = () => {
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
+
+  // Replace isSignedIn with your own logic
+  const isSignedIn = Boolean(userData && userData.userId);
 
   const subscribeButton = () => {
     return (
@@ -231,12 +229,6 @@ export const MenuBar = () => {
                 <IconButton onClick={toggleTheme}>
                   {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
                 </IconButton>
-                <UserButton
-                  appearance={{
-                    baseTheme: theme === "light" ? undefined : dark,
-                  }}
-                  showName
-                />
                 {!isMobile && (
                   <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flex: 1 }}>
                     <LanguagePicker />
@@ -287,11 +279,6 @@ export const MenuBar = () => {
                             <LightModeIcon />
                           )}
                         </IconButton>
-                        <UserButton
-                          appearance={{
-                            baseTheme: theme === "light" ? undefined : dark,
-                          }}
-                        />
                       </Box>
                         {subscribeButton()} <ListItem>
                         <ListItemText primary={t("language")} />

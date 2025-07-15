@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress, Paper, Stack } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import styles from "./LeagueDashboard.module.scss";
 import QuinipolosToAnswer from "../../Components/QuinipolosToAnswer/QuinipolosToAnswer";
-import { useUser as useClerkUserData } from "@clerk/clerk-react";
 import { useUser } from "../../Context/UserContext/UserContext";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { apiGet, apiPost } from "../../utils/apiUtils";
@@ -75,7 +74,6 @@ const LeagueDashboard = () => {
   const { setFeedback } = useFeedback();
   const { t } = useTranslation();
 
-  const { isSignedIn } = useClerkUserData();
   const { userData } = useUser();
 
   const MAX_RETRIES = 5;
@@ -88,7 +86,7 @@ const LeagueDashboard = () => {
           quinipolosToAnswer: data.quinipolosToAnswer,
           leaguesToCorrect: data.leaguesToCorrect,
           moderatorArray: data.moderatorArray,
-          leagueName: data.leagueName,
+          leagueName: data.league_name,
           moderatorPetitions: data.moderatorPetitions,
           participantPetitions: data.participantPetitions,
           participants: data.participants,
@@ -115,13 +113,7 @@ const LeagueDashboard = () => {
   const getLeagueLeaderBoardData = async (retries = 0) => {
     apiGet(`/api/leagues/${leagueId}/leaderboard`)
       .then((data: any) => {
-        /* if (
-          (data.participantsLeaderboard.length === 0 &&
-            retries < MAX_RETRIES) ||
-          leaderboardData.length === 0
-        ) {
-          setTimeout(() => getLeagueLeaderBoardData(retries + 1), RETRY_DELAY);
-        } else { */
+        console.log('API response from /leaderboard:', data);
         const transformedLeaderboardData = data.participantsLeaderboard.map(
           (score: LeaderboardScore) => {
             return {
@@ -132,17 +124,14 @@ const LeagueDashboard = () => {
             };
           }
         );
-
-        console.log(transformedLeaderboardData, data.participantsLeaderboard);
-
+        console.log('Transformed leaderboard data:', transformedLeaderboardData);
         const sortedScores = transformedLeaderboardData.sort(
           (a: TransformedLeaderboardScore, b: TransformedLeaderboardScore) =>
             b.totalPoints - a.totalPoints
         );
-
+        console.log('Sorted leaderboard data:', sortedScores);
         setLeaderboardData(sortedScores);
         setLoading(false);
-        /* } */
       })
       .catch((error) => {
         console.error(error);
@@ -155,21 +144,19 @@ const LeagueDashboard = () => {
       });
   };
 
-  useEffect(() => {
-    const fetchLeagueData = async () => {
-      setLoading(true);
-      getLeagueData();
-      getLeagueLeaderBoardData();
-    };
+  const hasFetched = useRef(false);
 
-    // Redirect to sign-in if not authenticated
-    if (isSignedIn === false) {
-      navigate("/sign-in");
-    } else {
-      fetchLeagueData();
+  useEffect(() => {
+    if (!userData || userData.username === "" || hasFetched.current) {
+      if (!userData || userData.username === "") navigate("/sign-in");
+      return;
     }
+    hasFetched.current = true;
+    setLoading(true);
+    getLeagueData();
+    getLeagueLeaderBoardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userData.username]);
 
   const handleSolicitarPermisos = () => {
     setLoading(true);
@@ -206,11 +193,19 @@ const LeagueDashboard = () => {
     navigate(`/crear-quinipolo?leagueId=${leagueId}`);
   };
 
+  const sortedLeaderboardData = useMemo(() => {
+    return leaderboardData.slice().sort(
+      (a: TransformedLeaderboardScore, b: TransformedLeaderboardScore) =>
+        b.totalPoints - a.totalPoints
+    );
+  }, [leaderboardData]);
+
+  console.log('Data passed to Leaderboard:', sortedLeaderboardData);
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: t('points'),
-      children: <Leaderboard sortedResults={leaderboardData} />,
+      children: <Leaderboard sortedResults={sortedLeaderboardData} />, // use memoized data
     },
     {
       key: "2",
@@ -237,7 +232,7 @@ const LeagueDashboard = () => {
               <h1 className={styles.leagueTitle}>{leagueData.leagueName}</h1>
 
               {isUserModeratorInThisLeague ||
-              !leagueData.moderatorPetitions.find(
+              !leagueData.moderatorPetitions?.find?.(
                 (petition) => petition.username === userData.username
               ) ? (
                 <span>
