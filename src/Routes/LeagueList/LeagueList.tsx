@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Alert,
-  Box,
-  Button,
   CircularProgress,
-  Collapse,
   Paper,
   Table,
   TableBody,
@@ -14,7 +10,6 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import styles from "./LeagueList.module.scss";
@@ -30,8 +25,8 @@ type LeaguesTypes = {
   quinipolosToAnswer: any[];
   leaguesToCorrect: any[];
   moderatorArray: string[];
-  leagueName: string;
-  leagueId: string;
+  league_name: string;
+  id: string;
   participants: string[];
   isPrivate: boolean;
   participantPetitions: {
@@ -77,10 +72,10 @@ const LeagueList = () => {
   const handleJoinLeague = (index: number) => {
     // Logic to handle joining a league
     if (leagueListData?.[index]?.participants.includes(userData.username)) {
-      navigate("/league-dashboard?id=" + leagueListData[index].leagueId);
+      navigate("/league-dashboard?id=" + leagueListData[index].id);
     } else if (leagueListData?.[index]?.isPrivate) {
       apiPost(
-        `/api/leagues/${leagueListData?.[index].leagueId}/request-participant`,
+        `/api/leagues/${leagueListData?.[index].id}/request-participant`,
         {
           userId: userData.userId,
           username: userData.username,
@@ -103,8 +98,8 @@ const LeagueList = () => {
           });
         });
     } else {
-      apiPut(`/api/leagues/${leagueListData[index].leagueId}/join`, {
-        leagueId: leagueListData[index].leagueId,
+      apiPut(`/api/leagues/${leagueListData[index].id}/join`, {
+        leagueId: leagueListData[index].id,
         username: userData.username,
       })
         .then((data) => {
@@ -194,13 +189,13 @@ const LeagueList = () => {
               <TableBody>
                 {leagueListData?.map((league) => (
                   <TableRow
-                    key={league.leagueName}
+                    key={league.league_name}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
                   >
                     <TableCell component="th" scope="row">
-                      {league.leagueName}
+                      {league.league_name}
                     </TableCell>
                     <TableCell
                       style={{ paddingLeft: 0, paddingRight: 0 }}

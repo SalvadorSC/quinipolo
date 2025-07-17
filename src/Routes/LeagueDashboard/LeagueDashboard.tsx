@@ -17,8 +17,9 @@ export type LeaguesTypes = {
   quinipolosToAnswer: any[];
   leaguesToCorrect: any[];
   moderatorArray: string[];
-  leagueName: string;
+  league_name: string;
   isPrivate: boolean;
+  id: string;
   moderatorPetitions: {
     userId: string;
     username: string;
@@ -34,8 +35,9 @@ export type LeaguesTypes = {
     status: "pending" | "accepted" | "rejected" | "cancelled";
   }[];
   participants: {
+    user_id: string;
     username: string;
-    puntos: number;
+    role: string;
   }[];
 };
 
@@ -60,15 +62,15 @@ const LeagueDashboard = () => {
     quinipolosToAnswer: [],
     leaguesToCorrect: [],
     moderatorArray: [],
-    leagueName: "",
+    league_name: "",
+    id: "",
     moderatorPetitions: [],
     participantPetitions: [],
     participants: [],
     isPrivate: false,
   });
   const [leaderboardData, setLeaderboardData] = useState<any[]>([]);
-  const [isUserModeratorInThisLeague, setIsUserModeratorInThisLeague] =
-    useState<boolean>(false);
+  // Remove isUserModeratorInThisLeague state
   const queryParams = new URLSearchParams(window.location.search);
   const leagueId = queryParams.get("id");
   const { setFeedback } = useFeedback();
@@ -86,17 +88,13 @@ const LeagueDashboard = () => {
           quinipolosToAnswer: data.quinipolosToAnswer,
           leaguesToCorrect: data.leaguesToCorrect,
           moderatorArray: data.moderatorArray,
-          leagueName: data.league_name,
+          league_name: data.league_name,
+          id: data.id,
           moderatorPetitions: data.moderatorPetitions,
           participantPetitions: data.participantPetitions,
           participants: data.participants,
           isPrivate: data.isPrivate,
         });
-        if (userData.username !== "") {
-          setIsUserModeratorInThisLeague(
-            data.moderatorArray?.includes(userData.username)
-          );
-        }
         setLoading(false);
       })
       .catch((error) => {
@@ -113,7 +111,6 @@ const LeagueDashboard = () => {
   const getLeagueLeaderBoardData = async (retries = 0) => {
     apiGet(`/api/leagues/${leagueId}/leaderboard`)
       .then((data: any) => {
-        console.log('API response from /leaderboard:', data);
         const transformedLeaderboardData = data.participantsLeaderboard.map(
           (score: LeaderboardScore) => {
             return {
@@ -124,12 +121,10 @@ const LeagueDashboard = () => {
             };
           }
         );
-        console.log('Transformed leaderboard data:', transformedLeaderboardData);
         const sortedScores = transformedLeaderboardData.sort(
           (a: TransformedLeaderboardScore, b: TransformedLeaderboardScore) =>
             b.totalPoints - a.totalPoints
         );
-        console.log('Sorted leaderboard data:', sortedScores);
         setLeaderboardData(sortedScores);
         setLoading(false);
       })
@@ -157,6 +152,15 @@ const LeagueDashboard = () => {
     getLeagueLeaderBoardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData.username]);
+
+  // Derived value for moderator status
+  const isUserModeratorInThisLeague =
+    !!leagueData.participants.find(
+      (p) =>
+        p.username === userData.username &&
+        p.role &&
+        p.role.toLowerCase() === "moderator"
+    );
 
   const handleSolicitarPermisos = () => {
     setLoading(true);
@@ -200,7 +204,6 @@ const LeagueDashboard = () => {
     );
   }, [leaderboardData]);
 
-  console.log('Data passed to Leaderboard:', sortedLeaderboardData);
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -229,7 +232,7 @@ const LeagueDashboard = () => {
                 marginBottom: 20,
               }}
             >
-              <h1 className={styles.leagueTitle}>{leagueData.leagueName}</h1>
+              <h1 className={styles.leagueTitle}>{leagueData.league_name}</h1>
 
               {isUserModeratorInThisLeague ||
               !leagueData.moderatorPetitions?.find?.(
@@ -262,24 +265,40 @@ const LeagueDashboard = () => {
               <>
                 <h2 className={styles.actionsTitle}>{t('actions')}</h2>
                 <hr style={{ marginBottom: 16 }} />
-                {leagueData.isPrivate ? (
-                  <RequestsTable
-                    leagueId={leagueId!}
-                    requests={leagueData.participantPetitions.filter(
-                      (petition) => petition.status === "pending"
-                    )}
-                    setLeagueData={setLeagueData}
-                    requestType="participant"
-                  />
-                ) : null}
-                <RequestsTable
-                  leagueId={leagueId!}
-                  requests={leagueData.moderatorPetitions.filter(
+                {(() => {
+                  const participantRequests = leagueData.isPrivate && leagueData.participantPetitions?.filter(
                     (petition) => petition.status === "pending"
-                  )}
-                  setLeagueData={setLeagueData}
-                  requestType="moderator"
-                />
+                  );
+                  const moderatorRequests = leagueData.moderatorPetitions?.filter(
+                    (petition) => petition.status === "pending"
+                  );
+
+                  if ((!participantRequests || participantRequests.length === 0) && 
+                      (!moderatorRequests || moderatorRequests.length === 0)) {
+                    return <div className={styles.noActionsToHandle}>{t('noActionsToHandle')}</div>;
+                  }
+
+                  return (
+                    <>
+                      {leagueData.isPrivate && participantRequests && participantRequests.length > 0 && (
+                        <RequestsTable
+                          leagueId={leagueId!}
+                          requests={participantRequests}
+                          setLeagueData={setLeagueData}
+                          requestType="participant"
+                        />
+                      )}
+                      {moderatorRequests?.length > 0 && (
+                        <RequestsTable
+                          leagueId={leagueId!}
+                          requests={moderatorRequests}
+                          setLeagueData={setLeagueData}
+                          requestType="moderator"
+                        />
+                      )}
+                    </>
+                  );
+                })()}
               </>
             ) : null}
           </>

@@ -15,7 +15,6 @@ import { useTranslation } from 'react-i18next';
 const Leaderboard = ({ sortedResults }: { sortedResults: Result[] }) => {
   const { t } = useTranslation();
 
-  console.log('Leaderboard received sortedResults:', sortedResults);
 
   return (
     <TableContainer

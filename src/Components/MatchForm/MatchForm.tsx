@@ -49,7 +49,8 @@ const MatchForm = ({
   const [matchData, setMatchData] = useState<SurveyData>(initialSurveyData);
 
   const getTeams = (type: string) => {
-    return teamOptions[(matchData.gameType as "waterpolo") || "football"]
+    const teamsForSport = (teamOptions && teamOptions[matchData.gameType as "waterpolo" | "football"]) || [];
+    return teamsForSport
       .filter(
         (team: string) =>
           !selectedTeams.includes(team) &&

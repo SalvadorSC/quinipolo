@@ -230,5 +230,6 @@
   "footerText": "© {{year}} by {{author}}. All rights reserved.",
   "dashboardSubtitle": "Check your leagues, answer quinipolos, and climb the leaderboard!",
   "pendingQuinipolos": "Pending Quinipolos",
-  "totalPoints": "Total Points"
+  "totalPoints": "Total Points",
+  "noActionsToHandle": "No actions to handle"
 } 

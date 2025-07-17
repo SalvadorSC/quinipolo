@@ -10,7 +10,7 @@ import { DatePicker } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/es";
 import styles from "./SurveyForm.module.scss";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { apiPost } from "../../utils/apiUtils";
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,6 @@ type QuinipoloCreateResponseType = {
 
 const SurveyForm = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { setFeedback } = useFeedback();
   const [quinipolo, setQuinipolo] = useState<SurveyData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -87,10 +86,10 @@ const SurveyForm = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/teamOptions`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/teams/all`)
       .then((res) => res.json())
       .then((data) => {
-        setTeamOptions(data[0]);
+        setTeamOptions(data);
         setLoading(false);
       });
   }, []);
