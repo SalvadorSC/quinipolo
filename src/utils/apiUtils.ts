@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { supabase } from "../lib/supabaseClient";
+import { AUTH_TOKEN_STORAGE_KEY } from "./config";
 
 // Base URL for the API
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -84,7 +85,7 @@ const apiCall = async <T>(
     if (error.response?.status === 401 || error.response?.status === 403) {
       console.log("Authentication error, redirecting to login");
       // Clear any stored session data
-      localStorage.removeItem("quinipolo-auth-token");
+      localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
       // Redirect to login page
       window.location.href = "/sign-in";
       throw new Error("Authentication required");

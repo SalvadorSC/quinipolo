@@ -1,8 +1,8 @@
 import { QuinipoloType } from "../types/quinipolo";
-import { isUserModerator } from "./moderatorUtils";
+import { isUserModerator, UserLeague } from "./moderatorUtils";
 
 export interface QuinipoloFilters {
-  userLeagues?: any[];
+  userLeagues?: UserLeague[];
   username?: string;
   leagueId?: string;
 }

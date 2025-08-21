@@ -39,3 +39,12 @@ code {
 .gradient-secondary-dark {
   background: linear-gradient(90deg, #3949ab 0%, #5c6bc0 100%);
 }
+
+/* Mint gradient based on previous green (#00b894) */
+.gradient-mint {
+  background: linear-gradient(90deg, #00b894 0%, #00a884 100%);
+}
+
+.gradient-mint-dark {
+  background: linear-gradient(90deg, #26c6a2 0%, #00b894 100%);
+}

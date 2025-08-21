@@ -126,7 +126,7 @@ const RequestsTable = ({
                     </TableCell>
                     <TableCell className={style.actionColumn}>
                       <Button
-                        className={`${style.buttonAction} ${style.buttonAccept}`}
+                        className={`${style.buttonAction} ${style.buttonAccept} gradient-mint`}
                         variant="contained"
                         color="primary"
                         onClick={() => handleAccept(request._id)}

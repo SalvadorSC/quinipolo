@@ -123,7 +123,10 @@ const Dashboard = () => {
         }}
       >
         <div className={styles.container}>
-          <h2 className={styles.leaguesTitle} style={{ marginTop: 0 }}>
+          <h2
+            className={styles.leaguesTitle}
+            style={{ marginTop: 0, borderBottom: "1px solid #e0e0e0" }}
+          >
             {t("quinipolos")}
           </h2>
           <QuinipolosToAnswer appLocation="user-dashboard" />
@@ -134,14 +137,20 @@ const Dashboard = () => {
             ) : userData.leagues.length === 0 ? (
               <p className={styles.noActionsMessage}>{t("noLeagues")}</p>
             ) : (
-              <>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
                 {leagues.map((league) => (
                   <Button
                     className="gradient-primary"
                     sx={{
                       display: "flex",
                       width: "100%",
-                      marginTop: "20px",
                       justifyContent: "flex-start",
                       alignItems: "center",
                       padding: "10px",
@@ -165,39 +174,47 @@ const Dashboard = () => {
                     </>
                   </Button>
                 ))}
-              </>
+              </Box>
             )}
             <h2 className={styles.leaguesTitle}>{t("actions")}</h2>
-
-            <Button
-              className="gradient-secondary"
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={() => {
-                navigate("/join-league");
-              }}
-              style={{ margin: "20px  0", width: "100%" }}
-            >
-              {t("viewAllLeagues")}
-            </Button>
-
-            <LoadingButton
-              className="gradient-secondary"
-              loading={userData.role === ""}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                navigate("/create-league");
-              }}
-              size="large"
-              style={{
-                marginRight: "20px",
+            <Box
+              sx={{
                 width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
               }}
             >
-              {t("createLeague")}
-            </LoadingButton>
+              <Button
+                className="gradient-secondary"
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => {
+                  navigate("/join-league");
+                }}
+                style={{ width: "100%" }}
+              >
+                {t("viewAllLeagues")}
+              </Button>
+
+              <LoadingButton
+                className="gradient-secondary"
+                loading={userData.role === ""}
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  navigate("/create-league");
+                }}
+                size="large"
+                style={{
+                  marginRight: "20px",
+                  width: "100%",
+                }}
+              >
+                {t("createLeague")}
+              </LoadingButton>
+            </Box>
           </div>
         </div>
       </Paper>

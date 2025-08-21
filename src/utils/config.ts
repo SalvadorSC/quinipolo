@@ -25,3 +25,5 @@ export const getRedirectUrl = (path: string): string => {
   return `${config.baseUrl}${path}`;
 };
 
+// Centralized storage key for Supabase auth token
+export const AUTH_TOKEN_STORAGE_KEY = "quinipolo-auth-token";

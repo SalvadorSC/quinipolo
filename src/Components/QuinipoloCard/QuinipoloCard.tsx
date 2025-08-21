@@ -217,7 +217,7 @@ const QuinipoloCard = ({
                 <Button
                   className={`${styles.actionButton} ${
                     styles.actionButtonCorrect
-                  } ${quinipolo.is_deleted ? "" : "gradient-success"} ${
+                  } ${quinipolo.is_deleted ? "" : "gradient-mint"} ${
                     theme === "dark" ? styles.dark : ""
                   }`}
                   onClick={() => {
@@ -236,7 +236,9 @@ const QuinipoloCard = ({
           {quinipolo.has_been_corrected &&
             isUserModerator(userLeagues, quinipolo.league_id) && (
               <Button
-                className={`${styles.actionButton} ${styles.actionButtonCorrect}`}
+                className={`${styles.actionButton} ${
+                  styles.actionButtonCorrect
+                } ${quinipolo.is_deleted ? "" : "gradient-mint"}`}
                 onClick={() =>
                   navigate(`/quinipolo?id=${quinipolo.id}&correctionEdit=true`)
                 }

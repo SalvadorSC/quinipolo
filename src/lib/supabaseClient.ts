@@ -1,11 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
+import { AUTH_TOKEN_STORAGE_KEY } from "../utils/config";
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
-// Debug logging
-console.log("Supabase URL:", supabaseUrl);
-console.log("Supabase Anon Key exists:", !!supabaseAnonKey);
+// Debug logging (development only)
+if (process.env.NODE_ENV === "development") {
+  console.log("Supabase URL:", supabaseUrl);
+  console.log("Supabase Anon Key exists:", !!supabaseAnonKey);
+}
 
 // Check if environment variables are set
 if (!supabaseUrl || !supabaseAnonKey) {
@@ -25,7 +28,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = createClient(supabaseUrl || "", supabaseAnonKey || "", {
   auth: {
     persistSession: true,
-    storageKey: "quinipolo-auth-token",
+    storageKey: AUTH_TOKEN_STORAGE_KEY,
     storage: {
       getItem: (key) => {
         try {

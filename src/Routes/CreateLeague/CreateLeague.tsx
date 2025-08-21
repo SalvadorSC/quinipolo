@@ -5,17 +5,13 @@ import {
   Button,
   Typography,
   Box,
-  Switch,
-  FormControlLabel,
   Card,
   CardContent,
-  CardActions,
   Grid,
   Chip,
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { useUser } from "../../Context/UserContext/UserContext";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
 import { useTranslation } from "react-i18next";
@@ -42,7 +38,6 @@ const CreateLeague: React.FC<CreateLeagueProps> = () => {
   const [loadingTiers, setLoadingTiers] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  const navigate = useNavigate();
   const { userData } = useUser();
   const { setFeedback } = useFeedback();
   const { t } = useTranslation();

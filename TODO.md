@@ -12,19 +12,14 @@
 
 TO DO:
 
-- ✅ check the creating of a league. (COMPLETED - New Stripe + Supabase implementation)
 - check the acceptance or declining of petitions for leagues.
 - check joining a league if it's private
 - check joinign a league if it's public
-- ✅ STRIPE implementation from scratch if possible, using SUPABASE. (COMPLETED)
 - Check all the translations, at least in spanish.
-- ✅ Password reset flow implementation (COMPLETED - Full flow with email, reset page, and environment-aware redirects)
+- Update all instances of SetFeedback as I mostly missed them in regards to i18n
+- Make date picker responsive to theme changes by adding theme-specific styles and configuration
 
 Extra TO DO:
-
-- ✅ Do a user profile tab.  
-  (check if it works) Give option to change password.
-  Update all instances of SetFeedback as I mostly missed them in regards to i18n
 
 Future features (from League Info & Edit flow):
 
@@ -33,3 +28,11 @@ Future features (from League Info & Edit flow):
 - Kick Participant action
 - Backend API for updating moderator roles (currently using optimistic updates)
 - Make a way to create quinipolos at the same time for all leagues managed by the quinipolo team
+
+COMPLETED:
+
+- ✅ check the creating of a league. (COMPLETED - New Stripe + Supabase implementation)
+- ✅ STRIPE implementation from scratch if possible, using SUPABASE. (COMPLETED)
+- ✅ Password reset flow implementation (COMPLETED - Full flow with email, reset page, and environment-aware redirects)
+- ✅ Do a user profile tab.
+  (check if it works) Give option to change password.

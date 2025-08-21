@@ -1,4 +1,3 @@
-import { scan } from "react-scan";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
@@ -6,19 +5,13 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./utils/i18n";
 import { UserProvider } from "./Context/UserContext/UserContext";
-/* if (typeof window !== "undefined") {
-  scan({
-    enabled: true,
-    log: true, // logs render info to console (default: false)
-  });
-} */
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-   <UserProvider>
+    <UserProvider>
       <App />
     </UserProvider>
   </React.StrictMode>

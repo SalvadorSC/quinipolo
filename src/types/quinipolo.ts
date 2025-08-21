@@ -42,14 +42,6 @@ export interface QuinipoloType {
   participants_who_answered?: string[];
   correct_answers?: CorrectAnswer[];
   answered?: boolean;
-
-  // Legacy fields for backward compatibility
-  leagueName?: string;
-  leagueId?: string;
-  endDate?: string;
-  hasBeenCorrected?: boolean;
-  creationDate?: string;
-  _id?: string;
 }
 
 // API Response types
@@ -61,14 +53,6 @@ export interface QuinipoloCreateResponseType {
   end_date: string;
   has_been_corrected: boolean;
   creation_date: string;
-
-  // Legacy fields for backward compatibility
-  leagueName?: string;
-  leagueId?: string;
-  endDate?: string;
-  hasBeenCorrected?: boolean;
-  creationDate?: string;
-  _id?: string;
 }
 
 // Component Props

@@ -1,5 +1,4 @@
 // SurveyForm.tsx
-// TODO: Make date picker responsive to theme changes by adding theme-specific styles and configuration
 import React, { useState, FormEvent, useEffect } from "react";
 import {
   Button,
@@ -76,11 +75,10 @@ const SurveyForm = () => {
       const response = await apiPost<QuinipoloCreateResponseType>(
         `/api/quinipolos`,
         {
-          leagueId: leagueId,
+          league_id: leagueId,
           quinipolo,
-          endDate: selectedDate,
-          hasBeenCorrected: false,
-          creationDate: new Date(),
+          end_date: selectedDate,
+          creation_date: new Date(),
         }
       );
 
