@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import QRCode from "react-qr-code";
 import dayjs from "dayjs";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 const QuinipoloSuccess = () => {
   const location = useLocation();
@@ -15,21 +15,21 @@ const QuinipoloSuccess = () => {
   const deepLink = `https://quinipolo.com/quinipolo?${location.state.quinipolo._id}`;
   // Function to construct the deep link
 
-  const messageToShare = `${t('inviteToQuinipolo')} ${deepLink}`;
+  const messageToShare = `${t("inviteToQuinipolo")} ${deepLink}`;
 
   const copyMessageToClipboard = () => {
     navigator.clipboard
       .writeText(messageToShare)
       .then(() => {
         setFeedback({
-          message: t('messageCopied'),
+          message: t("messageCopied"),
           severity: "success",
           open: true,
         });
       })
       .catch((err) => {
         setFeedback({
-          message: t('errorCopyingMessage'),
+          message: t("errorCopyingMessage"),
           severity: "error",
           open: true,
         });
@@ -49,19 +49,17 @@ const QuinipoloSuccess = () => {
           justifyContent: "space-evenly",
         }}
       >
-        <h2>{t('quinipoloCreatedSuccess')}</h2>
-        <p>{t('deadlineToAnswer')}</p>
+        <h2>{t("quinipoloCreatedSuccess")}</h2>
+        <p>{t("deadlineToAnswer")}</p>
         <p>
           {dayjs(location.state.quinipolo.endDate).format("DD-MM-YYYY HH:mm")}h
         </p>
         <br />
-        <p>
-          {t('shareQuinipoloWithFriends')}
-        </p>
+        <p>{t("shareQuinipoloWithFriends")}</p>
         {/* Mensaje de compartir */}
         <QRCode className={style.qrCode} value={deepLink} />
         <Button variant="contained" onClick={copyMessageToClipboard}>
-          {t('copyMessage')}
+          {t("copyMessage")}
         </Button>
         <Button
           variant="contained"
@@ -74,7 +72,7 @@ const QuinipoloSuccess = () => {
             style={{ color: "white", textDecoration: "none" }}
             rel="noopener noreferrer"
           >
-            {t('shareOnWhatsApp')}
+            {t("shareOnWhatsApp")}
           </a>
         </Button>
         <Button
@@ -85,7 +83,7 @@ const QuinipoloSuccess = () => {
           className={style.returnButton}
           style={{ marginTop: 16 }}
         >
-          {t('returnToMainMenu')}
+          {t("returnToMainMenu")}
         </Button>
       </Paper>
     </div>

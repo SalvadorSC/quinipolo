@@ -1,8 +1,16 @@
 // SurveyForm.tsx
 // TODO: Make date picker responsive to theme changes by adding theme-specific styles and configuration
 import React, { useState, FormEvent, useEffect } from "react";
-import { Button, Tooltip } from "@mui/material";
-import { SurveyData } from "./SurveyForm.types";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  Box,
+} from "@mui/material";
+import { SurveyData } from "../../types/quinipolo";
 import MatchForm from "../../Components/MatchForm/MatchForm";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import locale from "antd/es/date-picker/locale/es_ES";
@@ -12,18 +20,10 @@ import "dayjs/locale/es";
 import styles from "./SurveyForm.module.scss";
 import { useNavigate } from "react-router-dom";
 import { useFeedback } from "../../Context/FeedbackContext/FeedbackContext";
+import { useTranslation } from "react-i18next";
 import { apiPost } from "../../utils/apiUtils";
-import { useTranslation } from 'react-i18next';
 
-type QuinipoloCreateResponseType = {
-  _id: string;
-  leagueName: string;
-  leagueId: string;
-  quinipolo: SurveyData[];
-  endDate: Date;
-  hasBeenCorrected: boolean;
-  creationDate: Date;
-};
+import { QuinipoloCreateResponseType } from "../../types/quinipolo";
 
 const SurveyForm = () => {
   const navigate = useNavigate();
@@ -35,6 +35,7 @@ const SurveyForm = () => {
     waterpolo: string[];
     football: string[];
   }>({ waterpolo: [], football: [] });
+  const [helpModalOpen, setHelpModalOpen] = useState<boolean>(false);
   const selectedTeams = quinipolo
     .map((match) => match.awayTeam)
     .concat(quinipolo.map((match) => match.homeTeam));
@@ -44,20 +45,34 @@ const SurveyForm = () => {
     setSelectedDate(dayjs(dateString, "DD/MM/YYYY hh:mm").toDate());
   };
 
+  const handleHelpClick = () => {
+    setHelpModalOpen(true);
+  };
+
+  const handleCloseHelpModal = () => {
+    setHelpModalOpen(false);
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const queryParams = new URLSearchParams(window.location.search);
     const leagueId = queryParams.get("leagueId");
+
     try {
       if (selectedDate === null || selectedDate < new Date()) {
         setFeedback({
-          message: t('selectDateTimeForQuinipolo'),
+          message: t("selectDateTimeForQuinipolo"),
           severity: "error",
           open: true,
         });
         window.scrollTo(0, 0);
         return;
       }
+
+      // Set loading state to prevent multiple submissions
+      setLoading(true);
+
+      // Create quinipolo via backend API
       const response = await apiPost<QuinipoloCreateResponseType>(
         `/api/quinipolos`,
         {
@@ -68,31 +83,55 @@ const SurveyForm = () => {
           creationDate: new Date(),
         }
       );
+
       setFeedback({
-        message: t('quinipoloCreatedSuccess'),
+        message: t("quinipoloCreatedSuccess"),
         severity: "success",
         open: true,
       });
+
       navigate("/quinipolo-success", { state: { quinipolo: response } });
     } catch (error) {
       setFeedback({
-        message: t('errorCreatingQuinipolo'),
+        message: t("errorCreatingQuinipolo"),
         severity: "error",
         open: true,
       });
       console.error("Error creating Quinipolo:", error);
+    } finally {
+      // Always reset loading state, even if there's an error
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/teams/all`)
-      .then((res) => res.json())
-      .then((data) => {
-        setTeamOptions(data);
+
+    const fetchTeams = async () => {
+      try {
+        // Use only the backend API since Supabase teams calls are failing
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/api/teams/all`
+        );
+        if (!response.ok) {
+          throw new Error(`Backend API failed: ${response.status}`);
+        }
+        const backendTeams = await response.json();
+        setTeamOptions(backendTeams);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+        setFeedback({
+          message: "Error loading teams",
+          severity: "error",
+          open: true,
+        });
+      } finally {
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+
+    fetchTeams();
+  }, [setFeedback]);
 
   const matchArray = new Array(15).fill(null);
 
@@ -109,20 +148,19 @@ const SurveyForm = () => {
           padding: 26,
         }}
       >
-        <h2>{t('createQuinipolo')}</h2>
-        <Tooltip title={t('surveyFormHelpTooltip')}>
-          <HelpOutlineRoundedIcon />
-        </Tooltip>
+        <h2>{t("createQuinipolo")}</h2>
+        <HelpOutlineRoundedIcon
+          onClick={handleHelpClick}
+          style={{ cursor: "pointer" }}
+        />
       </div>
-      <p className={styles.dateTimeDisclaimer}>
-        {t('dateTimeDisclaimer')}
-      </p>
+      <p className={styles.dateTimeDisclaimer}>{t("dateTimeDisclaimer")}</p>
       <div className={styles.datePickerContainer}>
         <DatePicker
           format="DD/MM/YYYY HH:mm"
           onChange={handleDateChange as any}
           locale={locale}
-          placeholder={t('date')}
+          placeholder={t("date")}
           className={styles.datePicker}
           showNow={false}
           popupClassName={styles.datePickerPopup}
@@ -142,10 +180,44 @@ const SurveyForm = () => {
       ))}
 
       <div className={styles.submitButton}>
-        <Button type="submit" variant="contained" color="primary">
-          {t('createQuinipolo')}
+        <Button
+          type="submit"
+          disabled={loading}
+          variant="contained"
+          color="primary"
+        >
+          {loading ? t("creatingQuinipolo") : t("createQuinipolo")}
         </Button>
       </div>
+
+      {/* Help Modal */}
+      <Dialog
+        open={helpModalOpen}
+        onClose={handleCloseHelpModal}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>{t("howQuinipoloWorksTitle")}</DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{
+                whiteSpace: "pre-line",
+                lineHeight: 1.6,
+              }}
+            >
+              {t("howQuinipoloWorksContent")}
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseHelpModal} color="primary">
+            {t("close")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </form>
   );
 };

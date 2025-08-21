@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from "../lib/supabaseClient";
 
 // Base URL for the API
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -8,8 +8,44 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
  * Helper to get the current Supabase access token (async).
  */
 const getAccessToken = async (): Promise<string | null> => {
-  const { data: { session } } = await supabase.auth.getSession();
-  return session?.access_token || null;
+  try {
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
+
+    if (error) {
+      console.error("Error getting session:", error);
+      return null;
+    }
+
+    // Check if token is expired or about to expire (within 5 minutes)
+    if (session?.access_token && session.expires_at) {
+      const expiresAt = new Date(session.expires_at * 1000);
+      const now = new Date();
+      const fiveMinutesFromNow = new Date(now.getTime() + 5 * 60 * 1000);
+
+      if (expiresAt <= fiveMinutesFromNow) {
+        console.log("Token expired or expiring soon, refreshing...");
+        const {
+          data: { session: refreshedSession },
+          error: refreshError,
+        } = await supabase.auth.refreshSession();
+
+        if (refreshError) {
+          console.error("Error refreshing session:", refreshError);
+          return null;
+        }
+
+        return refreshedSession?.access_token || null;
+      }
+    }
+
+    return session?.access_token || null;
+  } catch (error) {
+    console.error("Error in getAccessToken:", error);
+    return null;
+  }
 };
 
 /**
@@ -41,8 +77,19 @@ const apiCall = async <T>(
       headers,
     });
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error in ${method.toUpperCase()} ${url}:`, error);
+
+    // Handle authentication errors
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      console.log("Authentication error, redirecting to login");
+      // Clear any stored session data
+      localStorage.removeItem("quinipolo-auth-token");
+      // Redirect to login page
+      window.location.href = "/sign-in";
+      throw new Error("Authentication required");
+    }
+
     throw error;
   }
 };

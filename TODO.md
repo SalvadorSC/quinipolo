@@ -10,7 +10,26 @@
 - Add date to Quinipolo corrected message.
 - Stop using ANTd and use shadcn instead for date handling.
 
-WORK IN MALTA:
+TO DO:
 
-TO DO: 
-Do a user profile tab.  
+- ✅ check the creating of a league. (COMPLETED - New Stripe + Supabase implementation)
+- check the acceptance or declining of petitions for leagues.
+- check joining a league if it's private
+- check joinign a league if it's public
+- ✅ STRIPE implementation from scratch if possible, using SUPABASE. (COMPLETED)
+- Check all the translations, at least in spanish.
+- ✅ Password reset flow implementation (COMPLETED - Full flow with email, reset page, and environment-aware redirects)
+
+Extra TO DO:
+
+- ✅ Do a user profile tab.  
+  (check if it works) Give option to change password.
+  Update all instances of SetFeedback as I mostly missed them in regards to i18n
+
+Future features (from League Info & Edit flow):
+
+- Edit/add league photo in the edit modal (image upload and update)
+- Archive League action
+- Kick Participant action
+- Backend API for updating moderator roles (currently using optimistic updates)
+- Make a way to create quinipolos at the same time for all leagues managed by the quinipolo team
