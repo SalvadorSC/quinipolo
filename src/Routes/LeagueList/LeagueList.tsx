@@ -86,19 +86,108 @@ const LeagueList = () => {
   };
 
   const fetchLeagueListData = useCallback(async () => {
-    // Fetch data logic
-    apiGet<LeaguesTypes[]>(`/api/leagues`)
-      .then((data) => {
-        setLeagueListData(data);
-      })
-      .catch((error) => {
-        console.log(error);
-        setFeedback({
-          message: "Error cargando los datos de la liga",
-          severity: "error",
-          open: true,
-        });
-      });
+    // Mock data for screenshot purposes
+    const mockLeagues: LeaguesTypes[] = [
+      {
+        id: "global",
+        league_name: "Global",
+        created_at: "2024-01-01T00:00:00Z",
+        created_by: "system",
+        tier: "managed",
+        status: "active",
+        is_private: false,
+        current_participants: 57,
+        updated_at: "2024-12-01T00:00:00Z",
+        description: "Liga global para todos los usuarios",
+        participants: [
+          {
+            user_id: userData.userId,
+            username: userData.username,
+            role: "user",
+          },
+          ...Array.from({ length: 56 }, (_, i) => ({
+            user_id: `user${i + 1}`,
+            username: `user${i + 1}`,
+            role: "user",
+          })),
+        ],
+        participantsCount: 57,
+        participantPetitions: [],
+        moderatorPetitions: [],
+        moderatorArray: ["admin1"],
+        quinipolosToAnswer: [],
+        leaguesToCorrect: [],
+      },
+      {
+        id: "personal",
+        league_name: "Tu liga personalizada",
+        created_at: "2024-06-15T00:00:00Z",
+        created_by: "user1",
+        tier: "self-managed",
+        status: "active",
+        is_private: true,
+        current_participants: 17,
+        updated_at: "2024-12-15T00:00:00Z",
+        description: "Liga personalizada para amigos cercanos",
+        participants: [
+          { user_id: "user1", username: "user1", role: "creator" },
+          {
+            user_id: userData.userId,
+            username: userData.username,
+            role: "user",
+          },
+          ...Array.from({ length: 15 }, (_, i) => ({
+            user_id: `user${i + 4}`,
+            username: `user${i + 4}`,
+            role: "user",
+          })),
+        ],
+        participantsCount: 17,
+        participantPetitions: [],
+        moderatorPetitions: [],
+        moderatorArray: ["user1"],
+        quinipolosToAnswer: [],
+        leaguesToCorrect: [],
+      },
+      {
+        id: "rival",
+        league_name: "La liga de tus rivales",
+        created_at: "2024-08-20T00:00:00Z",
+        created_by: "user2",
+        tier: "self-managed",
+        status: "active",
+        is_private: true,
+        current_participants: 19,
+        updated_at: "2024-12-10T00:00:00Z",
+        description: "Liga de rivales deportivos",
+        participants: [
+          { user_id: "user2", username: "user2", role: "creator" },
+          ...Array.from({ length: 18 }, (_, i) => ({
+            user_id: `user${i + 6}`,
+            username: `user${i + 6}`,
+            role: "user",
+          })),
+        ],
+        participantsCount: 19,
+        participantPetitions: [],
+        moderatorPetitions: [],
+        moderatorArray: ["user2"],
+        quinipolosToAnswer: [],
+        leaguesToCorrect: [],
+      },
+    ];
+
+    // Sort leagues: Global first, then alphabetically
+    const sortedData = mockLeagues.sort((a, b) => {
+      // Global league should always be first
+      if (a.league_name.toLowerCase() === "global") return -1;
+      if (b.league_name.toLowerCase() === "global") return 1;
+
+      // All other leagues sorted alphabetically
+      return a.league_name.localeCompare(b.league_name);
+    });
+
+    setLeagueListData(sortedData);
     setLoading(false);
   }, [setFeedback]);
 

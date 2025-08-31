@@ -22,7 +22,23 @@ const Dashboard = () => {
   const { userData, updateUser } = useUserData();
   const [leagues, setLeagues] = useState<
     { leagueId: string; leagueName: string; participants: string[] }[]
-  >([]);
+  >([
+    {
+      leagueId: "global",
+      leagueName: "Global",
+      participants: ["user1", "user2", "user3"],
+    },
+    /* {
+      leagueId: "personal",
+      leagueName: "Tu liga personalizada",
+      participants: ["user1", "user4", "user5"],
+    }, */
+    /* {
+      leagueId: "rival",
+      leagueName: "La liga de tu equipo rival",
+      participants: ["user2", "user6", "user7"],
+    }, */
+  ]);
   const { t } = useTranslation();
   const [hasFetchedProfile, setHasFetchedProfile] = useState(false);
 
@@ -107,11 +123,12 @@ const Dashboard = () => {
     setLeagues(leaguesWithData);
   }, [userData.leagues]);
 
-  useEffect(() => {
-    if (userData.leagues.length > 0) {
-      getLeaguesData();
-    }
-  }, [getLeaguesData, userData.leagues.length]);
+  // Commented out for screenshot purposes - using mock data instead
+  // useEffect(() => {
+  //   if (userData.leagues.length > 0) {
+  //     getLeaguesData();
+  //   }
+  // }, [getLeaguesData, userData.leagues.length]);
 
   return (
     <div className={styles.dashboardContainer}>
@@ -135,7 +152,7 @@ const Dashboard = () => {
             <h2 className={styles.leaguesTitle}>{t("myLeagues")}</h2>
             {userData.role === "" ? (
               <CircularProgress sx={{ mt: 4 }} />
-            ) : userData.leagues.length === 0 ? (
+            ) : leagues.length === 0 ? (
               <p className={styles.noActionsMessage}>{t("noLeagues")}</p>
             ) : (
               <Box

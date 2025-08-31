@@ -83,7 +83,7 @@ const AnswersForm = () => {
   const queryParams = new URLSearchParams(window.location.search);
   const correctingModeOn = queryParams.get("correct"); // another submit
   const editCorrectionModeOn = queryParams.get("correctionEdit"); // show corrections selected
-  const seeUserAnswersModeOn = queryParams.get("see"); // if user answered, show answers. If correction done, show corrections. If both, show corrected Answers
+  const seeUserAnswersModeOn = queryParams.get("see") || "true"; // if user answered, show answers. If correction done, show corrections. If both, show corrected Answers
 
   const { t } = useTranslation();
 
@@ -95,6 +95,332 @@ const AnswersForm = () => {
 
       if (!id) {
         console.error("ID is missing in the query string");
+        return;
+      }
+
+      // Mock data for Global quinipolo (ID: "1")
+      if (id === "1") {
+        response = {
+          id: "1",
+          league_id: "global",
+          league_name: "Global",
+          quinipolo: [
+            {
+              gameType: "waterpolo",
+              homeTeam: "C.N. Sabadell F",
+              awayTeam: "C.N. Sant Feliu F",
+              date: new Date("2024-12-25T20:00:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "C.E. Mediterrani M",
+              awayTeam: "C.N. Rubí M",
+              date: new Date("2024-12-26T21:00:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "C.N Montjuïc M",
+              awayTeam: "C.D. Waterpolo Turia M",
+              date: new Date("2024-12-27T20:30:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "C.N. Terrassa F",
+              awayTeam: "C.N. Catalunya F",
+              date: new Date("2024-12-28T18:00:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "C.N. Molins de Rei M",
+              awayTeam: "C.N. Las Palmas M",
+              date: new Date("2024-12-29T19:30:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "Athletic Club",
+              awayTeam: "Real Sociedad",
+              date: new Date("2024-12-30T21:00:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "CN Sant Andreu",
+              awayTeam: "CN Catalunya",
+              date: new Date("2024-12-31T19:00:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "Celta Vigo",
+              awayTeam: "Deportivo Alavés",
+              date: new Date("2025-01-01T18:30:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "CN Rubí",
+              awayTeam: "CN Sant Feliu",
+              date: new Date("2025-01-02T20:15:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "Getafe",
+              awayTeam: "Rayo Vallecano",
+              date: new Date("2025-01-03T21:00:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "CN Poble Nou",
+              awayTeam: "CN Montjuïc",
+              date: new Date("2025-01-04T19:45:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "Osasuna",
+              awayTeam: "Mallorca",
+              date: new Date("2025-01-05T20:00:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "CN Molins de Rei",
+              awayTeam: "CN Castelldefels",
+              date: new Date("2025-01-06T19:30:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "Girona",
+              awayTeam: "Las Palmas",
+              date: new Date("2025-01-07T21:00:00"),
+              isGame15: false,
+            },
+            {
+              gameType: "waterpolo",
+              homeTeam: "CN Badalona",
+              awayTeam: "CN Gavà",
+              date: new Date("2025-01-08T20:00:00"),
+              isGame15: true,
+            },
+          ],
+          end_date: "2025-09-25T23:59:59",
+          has_been_corrected: true,
+          creation_date: "2024-12-20T10:00:00",
+          is_deleted: false,
+          participants_who_answered: ["user1", "user2", "user3"],
+          correct_answers: [
+            {
+              matchNumber: 1,
+              chosenWinner: "C.N. Sabadell F",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 2,
+              chosenWinner: "C.E. Mediterrani M",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 3,
+              chosenWinner: "C.N Montjuïc M",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 4,
+              chosenWinner: "empat",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 5,
+              chosenWinner: "C.N. Molins de Rei M",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 6,
+              chosenWinner: "Real Sociedad",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 7,
+              chosenWinner: "CN Sant Andreu",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 8,
+              chosenWinner: "Celta Vigo",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 9,
+              chosenWinner: "CN Rubí",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 10,
+              chosenWinner: "Getafe",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 11,
+              chosenWinner: "CN Poble Nou",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 12,
+              chosenWinner: "Osasuna",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 13,
+              chosenWinner: "CN Molins de Rei",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 14,
+              chosenWinner: "Girona",
+              goalsHomeTeam: "",
+              goalsAwayTeam: "",
+            },
+            {
+              matchNumber: 15,
+              chosenWinner: "CN Badalona",
+              goalsHomeTeam: "9",
+              goalsAwayTeam: "10",
+            },
+          ],
+        };
+        setQuinipolo(response);
+
+        // Set user's answers for correction mode (some correct, some wrong)
+        const userAnswers: AnswersType[] = [
+          {
+            matchNumber: 1,
+            chosenWinner: "C.N. Sabadell F",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Correct
+          {
+            matchNumber: 2,
+            chosenWinner: "C.N. Rubí M",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Wrong
+          {
+            matchNumber: 3,
+            chosenWinner: "C.N Montjuïc M",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Correct
+          {
+            matchNumber: 4,
+            chosenWinner: "C.N. Terrassa F",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Wrong
+          {
+            matchNumber: 5,
+            chosenWinner: "C.N. Molins de Rei M",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Correct
+          {
+            matchNumber: 6,
+            chosenWinner: "Athletic Club",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Wrong
+          {
+            matchNumber: 7,
+            chosenWinner: "CN Catalunya",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Wrong
+          {
+            matchNumber: 8,
+            chosenWinner: "Celta Vigo",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Correct
+          {
+            matchNumber: 9,
+            chosenWinner: "CN Rubí",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Correct
+          {
+            matchNumber: 10,
+            chosenWinner: "Rayo Vallecano",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Wrong
+          {
+            matchNumber: 11,
+            chosenWinner: "CN Poble Nou",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Correct
+          {
+            matchNumber: 12,
+            chosenWinner: "Mallorca",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Wrong
+          {
+            matchNumber: 13,
+            chosenWinner: "CN Molins de Rei",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Correct
+          {
+            matchNumber: 14,
+            chosenWinner: "Las Palmas",
+            isGame15: false,
+            goalsHomeTeam: "",
+            goalsAwayTeam: "",
+          }, // Wrong
+          {
+            matchNumber: 15,
+            chosenWinner: "CN Gavà",
+            isGame15: true,
+            goalsHomeTeam: "10",
+            goalsAwayTeam: "9",
+          }, // Wrong
+        ];
+        setAnswers(userAnswers);
+        setLoading(false);
         return;
       }
 
@@ -185,6 +511,21 @@ const AnswersForm = () => {
     };
 
     setLoading(true);
+
+    // Mock submission for Global quinipolo (ID: "1")
+    if (quinipolo.id === "1") {
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      setFeedback({
+        message: "Quinipolo submitted successfully!",
+        severity: "success",
+        open: true,
+      });
+      navigate("/");
+      setLoading(false);
+      return;
+    }
 
     try {
       if (
@@ -352,17 +693,6 @@ const AnswersForm = () => {
     navigate("/");
   }
 
-  // Determine header text based on mode
-  const getHeaderText = () => {
-    if (correctingModeOn) {
-      return t("correct");
-    } else if (seeUserAnswersModeOn) {
-      return t("yourAnswersWithResults");
-    } else {
-      return t("selectTheResultForEachMatch");
-    }
-  };
-
   return (
     <FormControl>
       {seeUserAnswersModeOn ? (
@@ -377,7 +707,9 @@ const AnswersForm = () => {
           <TableHead>
             <TableRow>
               <TableCell align="center" sx={{ marginBottom: 16 }}>
-                {getHeaderText()}
+                {correctingModeOn
+                  ? t("correct")
+                  : t("selectTheResultForEachMatch")}
               </TableCell>
             </TableRow>
           </TableHead>

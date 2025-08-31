@@ -32,7 +32,131 @@ const QuinipolosToAnswer = ({
   const [value, setValue] = useState<string>("1");
   const { setFeedback } = useFeedback();
   const [loading, setLoading] = useState<boolean>(false);
-  const [quinipolos, setQuinipolos] = useState<QuinipoloType[]>([]);
+  const [quinipolos, setQuinipolos] = useState<QuinipoloType[]>([
+    // Latest pending quinipolos (first page)
+    {
+      id: "1",
+      league_id: "global",
+      league_name: "Global",
+      quinipolo: [
+        {
+          gameType: "waterpolo",
+          homeTeam: "Barcelona",
+          awayTeam: "Real Madrid",
+          date: new Date("2024-12-25T20:00:00"),
+          isGame15: false,
+        },
+        {
+          gameType: "football",
+          homeTeam: "Atlético Madrid",
+          awayTeam: "Sevilla",
+          date: new Date("2024-12-26T21:00:00"),
+          isGame15: false,
+        },
+      ],
+      end_date: "2025-09-25T23:59:59",
+      has_been_corrected: false,
+      creation_date: "2024-12-20T10:00:00",
+      is_deleted: false,
+      answered: false,
+    },
+    {
+      id: "2",
+      league_id: "personal",
+      league_name: "Tu liga personalizada",
+      quinipolo: [
+        {
+          gameType: "waterpolo",
+          homeTeam: "CN Sabadell",
+          awayTeam: "CN Terrassa",
+          date: new Date("2024-12-27T19:30:00"),
+          isGame15: true,
+        },
+      ],
+      end_date: "2025-09-26T23:59:59",
+      has_been_corrected: false,
+      creation_date: "2024-12-21T14:30:00",
+      is_deleted: false,
+      answered: false,
+    },
+    // Additional quinipolos for pagination (pages 2-3)
+    {
+      id: "3",
+      league_id: "rival",
+      league_name: "La liga de tu equipo rival",
+      quinipolo: [
+        {
+          gameType: "football",
+          homeTeam: "Valencia",
+          awayTeam: "Villarreal",
+          date: new Date("2024-12-28T18:00:00"),
+          isGame15: false,
+        },
+      ],
+      end_date: "2025-09-27T23:59:59",
+      has_been_corrected: false,
+      creation_date: "2024-12-22T09:15:00",
+      is_deleted: false,
+      answered: false,
+    },
+    {
+      id: "4",
+      league_id: "global",
+      league_name: "Global",
+      quinipolo: [
+        {
+          gameType: "waterpolo",
+          homeTeam: "CN Barceloneta",
+          awayTeam: "CN Mataró",
+          date: new Date("2024-12-29T20:30:00"),
+          isGame15: false,
+        },
+      ],
+      end_date: "2025-09-28T23:59:59",
+      has_been_corrected: false,
+      creation_date: "2024-12-23T11:45:00",
+      is_deleted: false,
+      answered: false,
+    },
+    {
+      id: "5",
+      league_id: "personal",
+      league_name: "Tu liga personalizada",
+      quinipolo: [
+        {
+          gameType: "football",
+          homeTeam: "Athletic Club",
+          awayTeam: "Real Sociedad",
+          date: new Date("2024-12-30T21:00:00"),
+          isGame15: false,
+        },
+      ],
+      end_date: "2025-09-29T23:59:59",
+      has_been_corrected: false,
+      creation_date: "2024-12-24T16:20:00",
+      is_deleted: false,
+      answered: false,
+    },
+    {
+      id: "6",
+      league_id: "rival",
+      league_name: "La liga de tu equipo rival",
+      quinipolo: [
+        {
+          gameType: "waterpolo",
+          homeTeam: "CN Sant Andreu",
+          awayTeam: "CN Catalunya",
+          date: new Date("2024-12-31T19:00:00"),
+          isGame15: true,
+        },
+      ],
+      end_date: "2025-09-30T23:59:59",
+      has_been_corrected: false,
+      creation_date: "2024-12-25T13:10:00",
+      is_deleted: false,
+      answered: false,
+    },
+  ]);
   const { t } = useTranslation();
 
   const fetchQuinipolos = useCallback(
@@ -62,11 +186,12 @@ const QuinipolosToAnswer = ({
     [appLocation, leagueId, setFeedback, t]
   );
 
-  useEffect(() => {
-    if (username) {
-      fetchQuinipolos(username);
-    }
-  }, [fetchQuinipolos, username]);
+  // Commented out for screenshot purposes - using mock data instead
+  // useEffect(() => {
+  //   if (username) {
+  //     fetchQuinipolos(username);
+  //   }
+  // }, [fetchQuinipolos, username]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
